@@ -40,6 +40,11 @@ object CustomersController extends Controller with CustomerSerializer with Commo
     ok(Json.toJson(customerList), "List of customers")
   }
 
+  def paidCustomers() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
+    val customerList =Customers.getPaidCustomers(request.user.userType,request.user.userId, request.user.companyId)
+    ok(Json.toJson(customerList), "List of customers")
+  }
+
   def searchCustomers(search:String) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     println(request.user)
     val customerList =Customers.searchCustomers(request.user.userType,request.user.userId, request.user.companyId,search)

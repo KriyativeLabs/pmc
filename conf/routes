@@ -18,7 +18,8 @@ GET         /api/v1/users                  controllers.UsersController.all
 POST        /api/v1/users                  controllers.UsersController.create
 
 #Customers
-GET         /api/v1/customers/upaid        controllers.CustomersController.unpaidCustomers
+GET         /api/v1/customers/unpaid        controllers.CustomersController.unpaidCustomers
+GET         /api/v1/customers/paid        controllers.CustomersController.paidCustomers
 GET         /api/v1/customers              controllers.CustomersController.all
 POST        /api/v1/customers              controllers.CustomersController.create
 PUT         /api/v1/customers/:id          controllers.CustomersController.update(id:Int)

@@ -76,6 +76,19 @@ object Customers {
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[Customer]]
   }
 
+  def getPaidCustomers(userType:UserType,userId:Int, companyId:Int): Vector[Customer] = {
+    val filterQuery = if(userType == UserType.OWNER){
+      for{
+        customers <- customerQuery.filter(x => x.companyId === companyId && x.balanceAmount === 0)
+      }yield customers
+    } else {
+      for {
+        (customers, areaMap) <- customerQuery.filter(x => x.companyId === companyId && x.balanceAmount === 0)join agentAreaQuery.filter(_.agentId === userId) on (_.areaId === _.areaId)
+      } yield customers
+    }
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[Customer]]
+  }
+
   def searchCustomers(userType:UserType, userId:Int, companyId:Int, search:String): Vector[Customer] = {
     val filterQuery = if (userType == UserType.OWNER) {
       if (search.forall(_.isDigit)) {

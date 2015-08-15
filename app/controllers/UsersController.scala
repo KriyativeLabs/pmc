@@ -3,7 +3,7 @@ package controllers
 import helpers.enums.UserType
 import helpers.json.UserSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{PasswordChange, LoginCase, Users, User}
+import models._
 import play.api.libs.json._
 import security.{Authentication, IsAuthenticated, PermissionCheckAction}
 import play.api._
@@ -33,7 +33,8 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
           case Left(l) =>  unAuthorized("Authentication failed!")
           case Right(r) => {
             val token = Authentication.encryptAuthHeader(r.id.get, r.companyId, 3, UserType.withName(r.accountType))
-            ok(Json.obj("token" -> token, "name" -> r.name), s"Successfully logged in!")
+            val company = Companies.findById(r.companyId)
+            ok(Json.obj("token" -> token, "name" -> r.name,"company" -> company.get.name), s"Successfully logged in!")
           }
         }
       }
