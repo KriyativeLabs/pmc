@@ -1,0 +1,55 @@
+<div data-ng-init="getCustomers()">
+    <div class="row m-b-md">
+        <div class="col-sm-6">
+            <h3 class="m-b-xs text-black">Customers</h3>
+        </div>
+        <div class="col-sm-6 text-right text-left-xs m-t-md">
+            <form class="m-b-none" action="">
+                <div class="input-group">
+                    <!--<div id="DataTables_Table_0_filter" class="dataTables_filter">-->
+                    <input type="search" placeholder="Type to Search.." ng-model="search" class="form-control">
+                    <span class="input-group-btn">
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2"></i> Search</button>
+                            </span>
+                    <!--</div>-->
+                </div>
+            </form>
+        </div>
+    </div>
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <a class="btn btn-s-md btn-primary" data-toggle="modal" ng-href="/customers/create"><i class="i i-plus2"></i> Add Customer</a>
+        </div>
+    </section>
+    <div class="panel panel-default">
+        <div class="table-responsive">
+            <table datatable="ng" dt-options="dtOptions" class="table table-striped m-b-none">
+                <!--data-ride="datatables">-->
+                <thead>
+                    <tr>
+                        <th width="5%">H.No</th>
+                        <th width="20%">Name</th>
+                        <th width="15%">Mobile No.</th>
+                        <th width="20%">STB No.</th>
+                        <th width="10%">Balance</th>
+                        <th width="15%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="customer in customers | orderBy:'name'">
+                        <!-- | filter:search | orderBy:'name'">-->
+                        <td>{{customer.houseNo}}</td>
+                        <td>{{customer.name}}</td>
+                        <td>{{customer.mobileNo}}</td>
+                        <td>{{customer.mobileNo}}</td>
+                        <td>{{customer.balanceAmount}}</td>
+                        <td>
+                            <a ng-href="/payments/receipt?cust_id={{customer.id}}"><button class="btn btn-success btn-sm" style="padding:1px 10px !important;">Pay</button></a>
+                            <button class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

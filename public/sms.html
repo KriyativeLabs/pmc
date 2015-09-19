@@ -1,0 +1,39 @@
+<div ng-init="charsLeft=160">
+    <div class="m-b-md">
+        <h3 class="m-b-none text-center">Send SMS</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4">
+            <section class="panel panel-default">
+
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <p>SMS List</p>
+                            <select ng-model="smsList" class="form-control" size="1" data-trigger="change" data-required="true">
+                                <option value="0">Select List</option>
+                                <option value="1">All</option>
+                                <option value="2">Unpaid Customers</option>
+                                <option value="3">Paid Customers</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="validation-city">Content</label>
+
+                            <textarea ng-model="smsData" class="form-control" ng-keypress="charsChange()" rows="2" maxlength="160" data-trigger="change" data-required="false"
+                                      placeholder="Enter 160 character message"></textarea>
+                            <p>Characters left:{{charsLeft}}</p>
+                        </div>
+
+                        <div class="pull-right">
+                            <button class="btn btn-sm btn-primary" type="submit"><i class="i i-mail icon"></i> Send</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>
+

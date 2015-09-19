@@ -147,8 +147,11 @@ CREATE TABLE public.payments (
   id INTEGER NOT NULL DEFAULT nextval('public.payments_id_seq'),
   customer_id INT NOT NULL,
   paid_amount INT NOT NULL,
+  discounted_amount INT NOT NULL,
   paid_on TIMESTAMP NOT NULL DEFAULT now(),
   user_id INT NOT NULL,
+  remarks TEXT,
+  company_id INT NOT NULL,
   CONSTRAINT pk_payments PRIMARY KEY (id));
 
 ALTER SEQUENCE public.payments_id_seq OWNED BY  public.payments.id;
@@ -164,6 +167,13 @@ REFERENCES public.users(id)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
+
+ALTER TABLE public.payments ADD CONSTRAINT payments_company_fk FOREIGN KEY (company_id)
+REFERENCES public.companies(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
 --- end ---
 
 --- connections table ---

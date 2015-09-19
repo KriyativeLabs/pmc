@@ -1,9 +1,10 @@
 package controllers
 
+import controllers.AreasController._
 import helpers.enums.UserType
 import helpers.json.PlanSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Plans, Plan}
+import models.{Areas, Plans, Plan}
 import play.api.libs.json._
 import security.{IsAuthenticated, PermissionCheckAction}
 import play.api._
@@ -35,15 +36,23 @@ object PlansController extends Controller with PlanSerializer with CommonUtil wi
     ok(Json.toJson(planList), "List of plans")
   }
 
+  def delete(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+    Plans.delete(id.toInt,request.user.companyId) match {
+      case Left(e) => failed(e)
+      case Right(msg) => ok(None,"Successfully deleted Plan!")
+    }
+  }
+
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Plan].fold(
       errors => BadRequest(errors.mkString),
       plan => {
         if(!plan.id.isDefined || (plan.id.isDefined && id != plan.id.get)) validationError(plan,"Id provided in url and data are not equal")
         else {
-          Plans.update(plan) match {
+          val newPlan = plan.copy(companyId = request.user.companyId)
+          Plans.update(newPlan) match {
             case Left(e) => validationError(plan, e)
-            case Right(r) => ok(Some(plan), s"Updated Plan with details" + plan)
+            case Right(r) => ok(Some(plan), s"Updated Plan with details:" + newPlan)
           }
         }
       }

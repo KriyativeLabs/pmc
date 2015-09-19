@@ -1,0 +1,51 @@
+<div class="vbox" data-ng-init="getPlans()">
+    <div class="scrollable wrapper">
+        <div class="row m-b-md">
+            <div class="col-sm-6">
+                <h3 class="m-b-xs text-black">Plans</h3>
+            </div>
+            <div class="col-sm-6 text-right text-left-xs m-t-md">
+                <form class="m-b-none" action="">
+                    <div class="input-group">
+                        <input type="text" placeholder="Search Plans.." ng-model="search" class="form-control">
+                        <span class="input-group-btn">
+                              <button type="button" class="btn btn-primary"><i class="i i-search2"></i> Search</button>
+                            </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <a class="btn btn-s-md btn-primary" data-toggle="modal" ng-href="/plans/create"><i class="i i-plus2"></i>Add Plan</a>
+        </div>
+    </section>
+        <div class="panel panel-default">
+            <div class="table-responsive">
+                <table class="table table-striped m-b-none" data-ride="datatables">
+                    <thead>
+                        <tr>
+                            <th width="10%">S.No</th>
+                            <th width="15%">Name</th>
+                            <th width="20%">Price</th>
+                            <th width="20%">No of Months</th>
+                            <th width="20%">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="plan in plans | filter:search | orderBy:'name'">
+                            <td>{{sNo+1}}</td>
+                            <td>{{plan.name}}</td>
+                            <td>{{plan.amount}}</td>
+                            <td>{{plan.noOfMonths}}</td>
+                            <td>
+                                <a href="/plans/create?id={{plan.id}}&name={{plan.name}}&amount={{plan.amount}}&no={{plan.noOfMonths}}"><button class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button></a>
+                                <button ng-click="delete(plan.id,plan.name)" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
