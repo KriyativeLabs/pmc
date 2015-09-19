@@ -1,0 +1,35 @@
+<div>
+    <div class="m-b-md">
+        <h3 class="m-b-none text-center">Create Plan</h3>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4">
+            <section class="panel panel-default">
+
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label for="validation-city">Plan Name</label>
+                            <input ng-model="name" ng-disabled="{{isUpdate}}" class="form-control" type="text" placeholder="Plan Name ">
+                        </div>
+                        <div class="form-group">
+                            <label for="validation-city">Plan Amount</label>
+                            <input ng-model="amount" class="form-control" type="number" placeholder="Plan Amount">
+                        </div>
+                        <div class="form-group">
+                            <label for="validation-city">Plan Duration</label>
+                            <input ng-model="duration" class="form-control" type="number" placeholder="Plan Duration">
+                        </div>
+
+
+                        <a href="/plans"><button class="btn btn-sm btn-danger" type="submit">Cancel</button></a>
+                        <button ng-hide="isUpdate" class="btn btn-sm btn-primary" ng-click="createPlan()"><i class="fa fa-check"></i>Create</button>
+                        <button ng-show="isUpdate" class="btn btn-sm btn-primary" ng-click="updatePlan()"><i class="fa fa-check"></i>Update</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>

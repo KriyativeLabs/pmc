@@ -1,6 +1,7 @@
 package helpers
 
-import org.json4s.Extraction
+import org.json4s.{NoTypeHints, Extraction}
+import org.json4s.jackson.Serialization
 import play.api.Play
 import play.api.http.Status._
 import play.api.libs.json.JsValue
@@ -8,14 +9,14 @@ import play.api.mvc.Results._
 import play.api.mvc._
 import play.mvc.Http.MimeTypes
 
-trait ResponseHelper extends CommonUtil {
+trait ResponseHelper{// extends CommonUtil {
 
   def headers = List(
     "Access-Control-Allow-Origin" -> "*",
     "Access-Control-Allow-Methods" -> "GET, POST, OPTIONS, DELETE, PUT",
     "Access-Control-Allow-Headers" -> "Content-Type, Authorization"
   )
-
+  private implicit val formats = Serialization.formats(NoTypeHints)
   val corsEnabled = false //Play.current.configuration.getString("cors.enabled").getOrElse("false").toBoolean
 
   def ok(data: Option[Any], message: String)(implicit request: RequestHeader): Result = {

@@ -1,0 +1,60 @@
+<div data-ng-init="getAgents()">
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <h3 class="m-b-xs text-black">Agents</h3>
+        </div>
+        <div class="col-sm-6 text-right text-left-xs m-t-md">
+            <form class="m-b-none" action="">
+                <div class="input-group">
+                    <input type="text" placeholder="Type to Search.." ng-model="search" class="form-control">
+                    <span class="input-group-btn">
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i
+                                      class="i i-search2"></i> Search
+                              </button>
+                            </span>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <a class="btn btn-s-md btn-primary" data-toggle="modal" href="#" ng-href="/agents/create"><i
+                    class="i i-plus2"></i>Add Agent</a>
+        </div>
+    </section>
+    <section class="panel panel-default">
+        <div class="table-responsive">
+            <table datatable="ng" dt-options="dtOptions" class="table table-striped m-b-none">
+                <thead>
+                <tr>
+                    <th width="5%">Sl.No</th>
+                    <th width="15%">Name</th>
+                    <th width="15%">Mobile No</th>
+                    <th width="15%">Email</th>
+                    <th width="20%">LoginId</th>
+                    <th width="15%">Account Type</th>
+                    <th width="25%">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="agent in agents | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
+                    <td>{{sNo+1}}</td>
+                    <td>{{agent.name}}</td>
+                    <td>{{agent.contactNo}}</td>
+                    <td>{{agent.email}}</td>
+                    <td>{{agent.loginId}}</td>
+                    <td>{{agent.accountType}}</td>
+                    <td>
+                        <a href="/agents/create?id={{agent.id}}&code={{agent.code}}&name={{agent.name}}">
+                            <button class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
+                        </a>
+                        <button ng-click="delete(agent.id,agent.name)" class="btn btn-danger btn-sm"
+                                style="padding:1px 10px !important;">Delete
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>

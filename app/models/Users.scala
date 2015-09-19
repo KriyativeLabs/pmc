@@ -2,6 +2,7 @@ package models
 
 import play.api.libs.Codecs
 import play.api.libs.json.Json
+import security.LoggedInUser_1
 import slick.driver.PostgresDriver.api._
 
 
@@ -87,7 +88,8 @@ object Users {
   }
 
   def getAll(companyId:Option[Int]=None): Vector[User] = {
-    val filterQuery = if(companyId.isDefined) userQuery.filter(x => x.companyId === companyId.get) else userQuery
+    val userId=LoggedInUser_1().userId
+    val filterQuery = if(companyId.isDefined) userQuery.filter(x => x.companyId === companyId.get && !(x.id === userId) ) else userQuery
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[User]]
   }
 }

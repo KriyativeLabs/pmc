@@ -19,6 +19,7 @@ class PlansTable(tag: Tag) extends Table[Plan](tag, "plans"){
 
 object Plans {
   private lazy val planQuery = TableQuery[PlansTable]
+  private lazy val connectionQuery = TableQuery[ConnectionsTable]
 
   def insert(plan: Plan): Either[String, Int] = {
     val resultQuery = planQuery returning planQuery.map(_.id) += plan
@@ -30,6 +31,7 @@ object Plans {
   }
 
   def update(plan: Plan): Either[String, Int] = {
+
     val updateQuery = planQuery.filter(x => x.id === plan.id && x.companyId === plan.companyId).map(p => (p.name, p.noOfMonths, p.amount)).update(plan.name, plan.noOfMonths, plan.amount)
     try {
       Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
@@ -46,5 +48,22 @@ object Plans {
   def getAll(companyId:Option[Int]=None): Vector[Plan] = {
     val filterQuery = if(companyId.isDefined) planQuery.filter(x => x.companyId === companyId.get) else planQuery
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[Plan]]
+  }
+
+  def delete(planId: Int, companyId:Int): Either[String, Int] = {
+    val deleteQuery = planQuery.filter(x => x.id === planId && x.companyId === companyId).delete
+
+    val connQuery = connectionQuery.filter(x => x.planId === planId && x.companyId === companyId).size
+    val count = DatabaseSession.run(connQuery.result).asInstanceOf[Int]
+
+    if (count == 0) {
+      try {
+        Right(DatabaseSession.run(deleteQuery).asInstanceOf[Int])
+      } catch {
+        case e: Exception => Left(e.getMessage)
+      }
+    } else {
+      Left(s"Plan is associated with $count no of connections, Please change them before deleting the plan")
+    }
   }
 }

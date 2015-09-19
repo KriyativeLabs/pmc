@@ -16,7 +16,7 @@ object ConnectionsController extends Controller with ConnectionSerializer with C
     request.body.validate[Connection].fold(
       errors => BadRequest(errors.mkString),
       connection => {
-        val newConnection = if(request.user.userType == UserType.OWNER) connection.copy(companyId = request.user.companyId) else connection
+        val newConnection = if(request.user.userType == UserType.OWNER) connection.copy(companyId = Some(request.user.companyId)) else connection
         Connections.insert(newConnection) match {
           case Left(e) =>  BadRequest(e)
           case Right(id) => created (Some (newConnection), s"Created Connection with id:$id")

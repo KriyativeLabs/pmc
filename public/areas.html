@@ -1,0 +1,48 @@
+<div data-ng-init="getAreas()">
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <h3 class="m-b-xs text-black">Areas</h3>
+        </div>
+        <div class="col-sm-6 text-right text-left-xs m-t-md">
+            <form class="m-b-none" action="">
+                <div class="input-group">
+                    <input type="text" placeholder="Type to Search.." ng-model="search" class="form-control">
+                    <span class="input-group-btn">
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2" ></i> Search</button>
+                            </span>
+                </div>
+            </form>
+        </div>
+    </section>
+        <section class="row m-b-md">
+        <div class="col-sm-6">
+            <a class="btn btn-s-md btn-primary" data-toggle="modal" href="#" ng-href="/areas/create"><i class="i i-plus2"></i>Add Area</a>
+        </div>
+    </section>
+    <section class="panel panel-default">
+        <div class="table-responsive">
+            <table datatable="ng" dt-options="dtOptions" class="table table-striped m-b-none">
+                <thead>
+                    <tr>
+                        <th width="20%">Sl.No</th>
+                        <th width="30%">Area Code</th>
+                        <th width="35%">Area Name</th>
+                        <th width="15%">Action</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                     <tr ng-repeat="area in areas | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
+                            <td>{{sNo+1}}</td>
+                            <td>{{area.code}}</td>
+                            <td>{{area.name}}</td>
+                            <td>
+                                <a href="/areas/create?id={{area.id}}&code={{area.code}}&name={{area.name}}"><button class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button></a>
+                                <button ng-click="delete(area.id,area.name)" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
