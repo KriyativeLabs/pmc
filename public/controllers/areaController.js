@@ -1,6 +1,6 @@
-pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope,$window, $filter, $location, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
-        $scope.alerts =[];
+pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+    function ($scope, $filter, $location, $route, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+        $scope.alerts = [];
         $scope.sNo = 1;
         $scope.getAreas = function () {
             apiService.GET("/areas").then(function (response) {
@@ -13,16 +13,16 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
                 }
             });
         };
-        
+
         var areaId = $location.search().id;
         if (!areaId) {
             $scope.isCreate = true;
-        } else{
+        } else {
             $scope.code = $location.search().code;
             $scope.name = $location.search().name;
             $scope.isCreate = false;
         }
-        
+
         $scope.updateArea = function () {
             var createObj = {};
             createObj.id = parseInt(areaId);
@@ -32,7 +32,7 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
             createObj.companyId = -1;
             createObj.idSequence = 0;
 
-            apiService.PUT("/areas/"+areaId, createObj).then(function (response) {
+            apiService.PUT("/areas/" + areaId, createObj).then(function (response) {
                 console.log(response.data.data);
                 alert("Area Successfully Updated!");
                 $location.path("/areas");
@@ -43,7 +43,7 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
                 }
             });
         };
-        
+
         $scope.createArea = function () {
             var createObj = {};
             createObj.code = $scope.code;
@@ -55,11 +55,11 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
             apiService.POST("/areas", createObj).then(function (response) {
                 console.log(response.data.data);
                 $scope.alerts = [];
-                $scope.alerts.push({type: 'success', msg:"Area Successfully Created!"});
+                $scope.alerts.push({type: 'success', msg: "Area Successfully Created!"});
                 $location.path("/areas");
             }, function (errorResponse) {
                 $scope.alerts = [];
-                $scope.alerts.push({ type: 'danger',msg: errorResponse.data.message});
+                $scope.alerts.push({ type: 'danger', msg: errorResponse.data.message});
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
@@ -67,12 +67,12 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
             });
         };
 
-        $scope.delete = function (id, name) {
+        $scope.deleteArea = function (id, name) {
             var userConfirmation = confirm("Are you sure you want to delete area:" + name);
             if (userConfirmation) {
                 apiService.DELETE("/areas/" + id).then(function (response) {
                     alert("Area Successfully Deleted!");
-                    $scope.getAreas();
+                    $route.reload();
                 }, function (errorResponse) {
                     console.log(errorResponse);
                     alert(errorResponse.data.message);
@@ -83,7 +83,7 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
                 });
             }
         };
-        
+
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             //.withColumnFilter()
             //.withDOM('<"input-group"f>pitrl')
@@ -102,8 +102,132 @@ pmcApp.controller('areaController', ['$scope','$window', '$filter', '$location',
             $scope.areas = $filter('filter')($scope.areasBackup, search);
         };
 
-        $scope.closeAlert = function(index) {
+        $scope.closeAlert = function (index) {
             $scope.alerts.splice(index, 1);
         };
 
-     }]);
+
+//############################################Modal###########################################
+        $scope.open = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'areaCreate.html',
+                controller: AreaCreateCtrl/*,
+                 resolve: {
+                 items: function () {
+                 return $scope.items;
+                 },
+                 size: function() {
+                 console.log('size: ', size);
+                 return size;
+                 }
+                 }
+                 */
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+//################End##########
+
+//############################################Modal###########################################
+        $scope.openUpdate = function (areaId, areaName, areaCode) {
+            var modalInstance = $modal.open({
+                templateUrl: 'areaCreate.html',
+                controller: AreaUpdateCtrl,
+                resolve: {
+                    areaId: function () {
+                        return areaId;
+                    },
+                    areaName: function () {
+                        return areaName;
+                    },
+                    areaCode: function () {
+                        return areaCode;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+//################End##########
+    }]);
+
+var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.createArea = function () {
+        var createObj = {};
+        createObj.code = $scope.code;
+        createObj.name = $scope.name;
+        createObj.city = "N/A";
+        createObj.companyId = -1;
+        createObj.idSequence = 0;
+        apiService.POST("/areas", createObj).then(function (response) {
+            console.log(response.data.data);
+            $scope.alerts = [];
+            $scope.alerts.push({type: 'success', msg: "Area Successfully Created!"});
+            $location.path("/areas");
+            //$modalInstance.dismiss('cancel');
+        }, function (errorResponse) {
+            $scope.alerts = [];
+            $scope.alerts.push({ type: 'danger', msg: errorResponse.data.message});
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+            $scope.code = "";
+        });
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+};
+
+
+var AreaUpdateCtrl = function ($scope, $modalInstance, $location, apiService, areaId, areaName, areaCode) {
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+    $scope.code = areaCode;
+    $scope.name = areaName;
+
+    $scope.updateArea = function () {
+        var createObj = {};
+        createObj.id = parseInt(areaId);
+        createObj.code = $scope.code;
+        createObj.name = $scope.name;
+        createObj.city = "N/A";
+        createObj.companyId = -1;
+        createObj.idSequence = 0;
+
+        apiService.PUT("/areas/" + areaId, createObj).then(function (response) {
+            console.log(response.data.data);
+            alert("Area Successfully Updated!");
+            $location.path("/areas");
+        }, function (errorResponse) {
+            alert(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+};

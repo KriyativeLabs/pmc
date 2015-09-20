@@ -1,5 +1,5 @@
 pmcApp.factory('apiService',['$http','cookieService','constantsService', function($http,cookieService,constantsService) {
-        var apiURL = 'http://localhost:9000/api/v1';
+        var apiURL = 'http://10.0.0.5:9000/api/v1';
         var doRequest = function(path, method,data) {
             var authToken = cookieService.get(constantsService.TOKEN);
             if(authToken) {
