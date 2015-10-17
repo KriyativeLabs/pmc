@@ -22,9 +22,6 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/plans", {
         templateUrl: "plans.html",
         controller: 'planController'
-    }).when("/plans/create", {
-        templateUrl: "plan_create.html",
-        controller: 'planController'
     }).when("/payments", {
         templateUrl: "payments.html",
         controller: 'paymentController'
@@ -34,14 +31,8 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/areas", {
         templateUrl: "areas.html",
         controller: 'areaController'
-    }).when("/areas/create", {
-        templateUrl: "area_create.html",
-        controller: 'areaController'
     }).when("/agents", {
         templateUrl: "agents.html",
-        controller: 'agentController'
-    }).when("/agents/create", {
-        templateUrl: "agent_create.html",
         controller: 'agentController'
     }).when("/change_password", {
         templateUrl: "change_password.html",

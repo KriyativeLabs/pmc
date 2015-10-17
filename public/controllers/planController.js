@@ -1,5 +1,5 @@
-pmcApp.controller('planController', ['$scope', '$filter', '$location', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal','$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+    function ($scope, $filter, $location,$modal,$log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
 
         $scope.sNo=1;
         $scope.getPlans = function(){
@@ -63,7 +63,7 @@ pmcApp.controller('planController', ['$scope', '$filter', '$location', 'apiServi
             var userConfirmation = confirm("Are you sure you want to delete plan:" + name);
             if (userConfirmation) {
                 apiService.DELETE("/plans/" + id).then(function (response) {
-                    alert("Area Successfully Deleted!");
+                    alert("Plan Successfully Deleted!");
                     $scope.getPlans();
                 }, function (errorResponse) {
                     console.log(errorResponse);
@@ -75,5 +75,123 @@ pmcApp.controller('planController', ['$scope', '$filter', '$location', 'apiServi
                 });
             }
         };
+//############################################Modal###########################################
+        $scope.open = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'planCreate.html',
+                controller: PlanCreateCtrl
+            });
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+//###########################################End##############################################
+
+//############################################Modal###########################################
+        $scope.openUpdate = function (planId, planName, planAmount, planNoOfMonths) {
+            var modalInstance = $modal.open({
+                templateUrl: 'planCreate.html',
+                controller: PlanUpdateCtrl,
+                resolve: {
+                    planId: function () {
+                        return planId;
+                    },
+                    planName: function () {
+                        return planName;
+                    },
+                    planAmount: function () {
+                        return planAmount;
+                    },
+                    planNoOfMonths: function () {
+                        return planNoOfMonths;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+//################End##########
 
     }]);
+
+
+var PlanCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
+    $scope.title = "Create";
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.planFunc = function () {
+        var createObj = {};
+        createObj.name = $scope.name;
+        createObj.amount = $scope.amount;
+        createObj.noOfMonths = $scope.duration;
+        createObj.companyId = -1;
+
+        apiService.POST("/plans", createObj).then(function (response) {
+            console.log(response.data.data);
+            $scope.alerts = [];
+            $scope.alerts.push({type: 'success', msg: "Plan Successfully Created!"});
+            $location.path("/plans");
+        }, function (errorResponse) {
+            $scope.alerts = [];
+            $scope.alerts.push({ type: 'danger', msg: errorResponse.data.message});
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+            $scope.code = "";
+        });
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+};
+
+
+var PlanUpdateCtrl = function ($scope, $modalInstance, $location, apiService, planId, planName, planAmount, planNoOfMonths) {
+    $scope.title = "Update";
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+    $scope.name = planName;
+    $scope.amount = planAmount;
+    $scope.duration = planNoOfMonths;
+
+    $scope.planFunc = function () {
+        var createObj = {};
+        createObj.id = parseInt(planId);
+        createObj.name = $scope.name;
+        createObj.amount = $scope.amount;
+        createObj.noOfMonths = $scope.duration;
+        createObj.companyId = -1;
+
+        apiService.PUT("/plans/" + planId, createObj).then(function (response) {
+            console.log(response.data.data);
+            alert("Plan Successfully Updated!");
+            $location.path("/plans");
+        }, function (errorResponse) {
+            alert(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+};

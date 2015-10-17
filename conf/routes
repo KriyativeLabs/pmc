@@ -16,6 +16,7 @@ GET           /api/v1/companies/:id           controllers.CompaniesController.fi
 # Users
 GET           /api/v1/users                   controllers.UsersController.all
 POST          /api/v1/users                   controllers.UsersController.create
+PUT           /api/v1/users/:id                   controllers.UsersController.update(id:Int)
 
 #Customers
 GET           /api/v1/customers/unpaid        controllers.CustomersController.unpaidCustomers

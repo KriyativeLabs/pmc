@@ -55,7 +55,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
 //#############################################################################################
 
 //########################################Customers Create Page################################
-        $scope.today = function() {
+ /*       $scope.today = function() {
             $scope.dt = new Date();
         };
         $scope.today();
@@ -80,7 +80,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         };
 
 
-        $scope.format = "dd-MM-yyyy";
+        $scope.format = "dd/MM/yyyy";
 
         $scope.status = {
             opened: false
@@ -144,13 +144,27 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             });
         };
 
-        
+        */
 //#############################################################################################
         $scope.open = function () {
 
             var modalInstance = $modal.open({
-                templateUrl: 'myModalContent.html',
-                controller: ModalInstanceCtrl
+                templateUrl: 'customerModal.html',
+                controller: CustomerCreateCtrl
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+
+        $scope.openUpdate = function () {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'customerModal.html',
+                controller: CustomerUpdateCtrl
             });
 
             modalInstance.result.then(function (selected) {
@@ -161,9 +175,31 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         };
     }]);
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, $timeout) {
+var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout) {
+    $scope.title = "Create";
+    var today =  new Date();
+    $scope.dt = today.toLocaleDateString('en-GB');
 
-    $scope.dt = new Date();
+    $scope.open = function() {
+        $timeout(function() {
+            $scope.opened = true;
+        });
+    };
+
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout) {
+    $scope.title = "Update";
+    var today =  new Date();
+    $scope.dt = today.toLocaleDateString('en-GB');
 
     $scope.open = function() {
         $timeout(function() {

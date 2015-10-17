@@ -111,17 +111,7 @@ pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route',
         $scope.open = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'areaCreate.html',
-                controller: AreaCreateCtrl/*,
-                 resolve: {
-                 items: function () {
-                 return $scope.items;
-                 },
-                 size: function() {
-                 console.log('size: ', size);
-                 return size;
-                 }
-                 }
-                 */
+                controller: AreaCreateCtrl
             });
 
             modalInstance.result.then(function (selected) {
@@ -130,7 +120,7 @@ pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-//################End##########
+//###########################################End##############################################
 
 //############################################Modal###########################################
         $scope.openUpdate = function (areaId, areaName, areaCode) {
@@ -160,6 +150,8 @@ pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route',
     }]);
 
 var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
+    $scope.title = "Create";
+
     $scope.ok = function () {
         $modalInstance.close($scope.dt);
     };
@@ -167,7 +159,7 @@ var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
         $modalInstance.dismiss('cancel');
     };
 
-    $scope.createArea = function () {
+    $scope.areaFunc = function () {
         var createObj = {};
         createObj.code = $scope.code;
         createObj.name = $scope.name;
@@ -197,6 +189,7 @@ var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 
 
 var AreaUpdateCtrl = function ($scope, $modalInstance, $location, apiService, areaId, areaName, areaCode) {
+    $scope.title = "Update";
     $scope.ok = function () {
         $modalInstance.close($scope.dt);
     };
@@ -206,7 +199,7 @@ var AreaUpdateCtrl = function ($scope, $modalInstance, $location, apiService, ar
     $scope.code = areaCode;
     $scope.name = areaName;
 
-    $scope.updateArea = function () {
+    $scope.areaFunc = function () {
         var createObj = {};
         createObj.id = parseInt(areaId);
         createObj.code = $scope.code;
