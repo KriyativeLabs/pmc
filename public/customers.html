@@ -6,12 +6,12 @@
         <div class="col-sm-6 text-right text-left-xs m-t-md">
             <form class="m-b-none" action="">
                 <div class="input-group">
-                    <!--<div id="DataTables_Table_0_filter" class="dataTables_filter">-->
                     <input type="search" placeholder="Type to Search.." ng-model="search" class="form-control">
                     <span class="input-group-btn">
-                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2"></i> Search</button>
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i
+                                      class="i i-search2"></i> Search
+                              </button>
                             </span>
-                    <!--</div>-->
                 </div>
             </form>
         </div>
@@ -24,30 +24,30 @@
     <div class="panel panel-default">
         <div class="table-responsive">
             <table datatable="ng" dt-options="dtOptions" class="table table-striped m-b-none">
-                <!--data-ride="datatables">-->
                 <thead>
-                    <tr>
-                        <th width="5%">H.No</th>
-                        <th width="20%">Name</th>
-                        <th width="15%">Mobile No.</th>
-                        <th width="20%">STB No.</th>
-                        <th width="10%">Balance</th>
-                        <th width="15%">Action</th>
-                    </tr>
+                <tr>
+                    <th width="5%">H.No</th>
+                    <th width="20%">Name</th>
+                    <th width="15%">Mobile No.</th>
+                    <th width="20%">STB No.</th>
+                    <th width="10%">Balance</th>
+                    <th width="15%">Action</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="customer in customers | orderBy:'name'">
-                        <!-- | filter:search | orderBy:'name'">-->
-                        <td>{{customer.houseNo}}</td>
-                        <td>{{customer.name}}</td>
-                        <td>{{customer.mobileNo}}</td>
-                        <td>{{customer.mobileNo}}</td>
-                        <td>{{customer.balanceAmount}}</td>
-                        <td>
-                            <a ng-href="/payments/receipt?cust_id={{customer.id}}"><button class="btn btn-success btn-sm" style="padding:1px 10px !important;">Pay</button></a>
-                            <button class="btn btn-primary btn-sm" ng-click="openUpdate()" style="padding:1px 10px !important;">Edit</button>
-                        </td>
-                    </tr>
+                <tr ng-repeat="customerCap in customers | orderBy:'name'">
+                    <td>{{customerCap.customer.houseNo}}</td>
+                    <td>{{customerCap.customer.name}}</td>
+                    <td>{{customerCap.customer.mobileNo}}</td>
+                    <td>{{customerCap.connection.setupBoxId}}</td>
+                    <td>{{customerCap.customer.balanceAmount}}</td>
+                    <td>
+                        <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm" style="padding:1px 10px !important;" ng-click="openReciept()">Pay</button>
+                        <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
+                                style="padding:1px 10px !important;">Edit
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -55,180 +55,152 @@
 </div>
 
 <script type="text/ng-template" id="customerModal.html">
-    <div class="modal-header">
-        <h3>{{title}} Customer</h3>
-    </div>
-    <div class="modal-body" style="height:80%;">
-        <!--<div class="form-horizontal">
-            <div class="input-group">
+    <div>
+        <div class="modal-header">
+            <h3>{{title}} Customer</h3>
+        </div>
+        <div class="modal-body" style="height:80%;">
+            <div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form>
+                            <div>{{createErrorMsg}}</div>
+                            <div>
+                                <div>
+                                    <h4>1. Customer Data</h4>
 
-                <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="dt" is-open="opened" ng-required="true" close-text="Close" />
-              <span class="input-group-btn">
-              <button style="height:34px;" class="btn btn-default" ng-click="open()">
-                  <i class="icon-calendar"></i></button> <b><- button not working</b>
-              </span>
-            </div>
-        </div>-->
+                                    <div class="row">
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Name*</p>
+                                            <input ng-model="name" class="form-control" type="text"
+                                                   data-trigger="change"
+                                                   data-required="true" placeholder="Customer Name">
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Mobile Number</p>
+                                            <input ng-model="mobile_no" class="form-control" type="number" size="10"
+                                                   data-trigger="change" data-required="false"
+                                                   placeholder="Customer Mobile Number">
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Email</p>
+                                            <input ng-model="email" class="form-control" type="text"
+                                                   data-trigger="change"
+                                                   data-required="false" placeholder="Customer Email ID">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Old Balance</p>
+                                            <input ng-model="old_balance" class="form-control" type="number"
+                                                   data-trigger="change" data-required="true"
+                                                   placeholder="Old Balance If Any?">
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Area*</p>
+                                            <select ng-model="area" class="form-control" data-trigger="change"
+                                                    data-required="true">
+                                                <option value="">Select Area</option>
+                                                <option ng-repeat="area in areas" value="{{area.id}}">{{area.name}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12" style="padding-right:20px;">
+                                            <p>Address</p>
 
-        <!--<div data-ng-init="getAreas();getPlans();">-->
-        <div>
-            <!--<div class="m-b-md">
-                <h3 class="m-b-none">Add Customer</h3>
-            </div>-->
-            <div class="row">
-                <div class="col-sm-12">
-                    <form>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div>{{createErrorMsg}}</div>
-                                <div class="line line-lg"></div>
-                                <div class="progress progress-xs m-t-md">
-                                    <div class="progress-bar bg-success"></div>
+                                            <textarea ng-model="address" class="form-control" rows="2"
+                                                      data-trigger="change"
+                                                      data-required="false"
+                                                      placeholder="Enter Customer Address"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
-                                    <div>
-                                        <h4>1. Customer Data</h4>
+                                    <br>
+                                    <h4>2. Plans & CAF Details</h4>
 
-                                        <div class="row">
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Name*</p>
-                                                <input ng-model="name" class="form-control" type="text" data-trigger="change"
-                                                       data-required="true" placeholder="Customer Name">
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Mobile Number</p>
-                                                <input ng-model="mobile_no" class="form-control" type="number" size="10"
-                                                       data-trigger="change" data-required="false"
-                                                       placeholder="Customer Mobile Number">
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Email</p>
-                                                <input ng-model="email" class="form-control" type="text" data-trigger="change"
-                                                       data-required="false" placeholder="Customer Email ID">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Old Balance</p>
-                                                <input ng-model="old_balance" class="form-control" type="number"
-                                                       data-trigger="change" data-required="true"
-                                                       placeholder="Old Balance If Any?">
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Area*</p>
-                                                <select ng-model="area" class="form-control" data-trigger="change"
-                                                        data-required="true">
-                                                    <option value="">Select Area</option>
-                                                    <option ng-repeat="area in areas" value="{{area.id}}">{{area.name}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-12" style="padding-right:20px;">
-                                                <p>Address</p>
+                                    <div class="row">
 
-                                                <textarea ng-model="address" class="form-control" rows="2" data-trigger="change"
-                                                          data-required="false" placeholder="Enter Customer Address"></textarea>
-                                            </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>STB Number</p>
+                                            <input ng-model="sbt_no" class="form-control" type="text"
+                                                   data-trigger="change"
+                                                   data-required="false" placeholder="Set Top Box Number">
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>CAF</p>
+                                            <input ng-model="caf" class="form-control" type="text" data-trigger="change"
+                                                   data-required="false" placeholder="Customer Address Form">
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Box Series</p>
+                                            <input ng-model="box_series" class="form-control" type="text"
+                                                   data-trigger="change" data-required="false" placeholder="BOX Series">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Connection Status</p>
+                                            <select ng-model="status" class="form-control" data-trigger="change"
+                                                    data-required="true">
+                                                <option value="1" selected>Active</option>
+                                                <option value="2">In-Active</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Plan</p>
+                                            <select ng-model="plan" class="form-control" data-trigger="change"
+                                                    data-required="true">
+                                                <option value="">Select Plan</option>
+                                                <option ng-repeat="plan in plans" value="{{plan.id}}">{{plan.name}}
+                                                </option>
+                                            </select>
+
+                                        </div>
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Discount</p>
+                                            <input ng-model="discount" class="form-control" type="number"
+                                                   data-trigger="change" data-required="false" placeholder="Discount">
                                         </div>
                                     </div>
-                                    <div>
-                                        <br>
-                                        <h4>2. Plans & CAF Details</h4>
-
-                                        <div class="row">
-
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>STB Number</p>
-                                                <input ng-model="sbt_no" class="form-control" type="text" data-trigger="change"
-                                                       data-required="false" placeholder="Set Top Box Number">
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>CAF</p>
-                                                <input ng-model="caf" class="form-control" type="text" data-trigger="change"
-                                                       data-required="false" placeholder="Customer Address Form">
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Box Series</p>
-                                                <input ng-model="box_series" class="form-control" type="text"
-                                                       data-trigger="change" data-required="false" placeholder="BOX Series">
-                                            </div>
-
+                                    <div class="row">
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>ID Proof*</p>
+                                            <input ng-model="id_proof" class="form-control" type="text"
+                                                   data-trigger="change" data-required="true"
+                                                   placeholder="Who's ID Proof?">
                                         </div>
-
-                                        <div class="row">
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Connection Status</p>
-                                                <select ng-model="status" class="form-control" data-trigger="change"
-                                                        data-required="true">
-                                                    <option value="1" selected>Active</option>
-                                                    <option value="2">In-Active</option>
-                                                </select>
-
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Plan</p>
-                                                <select ng-model="plan" class="form-control" data-trigger="change"
-                                                        data-required="true">
-                                                    <option value="">Select Plan</option>
-                                                    <option ng-repeat="plan in plans" value="{{plan.id}}">{{plan.name}}</option>
-                                                </select>
-
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Discount</p>
-                                                <input ng-model="discount" class="form-control" type="number"
-                                                       data-trigger="change" data-required="false" placeholder="Discount">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>ID Proof*</p>
-                                                <input ng-model="id_proof" class="form-control" type="text"
-                                                       data-trigger="change" data-required="true" placeholder="Who's ID Proof?">
-                                            </div>
-                                            <div class="col-sm-4" style="padding-right:20px;">
-                                                <p>Choose a date*</p>
-
-
-                                                <!--<h4>Popup</h4>-->
-                                                <!--<div class="row">
-                                                    <div class="col-md-6">-->
-                                                       <p class="input-group">
-                                                            <!--<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="dt" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />-->
-                                                            <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy" ng-model="dt" is-open="opened" ng-required="true" close-text="Close" />
+                                        <div class="col-sm-4" style="padding-right:20px;">
+                                            <p>Choose a date*</p>
+                                            <p class="input-group">
+                                                <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd"
+                                                       ng-model="dt" is-open="opened" ng-required="true"
+                                                       close-text="Close"/>
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                <button type="button" class="btn btn-default" ng-click="open()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
               </span>
-                                                        </p>
-                                                <!--</div>
-                                            </div>-->
-                                            </div>
-
+                                            </p>
                                         </div>
-
                                     </div>
-                                    <!--
-                                    <div class="pull-right">
-                                        <br>
-                                        <a href="/customers">
-                                            <button type="button" class="btn btn-s-md btn-danger">Cancel</button>
-                                        </a>
-                                        <button class="btn btn-s-md btn-primary" ng-click="createCustomer()"><i
-                                                class="i i-user2"></i>Create Customer
-                                        </button>
-                                    </div>-->
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
+                        </form>
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="customerFunc()"><i
+                    class="i i-user2"></i>Create Customer
+            </button>
+            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+        </div>
     </div>
 </script>

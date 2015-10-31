@@ -17,6 +17,7 @@ pmcApp.controller('authenticationController', ['$scope','$window', 'cookieServic
                 console.log(response.data.data.token);
                 cookieService.set(constantsService.USERNAME, response.data.data.name);
                 cookieService.set(constantsService.COMPANY_NAME, response.data.data.company);
+                console.log(response.data.data);
                 $window.location.href = "/";
                // $location.path("/dashboard");
                 //$scope.$apply();

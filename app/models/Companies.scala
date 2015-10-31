@@ -1,11 +1,19 @@
 package models
 
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
+import com.github.tototoshi.slick.JdbcJodaSupport._
+
 
 case class Company(id:Option[Int],name:String,owner:String,contactNo:Long,address:String)
 object Company {
   implicit val fmt = Json.format[Company]
+}
+
+case class DashboardData(unpaidCustomers:Int, totalCustomers:Int, balanceAmount:Long, amountCollected:Long)
+object DashboardData {
+  implicit val fmt = Json.format[DashboardData]
 }
 
 class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies"){
@@ -19,6 +27,8 @@ class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies"){
 
 object Companies {
   private lazy val companyQuery = TableQuery[CompaniesTable]
+  private lazy val customerQuery = TableQuery[CustomersTable]
+  private lazy val paymentsQuery = TableQuery[PaymentsTable]
 
   def insert(company: Company): Either[String, Int] = {
     val resultQuery = companyQuery returning companyQuery.map(_.id) += company
@@ -46,4 +56,19 @@ object Companies {
   def getAll: Vector[Company] = {
     DatabaseSession.run(companyQuery.result).asInstanceOf[Vector[Company]]
   }
+
+  def dashboardData(companyId:Int): DashboardData={
+    val unpaidCustomerQuery = customerQuery.filter(x => x.companyId === companyId && x.balanceAmount > 0)
+    val unpaidCustomers = DatabaseSession.run(unpaidCustomerQuery.result).asInstanceOf[Vector[Customer]]
+
+    val totalCustomerQuery = customerQuery.filter(x => x.companyId === companyId).length
+    val totalCustomersCount = DatabaseSession.run(totalCustomerQuery.result).asInstanceOf[Int]
+
+    val lastMonthDate = DateTime.now().minusMonths(1).dayOfMonth().withMaximumValue().withTime(23,59,59,999)
+    val amountCollectedQuery = paymentsQuery.filter(x => x.companyId === companyId && x.paidOn > lastMonthDate).map(_.paidAmount).sum
+    val amountCollected = DatabaseSession.run(amountCollectedQuery.result).asInstanceOf[Option[Long]]
+
+    DashboardData(unpaidCustomers.size,totalCustomersCount, unpaidCustomers.map(_.balanceAmount).sum, amountCollected.getOrElse(0))
+  }
+
 }

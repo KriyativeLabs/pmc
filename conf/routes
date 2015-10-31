@@ -5,6 +5,7 @@
 # login
 POST          /api/v1/login                   controllers.UsersController.login
 POST          /api/v1/users/changepassword          controllers.UsersController.updatePassword
+GET          /api/v1/dashboarddata          controllers.DashboardController.getDashboardData
 
 # Companies
 GET           /api/v1/companies               controllers.CompaniesController.all

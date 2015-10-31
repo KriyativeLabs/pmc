@@ -17,6 +17,12 @@ object Customer {
   implicit val fmt = Json.format[Customer]
 }
 
+case class CustomerCapsule(customer:Customer, connection:Option[Connection])
+
+object CustomerCapsule {
+  implicit val fmt = Json.format[CustomerCapsule]
+}
+
 class CustomersTable(tag: Tag) extends Table[Customer](tag, "customers") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -152,9 +158,11 @@ object Customers {
     DatabaseSession.run(filterQuery.result.headOption).asInstanceOf[Option[Customer]]
   }
 
-  def getAll(companyId: Option[Int] = None): Vector[Customer] = {
+  def getAll(companyId: Option[Int] = None): Vector[CustomerCapsule] = {
 
-    val filterQuery = if (companyId.isDefined) customerQuery.filter(x => x.companyId === companyId.get) else customerQuery
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[Customer]]
+    val filterQuery = for {(cust, conn) <- (if (companyId.isDefined) customerQuery.filter(x => x.companyId === companyId.get).sortBy(_.balanceAmount) else customerQuery.sortBy(_.balanceAmount)) joinLeft connectionsQuery on (_.id === _.customerId)
+    } yield (cust, conn)
+
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]].map(x => (CustomerCapsule.apply _).tupled(x))
   }
 }

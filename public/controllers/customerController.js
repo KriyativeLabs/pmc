@@ -1,5 +1,5 @@
-pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+    function ($scope, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
 
 //########################################Customers Page########################################
         var query = $location.search().query;
@@ -17,13 +17,9 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         }
 
         $scope.getCustomers = function () {
-            apiService.GET(link).then(function (response) {
-                $scope.customers = response.data.data;
-                $scope.customersBackUp = response.data.data;
-            }, function (errorResponse) {
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
+            commonService.getResultFromLink(link).then(function(result){
+                $scope.customers = result.data.data;
+                $scope.customersBackUp = result.data.data;
             });
         };
 
@@ -33,6 +29,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
+            .withOption('order', [4, 'desc'])
             .withOption('language', {
                 paginate: {
                     next: "",
@@ -43,14 +40,10 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             });
 
         $scope.changeData = function (search) {
-            apiService.GET("/customersearch?search="+search).then(function (response) {
-                $scope.customers = response.data.data;
-            }, function (errorResponse) {
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
+            commonService.getResultFromLink("/customersearch?search="+search).then(function(result){
+                $scope.customers = result.data.data;
+                $scope.customersBackUp = result.data.data;
             });
-            //$scope.customers = $filter('filter')($scope.customersBackUp, search);
         };
 //#############################################################################################
 
@@ -156,6 +149,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             modalInstance.result.then(function (selected) {
                 $scope.selected = selected;
             }, function () {
+
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
@@ -175,14 +169,55 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         };
     }]);
 
-var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout) {
+var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService, commonService) {
     $scope.title = "Create";
     var today =  new Date();
-    $scope.dt = today.toLocaleDateString('en-GB');
+    $scope.dt = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+(today.getDay()+1);
 
     $scope.open = function() {
         $timeout(function() {
             $scope.opened = true;
+        });
+    };
+
+    commonService.getAreas.then(function(result){$scope.areas = result.data.data});
+    commonService.getPlans.then(function(result){$scope.plans = result.data.data});
+
+    $scope.customerFunc = function () {
+        var createObj = {};
+        createObj.name = $scope.name;
+        createObj.mobileNo = $scope.mobile_no;
+        createObj.emailId = $scope.email;
+        //createObj.city = $scope.city;
+        createObj.balanceAmount = $scope.old_balance;
+        createObj.areaId = parseInt($scope.area);
+        createObj.address = $scope.address;
+
+        var connection = {};
+        connection.setupBoxId = $scope.sbt_no;
+
+        connection.cafId = $scope.caf;
+        connection.boxSerialNo = $scope.box_series;
+        connection.status = $scope.status;
+        connection.planId = parseInt($scope.plan);
+        connection.discount = $scope.discount;
+        connection.idProof = $scope.id_proof;
+        connection.installationDate = $scope.dt;
+
+        createObj.connections = [connection];
+
+        apiService.POST("/customers",createObj).then(function (response) {
+            console.log(response.data.data);
+            $scope.alerts = [];
+            $scope.alerts.push({type: 'success', msg: "Customer Successfully Created!"});
+            $location.path("/customers");
+        }, function (errorResponse) {
+            $scope.alerts = [];
+            $scope.alerts.push({ type: 'danger', msg: errorResponse.data.message});
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+            $scope.code = "";
         });
     };
 
