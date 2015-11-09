@@ -1,4 +1,4 @@
-var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables']);
+var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables', 'chart.js','ui-notification']);
 
 pmcApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when("/login", {
@@ -37,9 +37,6 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/change_password", {
         templateUrl: "change_password.html",
         controller: 'settingsController'
-    }).when("/sms", {
-        templateUrl: "sms.html",
-        controller: 'smsController'
     }).otherwise({
         redirectTo: '/'
     });

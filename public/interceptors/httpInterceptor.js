@@ -4,7 +4,6 @@ pmcApp.config(function setUpConfig($httpProvider){
             request: function (config) {
                 var splitUrl = config.url.split("/");
                 if (splitUrl[splitUrl.length-1] !="login" && !splitUrl[splitUrl.length-1].indexOf(".html") > 0){
-
                     if(!config.headers.Authorization){
                         cookieService.destroy();
                         $window.location.href = "/login.html";

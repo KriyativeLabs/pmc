@@ -37,12 +37,14 @@
                 <tbody>
                 <tr ng-repeat="customerCap in customers | orderBy:'name'">
                     <td>{{customerCap.customer.houseNo}}</td>
-                    <td>{{customerCap.customer.name}}</td>
+                    <td><a href="#">{{customerCap.customer.name}}</a></td>
                     <td>{{customerCap.customer.mobileNo}}</td>
                     <td>{{customerCap.connection.setupBoxId}}</td>
                     <td>{{customerCap.customer.balanceAmount}}</td>
                     <td>
-                        <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm" style="padding:1px 10px !important;" ng-click="openReciept()">Pay</button>
+                        <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm"
+                                style="padding:1px 10px !important;" ng-click="openReceipt(customerCap.customer.id)">Pay
+                        </button>
                         <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
                                 style="padding:1px 10px !important;">Edit
                         </button>
@@ -101,7 +103,8 @@
                                             <select ng-model="area" class="form-control" data-trigger="change"
                                                     data-required="true">
                                                 <option value="">Select Area</option>
-                                                <option ng-repeat="area in areas" value="{{area.id}}">{{area.name}}
+                                                <option ng-repeat="area in areas" value="{{area.id}}"
+                                                        ng-selected="areaId == area.id">{{area.name}}
                                                 </option>
                                             </select>
                                         </div>
@@ -147,8 +150,8 @@
                                             <p>Connection Status</p>
                                             <select ng-model="status" class="form-control" data-trigger="change"
                                                     data-required="true">
-                                                <option value="1" selected>Active</option>
-                                                <option value="2">In-Active</option>
+                                                <option value="1" ng-selected="status==1">Active</option>
+                                                <option value="2" ng-selected="status==2">In-Active</option>
                                             </select>
 
                                         </div>
@@ -156,8 +159,9 @@
                                             <p>Plan</p>
                                             <select ng-model="plan" class="form-control" data-trigger="change"
                                                     data-required="true">
-                                                <option value="">Select Plan</option>
-                                                <option ng-repeat="plan in plans" value="{{plan.id}}">{{plan.name}}
+                                                <option value="">Select Area</option>
+                                                <option ng-repeat="plan in plans" value="{{plan.id}}"
+                                                        ng-selected="planId == plan.id">{{plan.name}}
                                                 </option>
                                             </select>
 
@@ -176,7 +180,8 @@
                                                    placeholder="Who's ID Proof?">
                                         </div>
                                         <div class="col-sm-4" style="padding-right:20px;">
-                                            <p>Choose a date*</p>
+                                            <p>Plan Starts On*</p>
+
                                             <p class="input-group">
                                                 <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd"
                                                        ng-model="dt" is-open="opened" ng-required="true"
@@ -197,10 +202,11 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="customerFunc()"><i
-                    class="i i-user2"></i>Create Customer
-            </button>
             <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="customerFunc()"><i
+                    class="i i-user2"></i>{{title}} Customer
+            </button>
+
         </div>
     </div>
 </script>

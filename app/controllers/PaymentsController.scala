@@ -1,22 +1,24 @@
 package controllers
 
+import controllers.CustomersController._
 import helpers.enums.UserType
-import helpers.json.PaymentSerializer
+import helpers.json.{PaymentCapsuleSerializer, PaymentSerializer}
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Payments, Payment}
+import models.{Customers, Payments, Payment}
 import play.api.libs.json._
 import security.{IsAuthenticated, PermissionCheckAction}
 import play.api._
 import play.api.mvc._
 
-object PaymentsController extends Controller with PaymentSerializer with CommonUtil with ResponseHelper {
+object PaymentsController extends Controller with PaymentSerializer with PaymentCapsuleSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Payment].fold(
       errors => BadRequest(errors.mkString),
       payment => {
-        val newPayment = if (request.user.userType != UserType.ADMIN) payment.copy(companyId = request.user.companyId) else payment
+        implicit val loggedInUser = request.user
+        val newPayment = payment.copy(companyId = request.user.companyId, agentId = request.user.userId)
         Payments.insert(newPayment) match {
           case Left(e) => BadRequest(e)
           case Right(id) => created(Some(newPayment), s"Created Payment with id:$id")
@@ -26,15 +28,24 @@ object PaymentsController extends Controller with PaymentSerializer with CommonU
   }
 
   def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
-    val payment = if (request.user.userType == UserType.OWNER) Payments.findById(id.toInt, Some(request.user.companyId)) else Payments.findById(id.toInt)
+    implicit val loggedInUser = request.user
+    val payment = Payments.findById(id.toInt)
     if (payment.isDefined) ok(Json.toJson(payment), "Payment details") else notFound(s"Payment with $id not found")
   }
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val paymentList = if (request.user.userType != UserType.ADMIN) Payments.getAll(Some(request.user.companyId)) else Payments.getAll()
+    implicit val loggedInUser = request.user
+    val paymentList = Payments.getAll()
     ok(Json.toJson(paymentList), "List of payments")
   }
 
+/*
+  def searchPayments(search: String) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
+    implicit val loggedInUser = request.user
+    val payments = Payments.search(search)
+    ok(Json.toJson(payments), "List of Payments")
+  }
+*/
   /*
     def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
       request.body.validate[Payment].fold(

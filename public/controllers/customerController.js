@@ -17,9 +17,15 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         }
 
         $scope.getCustomers = function () {
-            commonService.getResultFromLink(link).then(function(result){
+            apiService.GET(link).then(function (result) {
+                console.log(result.data.data);
                 $scope.customers = result.data.data;
                 $scope.customersBackUp = result.data.data;
+            },function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
             });
         };
 
@@ -40,104 +46,11 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             });
 
         $scope.changeData = function (search) {
-            commonService.getResultFromLink("/customersearch?search="+search).then(function(result){
+            commonService.getResultFromLink("/customersearch?search=" + search).then(function (result) {
                 $scope.customers = result.data.data;
                 $scope.customersBackUp = result.data.data;
             });
         };
-//#############################################################################################
-
-//########################################Customers Create Page################################
- /*       $scope.today = function() {
-            $scope.dt = new Date();
-        };
-        $scope.today();
-
-        $scope.clear = function () {
-            $scope.dt = null;
-        };
-
-        $scope.toggleMin = function() {
-            $scope.minDate = $scope.minDate ? null : new Date();
-        };
-        $scope.toggleMin();
-        $scope.maxDate = new Date(2020, 5, 22);
-
-        $scope.open = function($event) {
-            $scope.status.opened = true;
-        };
-
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            startingDay: 1
-        };
-
-
-        $scope.format = "dd/MM/yyyy";
-
-        $scope.status = {
-            opened: false
-        };
-
-        $scope.getAreas = function() {
-            apiService.GET("/areas").then(function (response) {
-                $scope.areas = response.data.data;
-                console.log($scope.areas);
-            }, function (errorResponse) {
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
-            });
-        };
-        
-        $scope.getPlans = function() {
-            apiService.GET("/plans").then(function (response) {
-                $scope.plans = response.data.data;
-                console.log($scope.plans);
-            }, function (errorResponse) {
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
-            });
-        };
-        //sbtNo: String, caf: String, boxSeries: String, status: String, planId: Int, discount: Int, idProof: String, installationDate: DateTime)
-        //id: Option[Int], name: String, mobileNo: Long, emailId: String, address: String, areaId: Int, balanceAmount: Int, plans: List[CustomerPlan])
-        $scope.createCustomer = function () {
-            var createObj = {};
-            createObj.name = $scope.name;
-            createObj.mobileNo = $scope.mobile_no;
-            createObj.emailId = $scope.email;
-            //createObj.city = $scope.city;
-            createObj.balanceAmount = $scope.old_balance;
-            createObj.areaId = parseInt($scope.area);
-            createObj.address = $scope.address;
-
-            var connection = {};
-            connection.setupBoxId = $scope.sbt_no;
-
-            connection.cafId = $scope.caf;
-            connection.boxSerialNo = $scope.box_series;
-            connection.status = $scope.status;
-            connection.planId = parseInt($scope.plan);
-            connection.discount = $scope.discount;
-            connection.idProof = $scope.id_proof;
-            connection.installationDate = $scope.installation_date;
-
-            createObj.connections = [connection];
-
-            $scope.createErrorMsg = "Hello Error";
-            apiService.POST("/customers",createObj).then(function (response) {
-                alert(response.data.message);
-                console.log(response.data.data);
-            }, function (errorResponse) {
-                alert(errorResponse.data.message);
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
-            });
-        };
-
-        */
 //#############################################################################################
         $scope.open = function () {
 
@@ -147,21 +60,27 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             });
 
             modalInstance.result.then(function (selected) {
+                $scope.getCustomers();
                 $scope.selected = selected;
             }, function () {
-
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
 
-        $scope.openUpdate = function () {
+        $scope.openUpdate = function (id) {
 
             var modalInstance = $modal.open({
                 templateUrl: 'customerModal.html',
-                controller: CustomerUpdateCtrl
+                controller: CustomerUpdateCtrl,
+                resolve: {
+                    id: function () {
+                        return id;
+                    }
+                }
             });
 
             modalInstance.result.then(function (selected) {
+                $scope.getCustomers();
                 $scope.selected = selected;
             }, function () {
                 $log.info('Modal dismissed at: ' + new Date());
@@ -171,17 +90,21 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
 
 var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService, commonService) {
     $scope.title = "Create";
-    var today =  new Date();
-    $scope.dt = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+(today.getDay()+1);
+    var today = new Date();
+    $scope.dt = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + (today.getDay() + 1);
 
-    $scope.open = function() {
-        $timeout(function() {
+    $scope.open = function () {
+        $timeout(function () {
             $scope.opened = true;
         });
     };
 
-    commonService.getAreas.then(function(result){$scope.areas = result.data.data});
-    commonService.getPlans.then(function(result){$scope.plans = result.data.data});
+    commonService.getAreas.then(function (result) {
+        $scope.areas = result.data.data
+    });
+    commonService.getPlans.then(function (result) {
+        $scope.plans = result.data.data
+    });
 
     $scope.customerFunc = function () {
         var createObj = {};
@@ -202,22 +125,18 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         connection.planId = parseInt($scope.plan);
         connection.discount = $scope.discount;
         connection.idProof = $scope.id_proof;
-        connection.installationDate = $scope.dt;
+        connection.installationDate = $scope.dt.getFullYear() + "-" + ($scope.dt.getMonth() + 1) + "-" + ($scope.dt.getDay() + 1);
 
         createObj.connections = [connection];
 
-        apiService.POST("/customers",createObj).then(function (response) {
-            console.log(response.data.data);
-            $scope.alerts = [];
-            $scope.alerts.push({type: 'success', msg: "Customer Successfully Created!"});
-            $location.path("/customers");
+        apiService.POST("/customers", createObj).then(function (response) {
+            apiService.NOTIF_SUCCESS(response.data.message);
+            $modalInstance.close($scope.dt);
         }, function (errorResponse) {
-            $scope.alerts = [];
-            $scope.alerts.push({ type: 'danger', msg: errorResponse.data.message});
+            apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
-            $scope.code = "";
         });
     };
 
@@ -231,17 +150,89 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
     };
 };
 
-var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout) {
+var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService, commonService, id) {
     $scope.title = "Update";
-    var today =  new Date();
+    var today = new Date();
     $scope.dt = today.toLocaleDateString('en-GB');
 
-    $scope.open = function() {
-        $timeout(function() {
+    apiService.GET("/customers/" + id).then(function (response) {
+
+        var customerData = response.data.data.customer;
+        $scope.id = customerData.id;
+        $scope.name = customerData.name;
+        $scope.mobile_no = customerData.mobileNo;
+        $scope.email = customerData.emailId;
+        $scope.old_balance = customerData.balanceAmount;
+        $scope.areaId = customerData.areaId;
+        $scope.area = customerData.areaId;
+        $scope.address = customerData.address;
+
+        var connection = response.data.data.connection;
+        $scope.sbt_no = connection.setupBoxId;
+        $scope.caf = connection.cafId;
+        $scope.box_series = connection.boxSerialNo;
+        $scope.status = connection.status;
+        $scope.planId = connection.planId;
+        $scope.plan = connection.planId;
+        $scope.discount = connection.discount;
+        $scope.id_proof = connection.idProof;
+        $scope.dt = connection.installationDate; //.getFullYear()+"-"+($scope.dt.getMonth()+1)+"-"+($scope.dt.getDay()+1);
+
+    }, function (errorResponse) {
+        apiService.NOTIF_ERROR(errorResponse.data.message);
+        if (errorResponse.status != 200) {
+            console.log(errorResponse);
+        }
+        $scope.code = "";
+    });
+
+    $scope.open = function () {
+        $timeout(function () {
             $scope.opened = true;
         });
     };
 
+    commonService.getAreas.then(function (result) {
+        $scope.areas = result.data.data
+    });
+    commonService.getPlans.then(function (result) {
+        $scope.plans = result.data.data
+    });
+
+    $scope.customerFunc = function () {
+        var createObj = {};
+        createObj.id = $scope.id;
+        createObj.name = $scope.name;
+        createObj.mobileNo = $scope.mobile_no;
+        createObj.emailId = $scope.email;
+        //createObj.city = $scope.city;
+        createObj.balanceAmount = $scope.old_balance;
+        createObj.areaId = parseInt($scope.area);
+        createObj.address = $scope.address;
+
+        var connection = {};
+        connection.setupBoxId = $scope.sbt_no;
+        connection.cafId = $scope.caf;
+        connection.boxSerialNo = $scope.box_series;
+        connection.status = $scope.status;
+        connection.planId = parseInt($scope.plan);
+        connection.discount = $scope.discount;
+        connection.idProof = $scope.id_proof;
+        $scope.dt = new Date($scope.dt);
+        connection.installationDate = $scope.dt.getFullYear() + "-" + ($scope.dt.getMonth() + 1) + "-" + ($scope.dt.getDay() + 1);
+
+        createObj.connections = [connection];
+
+        apiService.PUT("/customers/"+$scope.id, createObj).then(function (response) {
+            apiService.NOTIF_SUCCESS(response.data.message);
+            $modalInstance.close($scope.dt);
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
 
     $scope.ok = function () {
         $modalInstance.close($scope.dt);

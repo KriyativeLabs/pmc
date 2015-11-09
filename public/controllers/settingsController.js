@@ -7,6 +7,7 @@ pmcApp.controller('settingsController', ['$scope', '$filter', '$location', 'apiS
                 console.log(response);
                 $scope.plans = response.data.data;
             }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
@@ -24,7 +25,7 @@ pmcApp.controller('settingsController', ['$scope', '$filter', '$location', 'apiS
                     alert("Password Successfully updated!");
                     $location.path("/dashboard");
                 }, function (errorResponse) {
-                    alert(errorResponse.data.message);
+                    apiService.NOTIF_ERROR(errorResponse.data.message);
                     if (errorResponse.status != 200) {
                         console.log(errorResponse);
                     }

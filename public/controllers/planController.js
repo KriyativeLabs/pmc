@@ -1,57 +1,10 @@
-pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal','$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location,$modal,$log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
+    function ($scope, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
 
-        $scope.sNo=1;
-        $scope.getPlans = function(){
-            apiService.GET("/plans").then(function(response){
+        $scope.sNo = 1;
+        $scope.getPlans = function () {
+            apiService.GET("/plans").then(function (response) {
                 $scope.plans = response.data.data;
-            },function(errorResponse){
-                if(errorResponse.status !=200){
-                   console.log(errorResponse);
-                }
-            });
-        };
-
-
-        var planId = $location.search().id;
-        if (!planId) {
-            $scope.isUpdate = false;
-        } else{
-            $scope.amount = parseInt($location.search().amount);
-            $scope.name = $location.search().name;
-            $scope.duration = parseInt($location.search().no);
-            $scope.isUpdate = true;
-        }
-
-        $scope.updatePlan = function(){
-            var createObj = {};
-            createObj.id = parseInt(planId);
-            createObj.name = $scope.name;
-            createObj.amount = $scope.amount;
-            createObj.noOfMonths = $scope.duration;
-            createObj.companyId = -1;
-
-            apiService.PUT("/plans/"+planId,createObj).then(function (response) {
-                alert("Plan Successfully Updated!");
-                $location.path("/plans");
-            }, function (errorResponse) {
-                alert(errorResponse.data.message)
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
-            });
-        };
-
-        $scope.createPlan = function(){
-            var createObj = {};
-            createObj.name = $scope.name;
-            createObj.amount = $scope.amount;
-            createObj.noOfMonths = $scope.duration;
-            createObj.companyId = -1;
-
-            apiService.POST("/plans",createObj).then(function (response) {
-                alert("Plan Successfully Created!");
-                $location.path("/plans");
             }, function (errorResponse) {
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
@@ -63,11 +16,10 @@ pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal',
             var userConfirmation = confirm("Are you sure you want to delete plan:" + name);
             if (userConfirmation) {
                 apiService.DELETE("/plans/" + id).then(function (response) {
-                    alert("Plan Successfully Deleted!");
+                    apiService.NOTIF_SUCCESS(response.data.message);
                     $scope.getPlans();
                 }, function (errorResponse) {
-                    console.log(errorResponse);
-                    alert(errorResponse.data.message);
+                    apiService.NOTIF_ERROR(errorResponse.data.message);
                     if (errorResponse.status != 200) {
                         if (errorResponse.status == 304)
                             alert(errorResponse);
@@ -82,6 +34,7 @@ pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal',
                 controller: PlanCreateCtrl
             });
             modalInstance.result.then(function (selected) {
+                $scope.getPlans();
                 $scope.selected = selected;
             }, function () {
                 $log.info('Modal dismissed at: ' + new Date());
@@ -111,6 +64,7 @@ pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal',
             });
 
             modalInstance.result.then(function (selected) {
+                $scope.getPlans();
                 $scope.selected = selected;
             }, function () {
                 $log.info('Modal dismissed at: ' + new Date());
@@ -139,22 +93,14 @@ var PlanCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
         createObj.companyId = -1;
 
         apiService.POST("/plans", createObj).then(function (response) {
-            console.log(response.data.data);
-            $scope.alerts = [];
-            $scope.alerts.push({type: 'success', msg: "Plan Successfully Created!"});
-            $location.path("/plans");
+            apiService.NOTIF_SUCCESS(response.data.message);
+            $modalInstance.close($scope.dt);
         }, function (errorResponse) {
-            $scope.alerts = [];
-            $scope.alerts.push({ type: 'danger', msg: errorResponse.data.message});
+            apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
-            $scope.code = "";
         });
-    };
-
-    $scope.closeAlert = function (index) {
-        $scope.alerts.splice(index, 1);
     };
 };
 
@@ -180,18 +126,13 @@ var PlanUpdateCtrl = function ($scope, $modalInstance, $location, apiService, pl
         createObj.companyId = -1;
 
         apiService.PUT("/plans/" + planId, createObj).then(function (response) {
-            console.log(response.data.data);
-            alert("Plan Successfully Updated!");
-            $location.path("/plans");
+            apiService.NOTIF_SUCCESS(response.data.message);
+            $modalInstance.close($scope.dt);
         }, function (errorResponse) {
-            alert(errorResponse.data.message);
+            apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
         });
-    };
-
-    $scope.closeAlert = function (index) {
-        $scope.alerts.splice(index, 1);
     };
 };

@@ -21,7 +21,7 @@
     </section>
     <section class="panel panel-default">
         <div class="table-responsive">
-            <table datatable="ng" dt-options="dtOptions" dt-instance="dtInstance" class="table table-striped m-b-none">
+            <table datatable="ng" dt-options="dtOptions" dt-instance="dtInstance" dt-columns="dtColumns" class="table table-striped m-b-none">
                 <thead>
                     <tr>
                         <th width="20%">Sl.No</th>
@@ -32,7 +32,7 @@
                 </thead>
                 <tbody>
                      <tr ng-repeat="area in areas | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
-                            <td>{{sNo+1}}</td>
+                            <td>#{{$index + 1}}</td>
                             <td>{{area.code}}</td>
                             <td>{{area.name}}</td>
                             <td>
