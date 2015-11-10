@@ -20,7 +20,8 @@ object DashboardController extends Controller with DashboardSerializer with Comm
   }
 
   def notifications = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
-    val result = Notifications.all(request.user.companyId)
+    implicit val loggedInUser = request.user
+    val result = Notifications.all()
     ok(Json.toJson(result),"Notifications")
   }
 

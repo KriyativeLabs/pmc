@@ -27,7 +27,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
         implicit val loggedInUser = request.user
         Customers.insert(customer) match {
           case Left(e) => BadRequest(e)
-          case Right(id) => created(Some(customer), s"Created Customer with id:$id")
+          case Right(id) => created(Some(customer), s"Successfully created new customer:${customer.name}")
         }
       }
     )
@@ -72,7 +72,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
         else {
           Customers.update(customer) match {
             case Left(e) => validationError(customer, e)
-            case Right(r) => ok(Some(customer), s"Updated Customer with details" + customer)
+            case Right(r) => ok(Some(customer), s"Succesfully updated customer details for ${customer.name}")
           }
         }
       }

@@ -58,7 +58,7 @@ object Payments {
     } yield id
     try {
       val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
-      Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId, loggedInUser.companyId)
+      Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
       SmsGateway.sendSms(s"Payment ${payment.paidAmount} Rs received for your cable connection", customer.customer.mobileNo)
       Right(result)
     } catch {

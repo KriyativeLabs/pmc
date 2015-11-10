@@ -16,8 +16,8 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/customers", {
         templateUrl: "customers.html",
         controller: 'customerController'
-    }).when("/customers/create", {
-        templateUrl: "customer_create.html",
+    }).when("/customers/:id", {
+        templateUrl: "customer-view.html",
         controller: 'customerController'
     }).when("/plans", {
         templateUrl: "plans.html",

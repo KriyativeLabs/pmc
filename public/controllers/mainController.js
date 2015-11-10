@@ -196,8 +196,6 @@ var PasswordChangeCtrl = function ($scope, $modalInstance, $timeout, $location, 
         $modalInstance.close($scope.dt);
     };
 
-    apiService.NOTIF_SUCCESS("Hello Daddy");
-
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };

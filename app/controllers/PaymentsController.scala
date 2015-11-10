@@ -21,7 +21,7 @@ object PaymentsController extends Controller with PaymentSerializer with Payment
         val newPayment = payment.copy(companyId = request.user.companyId, agentId = request.user.userId)
         Payments.insert(newPayment) match {
           case Left(e) => BadRequest(e)
-          case Right(id) => created(Some(newPayment), s"Created Payment with id:$id")
+          case Right(id) => created(Some(newPayment), s"Payment of amount:${newPayment.paidAmount} Rs has been received!")
         }
       }
     )

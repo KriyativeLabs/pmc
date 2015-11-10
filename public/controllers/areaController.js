@@ -13,15 +13,6 @@ pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route',
             });
         };
 
-        var areaId = $location.search().id;
-        if (!areaId) {
-            $scope.isCreate = true;
-        } else {
-            $scope.code = $location.search().code;
-            $scope.name = $location.search().name;
-            $scope.isCreate = false;
-        }
-
         $scope.deleteArea = function (id, name) {
             var userConfirmation = confirm("Are you sure you want to delete area:" + name);
             if (userConfirmation) {

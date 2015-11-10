@@ -1,5 +1,5 @@
-pmcApp.controller('paymentController', ['$scope', '$location','$modal', '$log', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $location,$modal, $log, apiService, cookieService, constantsService) {
+pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout', '$log', 'apiService', 'cookieService', 'constantsService',
+    function ($scope, $location,$modal,$timeout, $log, apiService, cookieService, constantsService) {
 
         $scope.getReceipts = function () {
             apiService.GET("/payments").then(function (response) {
@@ -13,5 +13,14 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal', '$log', 
         };
 
         $scope.getReceipts();
+
+        var today = new Date();
+        $scope.dt = today.toLocaleDateString('en-GB');
+
+        $scope.open = function () {
+            $timeout(function () {
+                $scope.opened = true;
+            });
+        };
 
     }]);

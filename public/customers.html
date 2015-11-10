@@ -37,7 +37,7 @@
                 <tbody>
                 <tr ng-repeat="customerCap in customers | orderBy:'name'">
                     <td>{{customerCap.customer.houseNo}}</td>
-                    <td><a href="#">{{customerCap.customer.name}}</a></td>
+                    <td><a ng-href="/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></td>
                     <td>{{customerCap.customer.mobileNo}}</td>
                     <td>{{customerCap.connection.setupBoxId}}</td>
                     <td>{{customerCap.customer.balanceAmount}}</td>
@@ -159,7 +159,7 @@
                                             <p>Plan</p>
                                             <select ng-model="plan" class="form-control" data-trigger="change"
                                                     data-required="true">
-                                                <option value="">Select Area</option>
+                                                <option value="">Select Plan</option>
                                                 <option ng-repeat="plan in plans" value="{{plan.id}}"
                                                         ng-selected="planId == plan.id">{{plan.name}}
                                                 </option>

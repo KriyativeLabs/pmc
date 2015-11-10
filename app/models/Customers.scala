@@ -66,7 +66,7 @@ object Customers {
             conns <- connectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(loggedInUser.companyId)))
           } yield id
           val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
-          Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId, loggedInUser.companyId)
+          Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
           val company = Companies.findById(loggedInUser.companyId).getOrElse(throw EntityNotFoundException(s"Company with id:${loggedInUser.companyId} not found"))
           SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
           Right(result)

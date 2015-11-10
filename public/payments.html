@@ -14,11 +14,34 @@
             </form>
         </div>
     </div>
-    <!--<div class="row m-b-md">
-        <div class="col-sm-6">
+
+    <div class="row m-b-md">
+        <div class="col-sm-6" ng-init="adv=false">
+            <a class="btn btn-s-md btn-primary" onclick="avd = false" ><i class="i i-search2"></i>Advanced search</a>
+            <div ng-hide="adv"><br>Start Date:<p class="input-group">
+            <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd"
+                   ng-model="dt" is-open="opened" ng-required="true"
+                   close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+            End Date:<p class="input-group">
+
+        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd"
+               ng-model="dt" is-open="opened" ng-required="true"
+               close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+    </p>
+
             <a class="btn btn-s-md btn-primary" ng-click="open()"><i class="i i-plus2"></i>Record Payment</a>
+                </div>
         </div>
-    </div>-->
+    </div>
     <div class="panel panel-default">
         <div class="table-responsive">
             <table class="table table-striped m-b-none" data-ride="datatables">

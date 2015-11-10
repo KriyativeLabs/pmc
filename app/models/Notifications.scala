@@ -2,6 +2,7 @@ package models
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
+import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import utils.EntityNotFoundException
@@ -28,9 +29,9 @@ class NotificationsTable(tag: Tag) extends Table[Notification](tag, "notificatio
 object Notifications {
   private lazy val notificationsQuery = TableQuery[NotificationsTable]
 
-  def all(companyId: Int): Vector[Notification] = {
+  def all()(implicit loggedInUser: LoggedInUser): Vector[Notification] = {
     val yesterday = DateTime.now().minusDays(1).withTime(23, 59, 59, 999)
-    val query = notificationsQuery.filter(x => x.companyId === companyId && x.gotOn > yesterday).sortBy(_.gotOn.desc).take(5)
+    val query = notificationsQuery.filter(x => x.companyId === loggedInUser.companyId && x.gotOn > yesterday).sortBy(_.gotOn.desc).take(5)
     DatabaseSession.run(query.result).asInstanceOf[Vector[Notification]]
   }
 
@@ -43,9 +44,10 @@ object Notifications {
     }
   }
 
-  def createNotification(notification:String, userId:Int, companyId:Int ):Either[String, Int] = {
+  def createNotification(notification:String, userId:Int)(implicit loggedInUser: LoggedInUser):Either[String, Int] = {
+
     val user = Users.findById(userId).getOrElse(throw EntityNotFoundException(s"User not found with id:$userId"))
-    insert(Notification(None,s"$notification by ${user.name}",DateTime.now(),companyId))
+    insert(Notification(None,s"$notification by ${user.name}",DateTime.now(),loggedInUser.companyId))
   }
 
 

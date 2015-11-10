@@ -19,7 +19,7 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
         val newArea = if(request.user.userType != UserType.ADMIN) area.copy(companyId = request.user.companyId) else area
         Areas.insert(newArea) match {
           case Left(e) =>  failed(s"Area with code:${area.code} already exists!")
-          case Right(id) => created (Some (newArea), s"Created Area with id:$id")
+          case Right(id) => created (Some (newArea), s"Successfully created new Area with code:${newArea.code}")
         }
       }
     )
@@ -37,8 +37,8 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
 
   def delete(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
     Areas.delete(id.toInt,request.user.companyId) match {
-      case Left(e) => failed(e)
-      case Right(msg) => ok(None,"Successfully deleted Area!")
+      case Left(e) => failed("Something ")
+      case Right(msg) => ok(None,s"Successfully deleted Area!")
     }
   }
 
@@ -52,7 +52,7 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
           val newArea = area.copy(companyId = request.user.companyId)
           Areas.update(newArea) match {
             case Left(e) => failed(s"Area with code:${area.code} already exists!")
-            case Right(r) => ok(Some(newArea), s"Updated Area with details" + newArea)
+            case Right(r) => ok(Some(newArea), s"Updated Area(${newArea.name}}) with code:${newArea.code}")
           }
         }
       }
