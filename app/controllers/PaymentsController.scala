@@ -9,6 +9,7 @@ import play.api.libs.json._
 import security.{IsAuthenticated, PermissionCheckAction}
 import play.api._
 import play.api.mvc._
+import utils.CommonUtils
 
 object PaymentsController extends Controller with PaymentSerializer with PaymentCapsuleSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
@@ -56,6 +57,16 @@ object PaymentsController extends Controller with PaymentSerializer with Payment
     val paymentList = Payments.findByAgentIdToday(id.toInt)
     ok(Json.toJson(paymentList), "List Payment details")
   }
+
+  def search() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
+    implicit val loggedInUser = request.user
+    val startDate = CommonUtils.string2Date(request.getQueryString("startdate").get).get
+    val endDate = CommonUtils.string2Date(request.getQueryString("enddate").get).get
+
+    val payments = Payments.searchByDateRange(startDate, endDate)
+    ok(Json.toJson(payments), "List of Payments")
+  }
+
 
 
 /*

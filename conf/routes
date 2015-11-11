@@ -23,7 +23,7 @@ GET           /api/v1/companies/:id                   controllers.CompaniesContr
 GET           /api/v1/users                           controllers.UsersController.all
 POST          /api/v1/users                           controllers.UsersController.create
 PUT           /api/v1/users/:id                       controllers.UsersController.update(id:Int)
-GET           /api/v1/users/:id                        controllers.UsersController.find(id:Int)
+GET           /api/v1/users/:id                       controllers.UsersController.find(id:Int)
 GET           /api/v1/users/:id/payments              controllers.PaymentsController.findByAgentId(id:Int)
 GET           /api/v1/users/:id/payments/today        controllers.PaymentsController.findByAgentIdToday(id:Int)
 
@@ -53,6 +53,7 @@ GET           /api/v1/plans/:id                       controllers.PlansControlle
 
 #Payments
 GET           /api/v1/payments                        controllers.PaymentsController.all
+GET           /api/v1/payments/advanced               controllers.PaymentsController.search()
 POST          /api/v1/payments                        controllers.PaymentsController.create
 #PUT         /api/v1/plans/:id                controllers.PaymentsController.update(id:Int)
 GET           /api/v1/payments/:id                    controllers.PaymentsController.find(id:Int)

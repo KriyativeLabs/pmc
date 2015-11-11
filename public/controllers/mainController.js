@@ -85,7 +85,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 //###########################################End##############################################
     }]);
 
-var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, apiService, customerId) {
+var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, apiService, commonService, customerId) {
 
     $scope.discount = 0;
     $scope.remarks = "No Problems";
@@ -121,11 +121,7 @@ var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, 
         var createObj = {};
         createObj.customerId = $scope.id;
         createObj.paidAmount = $scope.amount;
-        if (Object.prototype.toString.call($scope.paidOn) === '[object Date]') {
-            createObj.paidOn = $scope.paidOn.getFullYear() + "-" + ($scope.paidOn.getMonth() + 1) + "-" + ($scope.paidOn.getDay() + 1);
-        } else {
-            createObj.paidOn = $scope.paidOn;
-        }
+        createObj.paidOn = commonService.getDateString($scope.paidOn);
         createObj.receiptNo = "";
         createObj.remarks = $scope.remarks;
         createObj.discountedAmount = $scope.discount;
@@ -149,7 +145,7 @@ var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, 
     };
 
     var today = new Date();
-    $scope.paidOn = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + (today.getDay() + 1);
+    $scope.paidOn = today.toLocaleDateString('en-GB');
 
     $scope.open = function () {
         $timeout(function () {
