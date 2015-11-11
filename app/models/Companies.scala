@@ -1,27 +1,47 @@
 package models
 
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
+import com.github.tototoshi.slick.JdbcJodaSupport._
+import utils.{APIException, EntityNotFoundException}
 
-case class Company(id:Option[Int],name:String,owner:String,contactNo:Long,address:String)
+
+case class Company(id: Option[Int], name: String, owner: String, contactNo: Long, address: String, receiptNo:Long)
+
 object Company {
   implicit val fmt = Json.format[Company]
 }
 
-class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies"){
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def name = column[String]("name")
-  def owner = column[String]("company_owner")
-  def contactNo = column[Long]("contact_no")
-  def address = column[String]("address")
-  def * = (id.?,name,owner,contactNo,address) <> ((Company.apply _).tupled, Company.unapply _)
+case class DashboardData(unpaidCustomers: Int, totalCustomers: Int, balanceAmount: Long, amountCollected: Int)
+object DashboardData {
+  implicit val fmt = Json.format[DashboardData]
 }
+
+class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+
+  def name = column[String]("name")
+
+  def owner = column[String]("company_owner")
+
+  def contactNo = column[Long]("contact_no")
+
+  def address = column[String]("address")
+
+  def receiptNo = column[Long]("receipt_sequence")
+  def * = (id.?, name, owner, contactNo, address, receiptNo) <>((Company.apply _).tupled, Company.unapply _)
+}
+
 
 object Companies {
   private lazy val companyQuery = TableQuery[CompaniesTable]
+  private lazy val customerQuery = TableQuery[CustomersTable]
+  private lazy val paymentsQuery = TableQuery[PaymentsTable]
+
 
   def insert(company: Company): Either[String, Int] = {
-    val resultQuery = companyQuery returning companyQuery.map(_.id) += company
+    val resultQuery = companyQuery returning companyQuery.map(_.id) += company.copy(receiptNo = 1)
     try {
       Right(DatabaseSession.run(resultQuery).asInstanceOf[Int])
     } catch {
@@ -45,5 +65,29 @@ object Companies {
 
   def getAll: Vector[Company] = {
     DatabaseSession.run(companyQuery.result).asInstanceOf[Vector[Company]]
+  }
+
+  def dashboardData(companyId: Int): DashboardData = {
+    val unpaidCustomerQuery = customerQuery.filter(x => x.companyId === companyId && x.balanceAmount > 0)
+    val unpaidCustomers = DatabaseSession.run(unpaidCustomerQuery.result).asInstanceOf[Vector[Customer]]
+
+    val totalCustomerQuery = customerQuery.filter(x => x.companyId === companyId).length
+    val totalCustomersCount = DatabaseSession.run(totalCustomerQuery.result).asInstanceOf[Int]
+
+    val lastMonthDate = DateTime.now().minusMonths(1).dayOfMonth().withMaximumValue().withTime(23, 59, 59, 999)
+    val amountCollectedQuery = paymentsQuery.filter(x => x.companyId === companyId && x.paidOn > lastMonthDate).map(_.paidAmount).sum
+    val amountCollected = DatabaseSession.run(amountCollectedQuery.result).asInstanceOf[Option[Int]]
+
+    DashboardData(unpaidCustomers.size, totalCustomersCount, unpaidCustomers.map(_.balanceAmount).sum, amountCollected.getOrElse(0))
+  }
+
+  def nextReceiptNo(companyId: Int): Long = {
+    val company = findById(companyId).getOrElse(throw EntityNotFoundException(s"Company not found with Id:$companyId"))
+    val query = companyQuery.filter(x => x.id === companyId && x.receiptNo === company.receiptNo).map(_.receiptNo).update(company.receiptNo+1)
+    if(DatabaseSession.run(query).asInstanceOf[Int] == 1){
+      company.receiptNo
+    } else {
+      throw new APIException("Cannot generate receipt right now. Please try again later!")
+    }
   }
 }

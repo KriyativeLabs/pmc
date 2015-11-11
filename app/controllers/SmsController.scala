@@ -1,19 +1,26 @@
 package controllers
 
 import helpers.enums.UserType
-import helpers.json.PlanSerializer
+import helpers.json.SmsSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Plans, Plan}
-import play.api.libs.json._
-import security.{IsAuthenticated, PermissionCheckAction}
+import models.{Sms, SmsGateway}
 import play.api._
 import play.api.mvc._
+import security.{IsAuthenticated, PermissionCheckAction}
 
-object SmsController extends Controller with CommonUtil with ResponseHelper {
+object SmsController extends Controller with SmsSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
-  def sendSms() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val planList = if(request.user.userType != UserType.ADMIN ) Plans.getAll(Some(request.user.companyId)) else Plans.getAll()
-    ok(Json.toJson(planList), "List of plans")
+  def sendSms() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
+    request.body.validate[Sms].fold(
+      errors => BadRequest(errors.mkString),
+      sms => {
+        implicit val loggedInUser = request.user
+        SmsGateway.send(sms) match {
+          case Left(e) => failed(s"Failed to send sms!")
+          case Right(msg) => ok(Some(msg), "Sent Sms Successfully")
+        }
+      }
+    )
   }
 }

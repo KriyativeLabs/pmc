@@ -3,8 +3,7 @@ pmcApp.config(function setUpConfig($httpProvider){
         return {
             request: function (config) {
                 var splitUrl = config.url.split("/");
-                console.log(config);
-                if (splitUrl[splitUrl.length-1] !="login"){
+                if (splitUrl[splitUrl.length-1] !="login" && !splitUrl[splitUrl.length-1].indexOf(".html") > 0){
                     if(!config.headers.Authorization){
                         cookieService.destroy();
                         $window.location.href = "/login.html";
@@ -17,6 +16,8 @@ pmcApp.config(function setUpConfig($httpProvider){
                 return result;
             },
             responseError: function (rejection) {
+                console.log("interceptor");
+                console.log(rejection);
                 if (rejection.status == 403 || rejection.status == 401) {
                     cookieService.destroy();
                     $window.location.href = "/login.html";

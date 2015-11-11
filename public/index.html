@@ -14,10 +14,14 @@
     <link rel="stylesheet" href="assets/js/datatables/datatables.css" type="text/css"/>
     <!--<link rel="stylesheet" href="assets/js/chosen/chosen.css" type="text/css"/>
     <link rel="stylesheet" href="assets/js/datepicker/datepicker.css" type="text/css"/>-->
+    <link rel="stylesheet" href="vendor/angular-chart.css">
+    <link rel="stylesheet" href="vendor/angular-csp.css">
+    <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
     <style>
+        /*
         .modal-dialog {
-            width: 90% !important;
-        }
+            width: 60%;
+        }*/
 
         .form-control {
             transition: all 0.15s ease-out 0s;
@@ -32,10 +36,16 @@
             border-radius: 32px;
             color: black;
         }
+
         .partially button span {
             background-color: orange;
             border-radius: 32px;
             color: black;
+        }
+
+        .alert {
+            padding: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -57,7 +67,7 @@
     </div>
     <ul class="nav navbar-nav hidden-xs">
         <li class="dropdown">
-            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+            <a href="" class="dropdown-toggle"> <!--data-toggle="dropdown">-->
                 <i class="i i-grid"></i>
             </a>
             <section class="dropdown-menu aside-lg bg-white on animated fadeInLeft">
@@ -130,33 +140,33 @@
         <li class="hidden-xs">
             <a href="" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="i i-chat3"></i>
-                <span class="badge badge-sm up bg-danger count">2</span>
+                <span class="badge badge-sm up bg-danger count">{{notifCount}}</span>
             </a>
             <section class="dropdown-menu aside-xl animated flipInY">
                 <section class="panel bg-white">
                     <div class="panel-heading b-light bg-light">
-                        <strong>You have <span class="count">2</span> notifications</strong>
+                        <strong>You have <span class="count">{{notifCount}}</span> notifications</strong>
                     </div>
                     <div class="list-group list-group-alt">
-                        <a href="#" class="media list-group-item">
-                                    <span class="pull-left thumb-sm">
-                    <img src="assets/images/a0.png" alt="..." class="img-circle">
-                  </span>
+                        <!-- <a href="#" class="media list-group-item">
+                                     <span class="pull-left thumb-sm">
+                     <img src="assets/images/a0.png" alt="..." class="img-circle">
+                   </span>
+                                     <span class="media-body block m-b-none">
+                     Use awesome animate.css<br>
+                     <small class="text-muted">10 minutes ago</small>
+                   </span>
+                         </a>-->
+                        <a href="#" class="media list-group-item" ng-repeat="notification in notifications">
                                     <span class="media-body block m-b-none">
-                    Use awesome animate.css<br>
-                    <small class="text-muted">10 minutes ago</small>
-                  </span>
-                        </a>
-                        <a href="#" class="media list-group-item">
-                                    <span class="media-body block m-b-none">
-                    1.0 initial released<br>
-                    <small class="text-muted">1 hour ago</small>
+                    {{notification.notification}}<br>
+                    <small class="text-muted">at {{notification.gotOn | date:'HH:mm'}} Today</small>
                   </span>
                         </a>
                     </div>
                     <div class="panel-footer text-sm">
-                        <a href="#" class="pull-right"><i class="fa fa-cog"></i></a>
-                        <a href="#notes" data-toggle="class:show animated fadeInRight">See all the notifications</a>
+                        <a href="#" class="pull-right"><!--<i class="fa fa-cog"></i>--></a>
+                        <a href="#notes" data-toggle="class:show animated fadeInRight">Notifications Today!</a>
                     </div>
                 </section>
             </section>
@@ -233,7 +243,7 @@
                                 <li ng-class="{ active: isActive('/payments') }">
                                     <a href="/payments" class="auto">
                                         <i class="i i-stack2 icon"></i>
-                                        <span class="font-bold">Payment</span>
+                                        <span class="font-bold">Payments</span>
                                     </a>
                                 </li>
                                 <li ng-class="{ active: isActive('/areas') }">
@@ -243,7 +253,7 @@
                                     </a>
                                 </li>
                                 <li ng-class="{ active: isActive('/sms') }">
-                                    <a href="/sms" class="auto">
+                                    <a ng-click="openSms()" class="auto">
                                         <i class="i i-mail icon"></i>
                                         <span class="font-bold">Send Sms</span>
                                     </a>
@@ -265,13 +275,13 @@
                             <div class="text-muted text-xs hidden-nav-xs padder m-t-sm m-b-sm">Settings</div>
                             <ul class="nav">
                                 <li ng-class="{ active: isActive('/change_password') }">
-                                    <a href="/change_password">
+                                    <a ng-click="openChangePass()" class="auto">
                                         <i class="i i-retweet icon"></i>
                                         <span class="font-bold">Change Password</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" ng-click="logout()">
+                                    <a ng-click="logout()">
                                         <i class="i i-logout icon"></i>
                                         <span class="font-bold">Logout</span>
                                     </a>
@@ -304,33 +314,12 @@
     </section>
 </section>
 </section>
+
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/jquery.dataTables.js"></script>
-
 <script src="assets/js/bootstrap.js"></script>
-<!--<script src="assets/js/datepicker/bootstrap-datepicker.js"></script>-->
 <script src="assets/js/app.js"></script>
 <script src="assets/js/slimscroll/jquery.slimscroll.min.js"></script>
-<script src="assets/js/charts/easypiechart/jquery.easy-pie-chart.js"></script>
-<script src="assets/js/charts/sparkline/jquery.sparkline.min.js"></script>
-<script src="assets/js/charts/flot/jquery.flot.min.js"></script>
-<script src="assets/js/charts/flot/jquery.flot.tooltip.min.js"></script>
-<script src="assets/js/charts/flot/jquery.flot.spline.js"></script>
-<script src="assets/js/charts/flot/jquery.flot.pie.min.js"></script>
-<script src="assets/js/charts/flot/jquery.flot.resize.js"></script>
-<script src="assets/js/charts/flot/jquery.flot.grow.js"></script>
-<script src="assets/js/charts/flot/demo.js"></script>
-
-<!--<script src="assets/js/calendar/bootstrap_calendar.js"></script>
-<script src="assets/js/calendar/demo.js"></script>
-<script src="assets/js/sortable/jquery.sortable.js"></script>
-<script src="assets/js/wizard/jquery.bootstrap.wizard.js"></script>
-<script src="assets/js/wizard/demo.js"></script>
-<script src="assets/js/parsley/parsley.min.js"></script>
-<script src="assets/js/app.plugin.js"></script>-->
-<!--<script src="assets/js/chosen/chosen.jquery.min.js"></script>-->
-
-<!--<script src="vendor/require.js" data-main="main.js"></script>-->
 <script src="vendor/angular.js"></script>
 <script src="vendor/angular-cookies.js"></script>
 <script src="vendor/angular-animate.js"></script>
@@ -346,9 +335,12 @@
 <script src="vendor/angular-datatables.js"></script>
 <script src="vendor/ui-bootstrap.js"></script>
 <script src="vendor/ui-bootstrap-tpls.js"></script>
+<script type="text/javascript" src="vendor/Chart.min.js"></script>
+<script src="vendor/angular-ui-notification.min.js"></script>
 <script src="app.js"></script>
 <script src="interceptors/httpInterceptor.js"></script>
 <script src="services/apiService.js"></script>
+<script src="services/commonService.js"></script>
 <script src="services/constantsService.js"></script>
 <script src="services/cookieService.js"></script>
 <script src="controllers/mainController.js"></script>
@@ -359,8 +351,185 @@
 <script src="controllers/paymentController.js"></script>
 <script src="controllers/authenticationController.js"></script>
 <script src="controllers/agentController.js"></script>
-<script src="controllers/smsController.js"></script>
-<script src="controllers/settingsController.js"></script>
+
+<script src="vendor/angular-chart.js"></script>
+
+<script type="text/ng-template" id="receiptModal.html">
+
+    <div>
+        <div class="m-b-md">
+            <h3 class="m-b-none text-center">Record Payment</h3>
+        </div>
+        <div class="row center-block">
+            <div class="col-sm-12 center-block">
+                <section class="panel panel-default">
+                    <div class="panel-body">
+                        <form id="" method="get" action="">
+                            <div class="row">
+                                <div class="form-group col-sm-10">
+                                    <div class="form-material">
+                                        <label>Customer Name(H.No):</label>
+                                        <!--
+                                        <select ng-model="cust_id" onchange="changed()" class="form-control">
+                                            <option value="">Select Customer</option>
+                                            <option ng-repeat="customer in customers" selected="{{customer.id == query}}" value="{{customer.id}}">{{customer.name+"-("+customer.houseNo+")-"+customer.balanceAmount}}</option>
+                                        </select>
+                                        -->
+                                        {{name}}({{houseNo}})
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <div class="form-material">
+
+                                        <label>Choose a date*</label>
+
+                                        <p class="input-group">
+                                            <input type="text" class="form-control" datepicker-popup ng-model="paidOn"
+                                                   is-open="opened" init-date="initialDate" ng-required="true"
+                                                   close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <div class="form-material">
+                                        <label for="validation-city">Amount* (Pending Amount={{pending_amount}})</label>
+                                        <input ng-model="amount" class="form-control" type="number" id="validation-city"
+                                               name="validation-city" placeholder="Amount">
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="form-group col-sm-6 push-5-l">
+                                    <div class="form-material">
+                                        <label for="validation-id">Discount</label>
+                                        <input ng-model="discount" class="form-control" type="number" id="validation-id"
+                                               value="0" name="validation-id" placeholder="Any Discount?">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-12 push-5-l">
+                                    <div class="form-material">
+                                        <label for="validation-details">Remarks</label>
+                                        <textarea ng-model="remarks" class="form-control" id="validation-details"
+                                                  name="validation-details" rows="2"
+                                                  placeholder="Enter Remarks"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</button>
+                            <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary"><i
+                                    class="fa fa-check"></i>Pay
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="smsModal.html">
+    <div ng-init="charsLeft=160">
+        <div class="m-b-md">
+            <h3 class="m-b-none text-center">Send SMS</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <section class="panel panel-default">
+
+                    <div class="panel-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <p>SMS List</p>
+                                <select ng-model="smsType" class="form-control" size="1" data-required="true">
+                                    <option value="ALL" ng-selected="true">All</option>
+                                    <option value="UNPAID">Unpaid Customers</option>
+                                    <option value="PAID">Paid Customers</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="validation-city">Content</label>
+
+                                <textarea ng-model="smsData" class="form-control" ng-keypress="charsChange()" rows="2"
+                                          maxlength="160" data-trigger="change" data-required="false"
+                                          placeholder="Enter 160 character message"></textarea>
+
+                                <p>Max Characters:160</p>
+                            </div>
+
+                            <div class="pull-right">
+                                <button type="button" class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</button>
+                                <button class="btn btn-sm btn-primary" ng-click="sendSms()"><i
+                                        class="i i-mail icon"></i> Send SMS
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="changePasswordModal.html">
+    <div>
+        <div class="m-b-md">
+            <h3 class="m-b-none text-center">Change Password</h3>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <section class="panel panel-default">
+
+                    <div class="panel-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <label>Old Password</label>
+                                <input ng-model="old_password" type="password" placeholder="Old Password"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input ng-model="new_password" type="password" placeholder="New Password"
+                                       class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Repeat Password</label>
+                                <input ng-model="re_new_password" type="password" placeholder="ReType New Password"
+                                       class="form-control">
+                            </div>
+
+                            <div class="pull-right">
+                                <button class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</button>
+                                <button class="btn btn-sm btn-primary" ng-click="updatePassword()"><i
+                                        class="fa fa-check"></i>Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</script>
 </body>
 
 </html>

@@ -25,6 +25,7 @@ object CompaniesController extends Controller with CompanySerializer with Common
   }
 
   def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
+
     val companyDao = Companies.findById(id.toInt)
     if (companyDao.isDefined) ok(Json.toJson(companyDao), "Company details") else notFound(s"Company with $id not found")
   }

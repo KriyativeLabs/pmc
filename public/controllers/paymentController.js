@@ -1,33 +1,26 @@
-pmcApp.controller('paymentController', ['$scope', '$location', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $location, apiService, cookieService, constantsService) {
+pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout', '$log', 'apiService', 'cookieService', 'constantsService',
+    function ($scope, $location,$modal,$timeout, $log, apiService, cookieService, constantsService) {
 
-        $scope.getCustomers = function () {
-            apiService.GET("/customers").then(function (response) {
-                console.log(response);
-                $scope.customers = response.data.data;
+        $scope.getReceipts = function () {
+            apiService.GET("/payments").then(function (response) {
+                $scope.receipts = response.data.data;
             }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
             });
         };
 
-        console.log($scope.customerssss);
+        $scope.getReceipts();
 
-        var query = $location.search().cust_id;
-        if (!query) {
-            query = 0;
-        }
-        console.log(query);
+        var today = new Date();
+        $scope.dt = today.toLocaleDateString('en-GB');
 
-
-        $scope.recordPayment = function () {
-            var createObj = {};
-            createObj.customerId = $scope.cust_id;
-            createObj.paidAmount = $scope.amount;
-            createObj.discountedAmount = $scope.discount;
-            createObj.emailId = $scope.email;
-            createObj.city = $scope.city;
+        $scope.open = function () {
+            $timeout(function () {
+                $scope.opened = true;
+            });
         };
 
     }]);

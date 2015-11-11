@@ -208,29 +208,28 @@ NOT DEFERRABLE;
 
 --- end ---
 
+CREATE SEQUENCE public.notifications_id_seq;
+
+CREATE TABLE notifications (
+  id INTEGER NOT NULL DEFAULT nextval('public.notifications_id_seq'),
+  notification VARCHAR NOT NULL,
+  got_on TIMESTAMP,
+  company_id INTEGER NOT NULL,
+  FOREIGN KEY ( company_id ) REFERENCES companies ( id )
+);
+
+ALTER SEQUENCE public.notifications_id_seq OWNED BY  public.notifications.id;
 
 
+CREATE SEQUENCE public.company_statistics_id_seq;
 
+CREATE TABLE company_statistics (
+  id INTEGER NOT NULL DEFAULT nextval('public.company_statistics_id_seq'),
+  company_id INTEGER NOT NULL,
+  month TIMESTAMP NOT NULL,
+  collected_amount INTEGER NOT NULL,
+  closing_balance INTEGER NOT NULL,
+  FOREIGN KEY ( company_id ) REFERENCES companies ( id )
+);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ALTER SEQUENCE public.company_statistics_id_seq OWNED BY  public.company_statistics.id;

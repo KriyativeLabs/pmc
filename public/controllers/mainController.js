@@ -1,5 +1,31 @@
-pmcApp.controller('mainController', ['$scope', '$location', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $location, apiService, cookieService, constantsService) {
+pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService',
+    function ($scope, $location, $modal, $log, apiService, cookieService, constantsService) {
+
+        $scope.isActive = function (viewLocation) {
+            return ($location.path().match(viewLocation));
+        };
+
+        $scope.logout = function () {
+            cookieService.destroy();
+            $location.path("/login");
+        };
+
+        $scope.getNotifications = function () {
+            apiService.GET("/notifications").then(function (response) {
+                $scope.notifications = response.data.data;
+                console.log($scope.notifications);
+                $scope.notifCount = $scope.notifications.length;
+
+            }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+            });
+        };
+
+        $scope.getNotifications();
+
         $scope.username = cookieService.get(constantsService.USERNAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
         });
@@ -8,27 +34,189 @@ pmcApp.controller('mainController', ['$scope', '$location', 'apiService', 'cooki
             return txt.toUpperCase();
         });
 
-        $scope.isActive = function (viewLocation) {
-            return ($location.path().match(viewLocation));
-        };
-
-        $scope.getCustomers = function(){
-            apiService.GET("/customers").then(function(response){
-                $scope.customers = response.data.data;
-                $scope.customersBackUp = response.data.data;
-            },function(errorResponse){
-                if(errorResponse.status !=200){
-                   console.log(errorResponse);
+//############################################Modal###########################################
+        $scope.openReceipt = function (customerId) {
+            var modalInstance = $modal.open({
+                templateUrl: 'receiptModal.html',
+                controller: PaymentReceiptCtrl,
+                resolve: {
+                    customerId: function () {
+                        return customerId;
+                    }
                 }
             });
-        };
-        
-        $scope.customerssss = $scope.getCustomers();
 
-        $scope.logout = function(){
-            console.log("Hello Logout");
-            cookieService.destroy();
-            //$location.path("/login");
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
         };
+//###########################################End##############################################
 
+//############################################SMS Modal###########################################
+        $scope.openSms = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'smsModal.html',
+                controller: SmsCtrl
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+//###########################################End##############################################
+
+
+//############################################SMS Modal###########################################
+        $scope.openChangePass = function () {
+            var modalInstance = $modal.open({
+                templateUrl: 'changePasswordModal.html',
+                controller: PasswordChangeCtrl
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+//###########################################End##############################################
     }]);
+
+var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, apiService, customerId) {
+
+    $scope.discount = 0;
+    $scope.remarks = "No Problems";
+
+    var customerData = {};
+    if (customerId != 0) {
+        apiService.GET("/customers/" + customerId).then(function (response) {
+            customerData = response.data.data;
+            $scope.id = customerData.customer.id;
+            $scope.name = customerData.customer.name;
+            $scope.houseNo = customerData.customer.houseNo;
+            $scope.pending_amount = customerData.customer.balanceAmount;
+            $scope.amount = customerData.customer.balanceAmount;
+
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+
+    }
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.recordPayment = function () {
+        var createObj = {};
+        createObj.customerId = $scope.id;
+        createObj.paidAmount = $scope.amount;
+        if (Object.prototype.toString.call($scope.paidOn) === '[object Date]') {
+            createObj.paidOn = $scope.paidOn.getFullYear() + "-" + ($scope.paidOn.getMonth() + 1) + "-" + ($scope.paidOn.getDay() + 1);
+        } else {
+            createObj.paidOn = $scope.paidOn;
+        }
+        createObj.receiptNo = "";
+        createObj.remarks = $scope.remarks;
+        createObj.discountedAmount = $scope.discount;
+        createObj.companyId = -1;
+        createObj.agentId = -1;
+
+        apiService.POST("/payments", createObj).then(function (response) {
+            apiService.NOTIF_SUCCESS(response.data.message);
+            $modalInstance.close($scope.dt);
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+            $scope.code = "";
+        });
+    };
+
+    $scope.closeAlert = function (index) {
+        $scope.alerts.splice(index, 1);
+    };
+
+    var today = new Date();
+    $scope.paidOn = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + (today.getDay() + 1);
+
+    $scope.open = function () {
+        $timeout(function () {
+            $scope.opened = true;
+        });
+    };
+};
+
+var SmsCtrl = function ($scope, $modalInstance, $timeout, $location, apiService) {
+
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.sendSms = function () {
+        console.log("Sms");
+        var createObj = {};
+        if ($scope.smsType != null) {
+            createObj.smsType = $scope.smsType;
+        } else {
+            createObj.smsType = "ALL";
+        }
+        createObj.message = $scope.smsData;
+
+        apiService.POST("/sms", createObj).then(function (response) {
+            apiService.NOTIF_SUCCESS(response.data.message);
+            $modalInstance.close($scope.dt);
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+            $scope.code = "";
+        });
+    };
+};
+
+var PasswordChangeCtrl = function ($scope, $modalInstance, $timeout, $location, apiService) {
+    $scope.ok = function () {
+        $modalInstance.close($scope.dt);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.updatePassword = function () {
+        if ($scope.new_password == $scope.re_new_password) {
+            var createObj = {};
+            createObj.oldPassword = $scope.old_password;
+            createObj.newPassword = $scope.new_password;
+
+            apiService.POST("/users/changepassword ", createObj).then(function (response) {
+                apiService.NOTIF_SUCCESS(response.data.message);
+                $modalInstance.close($scope.dt);
+            }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+            });
+        } else {
+            apiService.NOTIF_ERROR("New password entered is not matching");
+        }
+    };
+};

@@ -6,17 +6,40 @@
         <div class="col-sm-6 text-right text-left-xs m-t-md">
             <form class="m-b-none" action="">
                 <div class="input-group">
-                    <input type="text" placeholder="Type to Search.." class="form-control">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary"><i class="i i-search2"></i> Search</button>
-                    </span>
+                    <input type="text" placeholder="Search Payments.." ng-model="search" class="form-control">
+                        <span class="input-group-btn">
+                              <button type="button" class="btn btn-primary"><i class="i i-search2"></i> Search</button>
+                            </span>
                 </div>
             </form>
         </div>
     </div>
+
     <div class="row m-b-md">
-        <div class="col-sm-6">
-            <a class="btn btn-s-md btn-primary" data-toggle="modal" ng-href="/payments/receipt"><i class="i i-plus2"></i>Record Payment</a>
+        <div class="col-sm-6" ng-init="adv=false">
+            <a class="btn btn-s-md btn-primary" onclick="avd = false" ><i class="i i-search2"></i>Advanced search</a>
+            <div ng-hide="adv"><br>Start Date:<p class="input-group">
+            <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd"
+                   ng-model="dt" is-open="opened" ng-required="true"
+                   close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+            End Date:<p class="input-group">
+
+        <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd"
+               ng-model="dt" is-open="opened" ng-required="true"
+               close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+    </p>
+
+            <a class="btn btn-s-md btn-primary" ng-click="open()"><i class="i i-plus2"></i>Record Payment</a>
+                </div>
         </div>
     </div>
     <div class="panel panel-default">
@@ -29,12 +52,28 @@
                         <th width="10%">Date</th>
                         <th width="15%">Amount</th>
                         <th width="20%">Remarks</th>
-                        <th width="15%">Action</th>
+                        <th width="15%">Agent</th>
                     </tr>
                 </thead>
                 <tbody>
+                <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">
+                    <td>{{receipt.receiptNo}}</td>
+                    <td>{{receipt.customerDetails}}</td>
+                    <td>{{receipt.paidOn}}</td>
+                    <td>{{receipt.paidAmount}}</td>
+                    <td>{{receipt.remarks}}</td>
+                    <td>{{receipt.agentDetails}}</td>
+                    <!--<td>
+                        <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm" style="padding:1px 10px !important;" ng-click="openReciept(customerCap.customer.id)">Pay</button>
+                        <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
+                                style="padding:1px 10px !important;">Edit
+                        </button>
+                    </td>-->
+
+                </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+

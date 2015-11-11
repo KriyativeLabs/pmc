@@ -1,4 +1,4 @@
-var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables']);
+var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables', 'chart.js','ui-notification']);
 
 pmcApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when("/login", {
@@ -16,14 +16,11 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/customers", {
         templateUrl: "customers.html",
         controller: 'customerController'
-    }).when("/customers/create", {
-        templateUrl: "customer_create.html",
+    }).when("/customers/:id", {
+        templateUrl: "customer-view.html",
         controller: 'customerController'
     }).when("/plans", {
         templateUrl: "plans.html",
-        controller: 'planController'
-    }).when("/plans/create", {
-        templateUrl: "plan_create.html",
         controller: 'planController'
     }).when("/payments", {
         templateUrl: "payments.html",
@@ -34,21 +31,12 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/areas", {
         templateUrl: "areas.html",
         controller: 'areaController'
-    }).when("/areas/create", {
-        templateUrl: "area_create.html",
-        controller: 'areaController'
     }).when("/agents", {
         templateUrl: "agents.html",
-        controller: 'agentController'
-    }).when("/agents/create", {
-        templateUrl: "agent_create.html",
         controller: 'agentController'
     }).when("/change_password", {
         templateUrl: "change_password.html",
         controller: 'settingsController'
-    }).when("/sms", {
-        templateUrl: "sms.html",
-        controller: 'smsController'
     }).otherwise({
         redirectTo: '/'
     });

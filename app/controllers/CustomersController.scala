@@ -24,36 +24,42 @@ object CustomersController extends Controller with CustomerSerializer with Commo
     request.body.validate[CustomerCreate].fold(
       errors => BadRequest(errors.mkString),
       customer => {
-        Customers.insert(customer, request.user.companyId) match {
+        implicit val loggedInUser = request.user
+        Customers.insert(customer) match {
           case Left(e) => BadRequest(e)
-          case Right(id) => created(Some(customer), s"Created Customer with id:$id")
+          case Right(id) => created(Some(customer), s"Successfully created new customer:${customer.name}")
         }
       }
     )
   }
 
   def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val customer = if (request.user.userType == UserType.ADMIN) Customers.findById(id.toInt) else Customers.findById(id.toInt, Some(request.user.companyId))
+    implicit val loggedInUser = request.user
+    val customer = Customers.findById(id.toInt)
     if (customer.isDefined) ok(Json.toJson(customer), "Customer details") else notFound(s"Customer with $id not found")
   }
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val customerList = if (request.user.userType == UserType.ADMIN) Customers.getAll() else Customers.getAll(Some(request.user.companyId))
+    implicit val loggedInUser = request.user
+    val customerList = Customers.getAll()
     ok(Json.toJson(customerList), "List of customers")
   }
 
   def unpaidCustomers() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val customerList = Customers.getUnpaidCustomers(request.user.userType, request.user.userId, request.user.companyId)
+    implicit val loggedInUser = request.user
+    val customerList = Customers.getUnpaidCustomers(request.user.userType, request.user.userId)
     ok(Json.toJson(customerList), "List of customers")
   }
 
   def paidCustomers() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val customerList = Customers.getPaidCustomers(request.user.userType, request.user.userId, request.user.companyId)
+    implicit val loggedInUser = request.user
+    val customerList = Customers.getPaidCustomers(request.user.userType, request.user.userId)
     ok(Json.toJson(customerList), "List of customers")
   }
 
   def searchCustomers(search: String) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    val customerList = Customers.searchCustomers(request.user.userType, request.user.userId, request.user.companyId, search)
+    implicit val loggedInUser = request.user
+    val customerList = Customers.searchCustomers(search)
     ok(Json.toJson(customerList), "List of customers")
   }
 
@@ -61,11 +67,12 @@ object CustomersController extends Controller with CustomerSerializer with Commo
     request.body.validate[CustomerCreate].fold(
       errors => BadRequest(errors.mkString),
       customer => {
+        implicit val loggedInUser = request.user
         if (!customer.id.isDefined || (customer.id.isDefined && id != customer.id.get)) validationError(customer, "Id provided in url and data are not equal")
         else {
-          Customers.update(Customer(customer.id, customer.name, customer.mobileNo, customer.emailId, customer.address, request.user.companyId, customer.areaId, None, customer.balanceAmount)) match {
+          Customers.update(customer) match {
             case Left(e) => validationError(customer, e)
-            case Right(r) => ok(Some(customer), s"Updated Customer with details" + customer)
+            case Right(r) => ok(Some(customer), s"Succesfully updated customer details for ${customer.name}")
           }
         }
       }

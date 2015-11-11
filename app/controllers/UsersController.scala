@@ -19,7 +19,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
         val newUser = if(request.user.userType == UserType.OWNER) user.copy(companyId = request.user.companyId) else user
         Users.insert(newUser) match {
           case Left(e) =>  BadRequest(e)
-          case Right(id) => created (Some (newUser), s"Created User with id:$id")
+          case Right(id) => created (Some (newUser), s"Successfully Created New User:${newUser.name}")
         }
       }
     )
@@ -48,19 +48,21 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
         val userId = request.user.userId
         Users.updatePassword(userId, passwordData.oldPassword, passwordData.newPassword) match {
           case Left(e) => validationError("Password is not updated!", e)
-          case Right(r) => if (r == 0) failed("Password not updated! Old password not matching") else ok(Some("Password Updated Successfully"), s"Updated User with details$r")
+          case Right(r) => if (r == 0) failed("Password not updated! Old password not matching") else ok(Some("Password Updated Successfully"), s"Successfully Updated Password!")
         }
       }
     )
   }
 
   def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
-    val userDao = if(request.user.userType == UserType.OWNER) Users.findById(id.toInt,Some(request.user.companyId)) else Users.findById(id.toInt)
+    implicit val loggedInUser = request.user
+    val userDao = Users.findById(id.toInt)
     if (userDao.isDefined) ok(Json.toJson(userDao), "User details") else notFound(s"User with $id not found")
   }
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
-    val userList = if(request.user.userType == UserType.OWNER) Users.getAll(Some(request.user.companyId)) else Users.getAll()
+    implicit val loggedInUser = request.user
+    val userList = Users.getAll()
     ok(Json.toJson(userList), "List of users")
   }
 
