@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/Users/surya/paymycable/paymycable/conf/routes
-// @DATE:Thu Nov 12 01:33:46 IST 2015
+// @DATE:Thu Nov 12 02:44:46 IST 2015
 
 import play.api.routing.JavaScriptReverseRoute
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
@@ -14,7 +14,7 @@ import _root_.controllers.Assets.Asset
 package controllers.javascript {
   import ReverseRouteContext.empty
 
-  // @LINE:61
+  // @LINE:62
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -22,7 +22,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:61
+    // @LINE:62
     def at: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.at",
       """
@@ -74,7 +74,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:56
+    // @LINE:57
     def create: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PaymentsController.create",
       """
@@ -84,7 +84,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:58
+    // @LINE:59
     def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PaymentsController.find",
       """
@@ -100,6 +100,16 @@ package controllers.javascript {
       """
         function() {
           return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/payments"})
+        }
+      """
+    )
+  
+    // @LINE:56
+    def search: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.PaymentsController.search",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/payments/advanced"})
         }
       """
     )

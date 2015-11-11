@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/Users/surya/paymycable/paymycable/conf/routes
-// @DATE:Thu Nov 12 01:33:46 IST 2015
+// @DATE:Thu Nov 12 02:44:46 IST 2015
 
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
 import play.core.routing.{ HandlerDef, ReverseRouteContext, queryString, dynamicString }
@@ -12,29 +12,29 @@ import _root_.controllers.Assets.Asset
 // @LINE:6
 package controllers {
 
-  // @LINE:61
+  // @LINE:62
   class ReverseAssets(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:61
+    // @LINE:62
     def at(path:String, file:String): Call = {
     
       (path: @unchecked, file: @unchecked) match {
       
-        // @LINE:61
+        // @LINE:62
         case (path, file) if path == "/public/app/assets/" =>
           implicit val _rrc = new ReverseRouteContext(Map(("path", "/public/app/assets/")))
           Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[PathBindable[String]].unbind("file", file))
       
-        // @LINE:62
+        // @LINE:63
         case (path, file) if path == "/public/app/" =>
           implicit val _rrc = new ReverseRouteContext(Map(("path", "/public/app/")))
           Call("GET", _prefix + { _defaultPrefix } + "app/" + implicitly[PathBindable[String]].unbind("file", file))
       
-        // @LINE:63
+        // @LINE:64
         case (path, file) if path == "/public/app/views" && file == "login.html" =>
           implicit val _rrc = new ReverseRouteContext(Map(("path", "/public/app/views"), ("file", "login.html")))
           Call("GET", _prefix + { _defaultPrefix } + "login")
@@ -64,13 +64,13 @@ package controllers {
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/customers/" + implicitly[PathBindable[Int]].unbind("id", id) + "/payments")
     }
   
-    // @LINE:56
+    // @LINE:57
     def create(): Call = {
       import ReverseRouteContext.empty
       Call("POST", _prefix + { _defaultPrefix } + "api/v1/payments")
     }
   
-    // @LINE:58
+    // @LINE:59
     def find(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments/" + implicitly[PathBindable[Int]].unbind("id", id))
@@ -80,6 +80,12 @@ package controllers {
     def all(): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments")
+    }
+  
+    // @LINE:56
+    def search(): Call = {
+      import ReverseRouteContext.empty
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments/advanced")
     }
   
     // @LINE:28

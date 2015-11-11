@@ -143,5 +143,13 @@ object Payments {
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}(${x._3.id.get})"))
   }
 
+  def searchByDateRange(startDate:DateTime, endDate:DateTime)(implicit loggedInUser:LoggedInUser): Vector[PaymentCapsule] = {
+    val sDate = startDate.minusDays(1).withTime(23, 59, 59,999)
+    val eDate = endDate.withTime(23, 59, 59,999)
+    val filterQuery = for {
+      ((payment, customer),agent) <- paymentsQuery.filter(x => (x.companyId === loggedInUser.companyId && x.paidOn > sDate && x.paidOn < eDate )).sortBy(_.paidOn.desc) join customersQuery on (_.customerId === _.id) join agentsQuery on (_._1.agentId === _.id)
+    } yield (payment, customer, agent)
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}(${x._3.id.get})"))
+  }
 
 }
