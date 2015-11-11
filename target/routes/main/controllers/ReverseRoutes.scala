@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/Users/surya/paymycable/paymycable/conf/routes
-// @DATE:Sun Nov 08 01:52:31 IST 2015
+// @DATE:Thu Nov 12 01:33:46 IST 2015
 
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
 import play.core.routing.{ HandlerDef, ReverseRouteContext, queryString, dynamicString }
@@ -12,29 +12,29 @@ import _root_.controllers.Assets.Asset
 // @LINE:6
 package controllers {
 
-  // @LINE:57
+  // @LINE:61
   class ReverseAssets(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:57
+    // @LINE:61
     def at(path:String, file:String): Call = {
     
       (path: @unchecked, file: @unchecked) match {
       
-        // @LINE:57
+        // @LINE:61
         case (path, file) if path == "/public/app/assets/" =>
           implicit val _rrc = new ReverseRouteContext(Map(("path", "/public/app/assets/")))
           Call("GET", _prefix + { _defaultPrefix } + "assets/" + implicitly[PathBindable[String]].unbind("file", file))
       
-        // @LINE:58
+        // @LINE:62
         case (path, file) if path == "/public/app/" =>
           implicit val _rrc = new ReverseRouteContext(Map(("path", "/public/app/")))
           Call("GET", _prefix + { _defaultPrefix } + "app/" + implicitly[PathBindable[String]].unbind("file", file))
       
-        // @LINE:59
+        // @LINE:63
         case (path, file) if path == "/public/app/views" && file == "login.html" =>
           implicit val _rrc = new ReverseRouteContext(Map(("path", "/public/app/views"), ("file", "login.html")))
           Call("GET", _prefix + { _defaultPrefix } + "login")
@@ -45,65 +45,83 @@ package controllers {
   
   }
 
-  // @LINE:51
+  // @LINE:27
   class ReversePaymentsController(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:54
-    def find(id:Int): Call = {
+    // @LINE:27
+    def findByAgentId(id:Int): Call = {
       import ReverseRouteContext.empty
-      Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments/" + implicitly[PathBindable[Int]].unbind("id", id))
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/users/" + implicitly[PathBindable[Int]].unbind("id", id) + "/payments")
     }
   
-    // @LINE:51
-    def all(): Call = {
+    // @LINE:38
+    def findByCustomerId(id:Int): Call = {
       import ReverseRouteContext.empty
-      Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments")
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/customers/" + implicitly[PathBindable[Int]].unbind("id", id) + "/payments")
     }
   
-    // @LINE:52
+    // @LINE:56
     def create(): Call = {
       import ReverseRouteContext.empty
       Call("POST", _prefix + { _defaultPrefix } + "api/v1/payments")
     }
   
+    // @LINE:58
+    def find(id:Int): Call = {
+      import ReverseRouteContext.empty
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments/" + implicitly[PathBindable[Int]].unbind("id", id))
+    }
+  
+    // @LINE:55
+    def all(): Call = {
+      import ReverseRouteContext.empty
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/payments")
+    }
+  
+    // @LINE:28
+    def findByAgentIdToday(id:Int): Call = {
+      import ReverseRouteContext.empty
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/users/" + implicitly[PathBindable[Int]].unbind("id", id) + "/payments/today")
+    }
+  
   }
 
-  // @LINE:37
+  // @LINE:41
   class ReverseAreasController(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:39
+    // @LINE:43
     def update(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("PUT", _prefix + { _defaultPrefix } + "api/v1/areas/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:38
+    // @LINE:42
     def create(): Call = {
       import ReverseRouteContext.empty
       Call("POST", _prefix + { _defaultPrefix } + "api/v1/areas")
     }
   
-    // @LINE:40
+    // @LINE:44
     def delete(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("DELETE", _prefix + { _defaultPrefix } + "api/v1/areas/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:41
+    // @LINE:45
     def find(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/areas/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:37
+    // @LINE:41
     def all(): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/areas")
@@ -111,50 +129,50 @@ package controllers {
   
   }
 
-  // @LINE:28
+  // @LINE:31
   class ReverseCustomersController(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:32
+    // @LINE:35
     def update(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("PUT", _prefix + { _defaultPrefix } + "api/v1/customers/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:31
+    // @LINE:34
     def create(): Call = {
       import ReverseRouteContext.empty
       Call("POST", _prefix + { _defaultPrefix } + "api/v1/customers")
     }
   
-    // @LINE:33
+    // @LINE:36
     def find(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/customers/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:29
+    // @LINE:32
     def paidCustomers(): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/customers/paid")
     }
   
-    // @LINE:30
+    // @LINE:33
     def all(): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/customers")
     }
   
-    // @LINE:34
+    // @LINE:37
     def searchCustomers(search:String = ""): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/customersearch" + queryString(List(if(search == "") None else Some(implicitly[QueryStringBindable[String]].unbind("search", search)))))
     }
   
-    // @LINE:28
+    // @LINE:31
     def unpaidCustomers(): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/customers/unpaid")
@@ -162,38 +180,38 @@ package controllers {
   
   }
 
-  // @LINE:44
+  // @LINE:48
   class ReversePlansController(_prefix: => String) {
     def _defaultPrefix: String = {
       if (_prefix.endsWith("/")) "" else "/"
     }
 
   
-    // @LINE:46
+    // @LINE:50
     def update(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("PUT", _prefix + { _defaultPrefix } + "api/v1/plans/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:45
+    // @LINE:49
     def create(): Call = {
       import ReverseRouteContext.empty
       Call("POST", _prefix + { _defaultPrefix } + "api/v1/plans")
     }
   
-    // @LINE:47
+    // @LINE:51
     def delete(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("DELETE", _prefix + { _defaultPrefix } + "api/v1/plans/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:48
+    // @LINE:52
     def find(id:Int): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/plans/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
-    // @LINE:44
+    // @LINE:48
     def all(): Call = {
       import ReverseRouteContext.empty
       Call("GET", _prefix + { _defaultPrefix } + "api/v1/plans")
@@ -299,6 +317,12 @@ package controllers {
     def create(): Call = {
       import ReverseRouteContext.empty
       Call("POST", _prefix + { _defaultPrefix } + "api/v1/users")
+    }
+  
+    // @LINE:26
+    def find(id:Int): Call = {
+      import ReverseRouteContext.empty
+      Call("GET", _prefix + { _defaultPrefix } + "api/v1/users/" + implicitly[PathBindable[Int]].unbind("id", id))
     }
   
     // @LINE:23

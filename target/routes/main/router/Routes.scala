@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/Users/surya/paymycable/paymycable/conf/routes
-// @DATE:Sun Nov 08 01:52:31 IST 2015
+// @DATE:Thu Nov 12 01:33:46 IST 2015
 
 package router
 
@@ -51,6 +51,9 @@ class Routes extends GeneratedRouter {
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/users""", """controllers.UsersController.all"""),
     ("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/users""", """controllers.UsersController.create"""),
     ("""PUT""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/users/$id<[^/]+>""", """controllers.UsersController.update(id:Int)"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/users/$id<[^/]+>""", """controllers.UsersController.find(id:Int)"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/users/$id<[^/]+>/payments""", """controllers.PaymentsController.findByAgentId(id:Int)"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/users/$id<[^/]+>/payments/today""", """controllers.PaymentsController.findByAgentIdToday(id:Int)"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customers/unpaid""", """controllers.CustomersController.unpaidCustomers"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customers/paid""", """controllers.CustomersController.paidCustomers"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customers""", """controllers.CustomersController.all"""),
@@ -58,6 +61,7 @@ class Routes extends GeneratedRouter {
     ("""PUT""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customers/$id<[^/]+>""", """controllers.CustomersController.update(id:Int)"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customers/$id<[^/]+>""", """controllers.CustomersController.find(id:Int)"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customersearch""", """controllers.CustomersController.searchCustomers(search:String ?= "")"""),
+    ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/customers/$id<[^/]+>/payments""", """controllers.PaymentsController.findByCustomerId(id:Int)"""),
     ("""GET""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/areas""", """controllers.AreasController.all"""),
     ("""POST""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/areas""", """controllers.AreasController.create"""),
     ("""PUT""", prefix + (if(prefix.endsWith("/")) "" else "/") + """api/v1/areas/$id<[^/]+>""", """controllers.AreasController.update(id:Int)"""),
@@ -319,11 +323,62 @@ class Routes extends GeneratedRouter {
     )
   )
 
+  // @LINE:26
+  private[this] lazy val controllers_UsersController_find14_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/users/"), DynamicPart("id", """[^/]+""",true)))
+  )
+  private[this] lazy val controllers_UsersController_find14_invoker = createInvoker(
+    controllers.UsersController.find(fakeValue[Int]),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.UsersController",
+      "find",
+      Seq(classOf[Int]),
+      "GET",
+      """""",
+      this.prefix + """api/v1/users/$id<[^/]+>"""
+    )
+  )
+
+  // @LINE:27
+  private[this] lazy val controllers_PaymentsController_findByAgentId15_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/users/"), DynamicPart("id", """[^/]+""",true), StaticPart("/payments")))
+  )
+  private[this] lazy val controllers_PaymentsController_findByAgentId15_invoker = createInvoker(
+    controllers.PaymentsController.findByAgentId(fakeValue[Int]),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.PaymentsController",
+      "findByAgentId",
+      Seq(classOf[Int]),
+      "GET",
+      """""",
+      this.prefix + """api/v1/users/$id<[^/]+>/payments"""
+    )
+  )
+
   // @LINE:28
-  private[this] lazy val controllers_CustomersController_unpaidCustomers14_route: Route.ParamsExtractor = Route("GET",
+  private[this] lazy val controllers_PaymentsController_findByAgentIdToday16_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/users/"), DynamicPart("id", """[^/]+""",true), StaticPart("/payments/today")))
+  )
+  private[this] lazy val controllers_PaymentsController_findByAgentIdToday16_invoker = createInvoker(
+    controllers.PaymentsController.findByAgentIdToday(fakeValue[Int]),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.PaymentsController",
+      "findByAgentIdToday",
+      Seq(classOf[Int]),
+      "GET",
+      """""",
+      this.prefix + """api/v1/users/$id<[^/]+>/payments/today"""
+    )
+  )
+
+  // @LINE:31
+  private[this] lazy val controllers_CustomersController_unpaidCustomers17_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers/unpaid")))
   )
-  private[this] lazy val controllers_CustomersController_unpaidCustomers14_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_unpaidCustomers17_invoker = createInvoker(
     controllers.CustomersController.unpaidCustomers,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -336,11 +391,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:29
-  private[this] lazy val controllers_CustomersController_paidCustomers15_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:32
+  private[this] lazy val controllers_CustomersController_paidCustomers18_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers/paid")))
   )
-  private[this] lazy val controllers_CustomersController_paidCustomers15_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_paidCustomers18_invoker = createInvoker(
     controllers.CustomersController.paidCustomers,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -353,11 +408,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:30
-  private[this] lazy val controllers_CustomersController_all16_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:33
+  private[this] lazy val controllers_CustomersController_all19_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers")))
   )
-  private[this] lazy val controllers_CustomersController_all16_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_all19_invoker = createInvoker(
     controllers.CustomersController.all,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -370,11 +425,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:31
-  private[this] lazy val controllers_CustomersController_create17_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:34
+  private[this] lazy val controllers_CustomersController_create20_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers")))
   )
-  private[this] lazy val controllers_CustomersController_create17_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_create20_invoker = createInvoker(
     controllers.CustomersController.create,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -387,11 +442,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:32
-  private[this] lazy val controllers_CustomersController_update18_route: Route.ParamsExtractor = Route("PUT",
+  // @LINE:35
+  private[this] lazy val controllers_CustomersController_update21_route: Route.ParamsExtractor = Route("PUT",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_CustomersController_update18_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_update21_invoker = createInvoker(
     controllers.CustomersController.update(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -404,11 +459,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:33
-  private[this] lazy val controllers_CustomersController_find19_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:36
+  private[this] lazy val controllers_CustomersController_find22_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_CustomersController_find19_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_find22_invoker = createInvoker(
     controllers.CustomersController.find(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -421,11 +476,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:34
-  private[this] lazy val controllers_CustomersController_searchCustomers20_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:37
+  private[this] lazy val controllers_CustomersController_searchCustomers23_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customersearch")))
   )
-  private[this] lazy val controllers_CustomersController_searchCustomers20_invoker = createInvoker(
+  private[this] lazy val controllers_CustomersController_searchCustomers23_invoker = createInvoker(
     controllers.CustomersController.searchCustomers(fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -438,11 +493,28 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:37
-  private[this] lazy val controllers_AreasController_all21_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:38
+  private[this] lazy val controllers_PaymentsController_findByCustomerId24_route: Route.ParamsExtractor = Route("GET",
+    PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/customers/"), DynamicPart("id", """[^/]+""",true), StaticPart("/payments")))
+  )
+  private[this] lazy val controllers_PaymentsController_findByCustomerId24_invoker = createInvoker(
+    controllers.PaymentsController.findByCustomerId(fakeValue[Int]),
+    HandlerDef(this.getClass.getClassLoader,
+      "router",
+      "controllers.PaymentsController",
+      "findByCustomerId",
+      Seq(classOf[Int]),
+      "GET",
+      """""",
+      this.prefix + """api/v1/customers/$id<[^/]+>/payments"""
+    )
+  )
+
+  // @LINE:41
+  private[this] lazy val controllers_AreasController_all25_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/areas")))
   )
-  private[this] lazy val controllers_AreasController_all21_invoker = createInvoker(
+  private[this] lazy val controllers_AreasController_all25_invoker = createInvoker(
     controllers.AreasController.all,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -455,11 +527,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:38
-  private[this] lazy val controllers_AreasController_create22_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:42
+  private[this] lazy val controllers_AreasController_create26_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/areas")))
   )
-  private[this] lazy val controllers_AreasController_create22_invoker = createInvoker(
+  private[this] lazy val controllers_AreasController_create26_invoker = createInvoker(
     controllers.AreasController.create,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -472,11 +544,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:39
-  private[this] lazy val controllers_AreasController_update23_route: Route.ParamsExtractor = Route("PUT",
+  // @LINE:43
+  private[this] lazy val controllers_AreasController_update27_route: Route.ParamsExtractor = Route("PUT",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/areas/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_AreasController_update23_invoker = createInvoker(
+  private[this] lazy val controllers_AreasController_update27_invoker = createInvoker(
     controllers.AreasController.update(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -489,11 +561,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:40
-  private[this] lazy val controllers_AreasController_delete24_route: Route.ParamsExtractor = Route("DELETE",
+  // @LINE:44
+  private[this] lazy val controllers_AreasController_delete28_route: Route.ParamsExtractor = Route("DELETE",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/areas/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_AreasController_delete24_invoker = createInvoker(
+  private[this] lazy val controllers_AreasController_delete28_invoker = createInvoker(
     controllers.AreasController.delete(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -506,11 +578,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:41
-  private[this] lazy val controllers_AreasController_find25_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:45
+  private[this] lazy val controllers_AreasController_find29_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/areas/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_AreasController_find25_invoker = createInvoker(
+  private[this] lazy val controllers_AreasController_find29_invoker = createInvoker(
     controllers.AreasController.find(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -523,11 +595,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:44
-  private[this] lazy val controllers_PlansController_all26_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:48
+  private[this] lazy val controllers_PlansController_all30_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/plans")))
   )
-  private[this] lazy val controllers_PlansController_all26_invoker = createInvoker(
+  private[this] lazy val controllers_PlansController_all30_invoker = createInvoker(
     controllers.PlansController.all,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -540,11 +612,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:45
-  private[this] lazy val controllers_PlansController_create27_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:49
+  private[this] lazy val controllers_PlansController_create31_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/plans")))
   )
-  private[this] lazy val controllers_PlansController_create27_invoker = createInvoker(
+  private[this] lazy val controllers_PlansController_create31_invoker = createInvoker(
     controllers.PlansController.create,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -557,11 +629,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:46
-  private[this] lazy val controllers_PlansController_update28_route: Route.ParamsExtractor = Route("PUT",
+  // @LINE:50
+  private[this] lazy val controllers_PlansController_update32_route: Route.ParamsExtractor = Route("PUT",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/plans/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_PlansController_update28_invoker = createInvoker(
+  private[this] lazy val controllers_PlansController_update32_invoker = createInvoker(
     controllers.PlansController.update(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -574,11 +646,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:47
-  private[this] lazy val controllers_PlansController_delete29_route: Route.ParamsExtractor = Route("DELETE",
+  // @LINE:51
+  private[this] lazy val controllers_PlansController_delete33_route: Route.ParamsExtractor = Route("DELETE",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/plans/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_PlansController_delete29_invoker = createInvoker(
+  private[this] lazy val controllers_PlansController_delete33_invoker = createInvoker(
     controllers.PlansController.delete(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -591,11 +663,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:48
-  private[this] lazy val controllers_PlansController_find30_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:52
+  private[this] lazy val controllers_PlansController_find34_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/plans/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_PlansController_find30_invoker = createInvoker(
+  private[this] lazy val controllers_PlansController_find34_invoker = createInvoker(
     controllers.PlansController.find(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -608,11 +680,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:51
-  private[this] lazy val controllers_PaymentsController_all31_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:55
+  private[this] lazy val controllers_PaymentsController_all35_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/payments")))
   )
-  private[this] lazy val controllers_PaymentsController_all31_invoker = createInvoker(
+  private[this] lazy val controllers_PaymentsController_all35_invoker = createInvoker(
     controllers.PaymentsController.all,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -625,11 +697,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:52
-  private[this] lazy val controllers_PaymentsController_create32_route: Route.ParamsExtractor = Route("POST",
+  // @LINE:56
+  private[this] lazy val controllers_PaymentsController_create36_route: Route.ParamsExtractor = Route("POST",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/payments")))
   )
-  private[this] lazy val controllers_PaymentsController_create32_invoker = createInvoker(
+  private[this] lazy val controllers_PaymentsController_create36_invoker = createInvoker(
     controllers.PaymentsController.create,
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -642,11 +714,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:54
-  private[this] lazy val controllers_PaymentsController_find33_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:58
+  private[this] lazy val controllers_PaymentsController_find37_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("api/v1/payments/"), DynamicPart("id", """[^/]+""",true)))
   )
-  private[this] lazy val controllers_PaymentsController_find33_invoker = createInvoker(
+  private[this] lazy val controllers_PaymentsController_find37_invoker = createInvoker(
     controllers.PaymentsController.find(fakeValue[Int]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -659,11 +731,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:57
-  private[this] lazy val controllers_Assets_at34_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:61
+  private[this] lazy val controllers_Assets_at38_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("assets/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_at34_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at38_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -676,11 +748,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:58
-  private[this] lazy val controllers_Assets_at35_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:62
+  private[this] lazy val controllers_Assets_at39_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("app/"), DynamicPart("file", """.+""",false)))
   )
-  private[this] lazy val controllers_Assets_at35_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at39_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -693,11 +765,11 @@ class Routes extends GeneratedRouter {
     )
   )
 
-  // @LINE:59
-  private[this] lazy val controllers_Assets_at36_route: Route.ParamsExtractor = Route("GET",
+  // @LINE:63
+  private[this] lazy val controllers_Assets_at40_route: Route.ParamsExtractor = Route("GET",
     PathPattern(List(StaticPart(this.prefix), StaticPart(this.defaultPrefix), StaticPart("login")))
   )
-  private[this] lazy val controllers_Assets_at36_invoker = createInvoker(
+  private[this] lazy val controllers_Assets_at40_invoker = createInvoker(
     controllers.Assets.at(fakeValue[String], fakeValue[String]),
     HandlerDef(this.getClass.getClassLoader,
       "router",
@@ -797,142 +869,166 @@ class Routes extends GeneratedRouter {
         controllers_UsersController_update13_invoker.call(controllers.UsersController.update(id))
       }
   
+    // @LINE:26
+    case controllers_UsersController_find14_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_UsersController_find14_invoker.call(controllers.UsersController.find(id))
+      }
+  
+    // @LINE:27
+    case controllers_PaymentsController_findByAgentId15_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_PaymentsController_findByAgentId15_invoker.call(controllers.PaymentsController.findByAgentId(id))
+      }
+  
     // @LINE:28
-    case controllers_CustomersController_unpaidCustomers14_route(params) =>
-      call { 
-        controllers_CustomersController_unpaidCustomers14_invoker.call(controllers.CustomersController.unpaidCustomers)
-      }
-  
-    // @LINE:29
-    case controllers_CustomersController_paidCustomers15_route(params) =>
-      call { 
-        controllers_CustomersController_paidCustomers15_invoker.call(controllers.CustomersController.paidCustomers)
-      }
-  
-    // @LINE:30
-    case controllers_CustomersController_all16_route(params) =>
-      call { 
-        controllers_CustomersController_all16_invoker.call(controllers.CustomersController.all)
+    case controllers_PaymentsController_findByAgentIdToday16_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_PaymentsController_findByAgentIdToday16_invoker.call(controllers.PaymentsController.findByAgentIdToday(id))
       }
   
     // @LINE:31
-    case controllers_CustomersController_create17_route(params) =>
+    case controllers_CustomersController_unpaidCustomers17_route(params) =>
       call { 
-        controllers_CustomersController_create17_invoker.call(controllers.CustomersController.create)
+        controllers_CustomersController_unpaidCustomers17_invoker.call(controllers.CustomersController.unpaidCustomers)
       }
   
     // @LINE:32
-    case controllers_CustomersController_update18_route(params) =>
-      call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_CustomersController_update18_invoker.call(controllers.CustomersController.update(id))
+    case controllers_CustomersController_paidCustomers18_route(params) =>
+      call { 
+        controllers_CustomersController_paidCustomers18_invoker.call(controllers.CustomersController.paidCustomers)
       }
   
     // @LINE:33
-    case controllers_CustomersController_find19_route(params) =>
-      call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_CustomersController_find19_invoker.call(controllers.CustomersController.find(id))
+    case controllers_CustomersController_all19_route(params) =>
+      call { 
+        controllers_CustomersController_all19_invoker.call(controllers.CustomersController.all)
       }
   
     // @LINE:34
-    case controllers_CustomersController_searchCustomers20_route(params) =>
-      call(params.fromQuery[String]("search", Some(""))) { (search) =>
-        controllers_CustomersController_searchCustomers20_invoker.call(controllers.CustomersController.searchCustomers(search))
+    case controllers_CustomersController_create20_route(params) =>
+      call { 
+        controllers_CustomersController_create20_invoker.call(controllers.CustomersController.create)
+      }
+  
+    // @LINE:35
+    case controllers_CustomersController_update21_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_CustomersController_update21_invoker.call(controllers.CustomersController.update(id))
+      }
+  
+    // @LINE:36
+    case controllers_CustomersController_find22_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_CustomersController_find22_invoker.call(controllers.CustomersController.find(id))
       }
   
     // @LINE:37
-    case controllers_AreasController_all21_route(params) =>
-      call { 
-        controllers_AreasController_all21_invoker.call(controllers.AreasController.all)
+    case controllers_CustomersController_searchCustomers23_route(params) =>
+      call(params.fromQuery[String]("search", Some(""))) { (search) =>
+        controllers_CustomersController_searchCustomers23_invoker.call(controllers.CustomersController.searchCustomers(search))
       }
   
     // @LINE:38
-    case controllers_AreasController_create22_route(params) =>
-      call { 
-        controllers_AreasController_create22_invoker.call(controllers.AreasController.create)
-      }
-  
-    // @LINE:39
-    case controllers_AreasController_update23_route(params) =>
+    case controllers_PaymentsController_findByCustomerId24_route(params) =>
       call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_AreasController_update23_invoker.call(controllers.AreasController.update(id))
-      }
-  
-    // @LINE:40
-    case controllers_AreasController_delete24_route(params) =>
-      call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_AreasController_delete24_invoker.call(controllers.AreasController.delete(id))
+        controllers_PaymentsController_findByCustomerId24_invoker.call(controllers.PaymentsController.findByCustomerId(id))
       }
   
     // @LINE:41
-    case controllers_AreasController_find25_route(params) =>
+    case controllers_AreasController_all25_route(params) =>
+      call { 
+        controllers_AreasController_all25_invoker.call(controllers.AreasController.all)
+      }
+  
+    // @LINE:42
+    case controllers_AreasController_create26_route(params) =>
+      call { 
+        controllers_AreasController_create26_invoker.call(controllers.AreasController.create)
+      }
+  
+    // @LINE:43
+    case controllers_AreasController_update27_route(params) =>
       call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_AreasController_find25_invoker.call(controllers.AreasController.find(id))
+        controllers_AreasController_update27_invoker.call(controllers.AreasController.update(id))
       }
   
     // @LINE:44
-    case controllers_PlansController_all26_route(params) =>
-      call { 
-        controllers_PlansController_all26_invoker.call(controllers.PlansController.all)
+    case controllers_AreasController_delete28_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_AreasController_delete28_invoker.call(controllers.AreasController.delete(id))
       }
   
     // @LINE:45
-    case controllers_PlansController_create27_route(params) =>
-      call { 
-        controllers_PlansController_create27_invoker.call(controllers.PlansController.create)
-      }
-  
-    // @LINE:46
-    case controllers_PlansController_update28_route(params) =>
+    case controllers_AreasController_find29_route(params) =>
       call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_PlansController_update28_invoker.call(controllers.PlansController.update(id))
-      }
-  
-    // @LINE:47
-    case controllers_PlansController_delete29_route(params) =>
-      call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_PlansController_delete29_invoker.call(controllers.PlansController.delete(id))
+        controllers_AreasController_find29_invoker.call(controllers.AreasController.find(id))
       }
   
     // @LINE:48
-    case controllers_PlansController_find30_route(params) =>
+    case controllers_PlansController_all30_route(params) =>
+      call { 
+        controllers_PlansController_all30_invoker.call(controllers.PlansController.all)
+      }
+  
+    // @LINE:49
+    case controllers_PlansController_create31_route(params) =>
+      call { 
+        controllers_PlansController_create31_invoker.call(controllers.PlansController.create)
+      }
+  
+    // @LINE:50
+    case controllers_PlansController_update32_route(params) =>
       call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_PlansController_find30_invoker.call(controllers.PlansController.find(id))
+        controllers_PlansController_update32_invoker.call(controllers.PlansController.update(id))
       }
   
     // @LINE:51
-    case controllers_PaymentsController_all31_route(params) =>
-      call { 
-        controllers_PaymentsController_all31_invoker.call(controllers.PaymentsController.all)
+    case controllers_PlansController_delete33_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_PlansController_delete33_invoker.call(controllers.PlansController.delete(id))
       }
   
     // @LINE:52
-    case controllers_PaymentsController_create32_route(params) =>
-      call { 
-        controllers_PaymentsController_create32_invoker.call(controllers.PaymentsController.create)
-      }
-  
-    // @LINE:54
-    case controllers_PaymentsController_find33_route(params) =>
+    case controllers_PlansController_find34_route(params) =>
       call(params.fromPath[Int]("id", None)) { (id) =>
-        controllers_PaymentsController_find33_invoker.call(controllers.PaymentsController.find(id))
+        controllers_PlansController_find34_invoker.call(controllers.PlansController.find(id))
       }
   
-    // @LINE:57
-    case controllers_Assets_at34_route(params) =>
-      call(Param[String]("path", Right("/public/app/assets/")), params.fromPath[String]("file", None)) { (path, file) =>
-        controllers_Assets_at34_invoker.call(controllers.Assets.at(path, file))
+    // @LINE:55
+    case controllers_PaymentsController_all35_route(params) =>
+      call { 
+        controllers_PaymentsController_all35_invoker.call(controllers.PaymentsController.all)
+      }
+  
+    // @LINE:56
+    case controllers_PaymentsController_create36_route(params) =>
+      call { 
+        controllers_PaymentsController_create36_invoker.call(controllers.PaymentsController.create)
       }
   
     // @LINE:58
-    case controllers_Assets_at35_route(params) =>
-      call(Param[String]("path", Right("/public/app/")), params.fromPath[String]("file", None)) { (path, file) =>
-        controllers_Assets_at35_invoker.call(controllers.Assets.at(path, file))
+    case controllers_PaymentsController_find37_route(params) =>
+      call(params.fromPath[Int]("id", None)) { (id) =>
+        controllers_PaymentsController_find37_invoker.call(controllers.PaymentsController.find(id))
       }
   
-    // @LINE:59
-    case controllers_Assets_at36_route(params) =>
+    // @LINE:61
+    case controllers_Assets_at38_route(params) =>
+      call(Param[String]("path", Right("/public/app/assets/")), params.fromPath[String]("file", None)) { (path, file) =>
+        controllers_Assets_at38_invoker.call(controllers.Assets.at(path, file))
+      }
+  
+    // @LINE:62
+    case controllers_Assets_at39_route(params) =>
+      call(Param[String]("path", Right("/public/app/")), params.fromPath[String]("file", None)) { (path, file) =>
+        controllers_Assets_at39_invoker.call(controllers.Assets.at(path, file))
+      }
+  
+    // @LINE:63
+    case controllers_Assets_at40_route(params) =>
       call(Param[String]("path", Right("/public/app/views")), Param[String]("file", Right("login.html"))) { (path, file) =>
-        controllers_Assets_at36_invoker.call(controllers.Assets.at(path, file))
+        controllers_Assets_at40_invoker.call(controllers.Assets.at(path, file))
       }
   }
 }

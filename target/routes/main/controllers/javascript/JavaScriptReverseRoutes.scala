@@ -1,7 +1,7 @@
 
 // @GENERATOR:play-routes-compiler
 // @SOURCE:/Users/surya/paymycable/paymycable/conf/routes
-// @DATE:Sun Nov 08 01:52:31 IST 2015
+// @DATE:Thu Nov 12 01:33:46 IST 2015
 
 import play.api.routing.JavaScriptReverseRoute
 import play.api.mvc.{ QueryStringBindable, PathBindable, Call, JavascriptLiteral }
@@ -14,7 +14,7 @@ import _root_.controllers.Assets.Asset
 package controllers.javascript {
   import ReverseRouteContext.empty
 
-  // @LINE:57
+  // @LINE:61
   class ReverseAssets(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -22,7 +22,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:57
+    // @LINE:61
     def at: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.Assets.at",
       """
@@ -46,7 +46,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:51
+  // @LINE:27
   class ReversePaymentsController(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -54,27 +54,27 @@ package controllers.javascript {
     }
 
   
-    // @LINE:54
-    def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.PaymentsController.find",
+    // @LINE:27
+    def findByAgentId: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.PaymentsController.findByAgentId",
       """
         function(id) {
-          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/payments/" + (""" + implicitly[PathBindable[Int]].javascriptUnbind + """)("id", id)})
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/users/" + (""" + implicitly[PathBindable[Int]].javascriptUnbind + """)("id", id) + "/payments"})
         }
       """
     )
   
-    // @LINE:51
-    def all: JavaScriptReverseRoute = JavaScriptReverseRoute(
-      "controllers.PaymentsController.all",
+    // @LINE:38
+    def findByCustomerId: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.PaymentsController.findByCustomerId",
       """
-        function() {
-          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/payments"})
+        function(id) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/customers/" + (""" + implicitly[PathBindable[Int]].javascriptUnbind + """)("id", id) + "/payments"})
         }
       """
     )
   
-    // @LINE:52
+    // @LINE:56
     def create: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PaymentsController.create",
       """
@@ -84,9 +84,39 @@ package controllers.javascript {
       """
     )
   
+    // @LINE:58
+    def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.PaymentsController.find",
+      """
+        function(id) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/payments/" + (""" + implicitly[PathBindable[Int]].javascriptUnbind + """)("id", id)})
+        }
+      """
+    )
+  
+    // @LINE:55
+    def all: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.PaymentsController.all",
+      """
+        function() {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/payments"})
+        }
+      """
+    )
+  
+    // @LINE:28
+    def findByAgentIdToday: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.PaymentsController.findByAgentIdToday",
+      """
+        function(id) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/users/" + (""" + implicitly[PathBindable[Int]].javascriptUnbind + """)("id", id) + "/payments/today"})
+        }
+      """
+    )
+  
   }
 
-  // @LINE:37
+  // @LINE:41
   class ReverseAreasController(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -94,7 +124,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:39
+    // @LINE:43
     def update: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.AreasController.update",
       """
@@ -104,7 +134,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:38
+    // @LINE:42
     def create: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.AreasController.create",
       """
@@ -114,7 +144,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:40
+    // @LINE:44
     def delete: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.AreasController.delete",
       """
@@ -124,7 +154,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:41
+    // @LINE:45
     def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.AreasController.find",
       """
@@ -134,7 +164,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:37
+    // @LINE:41
     def all: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.AreasController.all",
       """
@@ -146,7 +176,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:28
+  // @LINE:31
   class ReverseCustomersController(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -154,7 +184,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:32
+    // @LINE:35
     def update: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.update",
       """
@@ -164,7 +194,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:31
+    // @LINE:34
     def create: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.create",
       """
@@ -174,7 +204,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:33
+    // @LINE:36
     def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.find",
       """
@@ -184,7 +214,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:29
+    // @LINE:32
     def paidCustomers: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.paidCustomers",
       """
@@ -194,7 +224,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:30
+    // @LINE:33
     def all: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.all",
       """
@@ -204,7 +234,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:34
+    // @LINE:37
     def searchCustomers: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.searchCustomers",
       """
@@ -214,7 +244,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:28
+    // @LINE:31
     def unpaidCustomers: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.CustomersController.unpaidCustomers",
       """
@@ -226,7 +256,7 @@ package controllers.javascript {
   
   }
 
-  // @LINE:44
+  // @LINE:48
   class ReversePlansController(_prefix: => String) {
 
     def _defaultPrefix: String = {
@@ -234,7 +264,7 @@ package controllers.javascript {
     }
 
   
-    // @LINE:46
+    // @LINE:50
     def update: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PlansController.update",
       """
@@ -244,7 +274,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:45
+    // @LINE:49
     def create: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PlansController.create",
       """
@@ -254,7 +284,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:47
+    // @LINE:51
     def delete: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PlansController.delete",
       """
@@ -264,7 +294,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:48
+    // @LINE:52
     def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PlansController.find",
       """
@@ -274,7 +304,7 @@ package controllers.javascript {
       """
     )
   
-    // @LINE:44
+    // @LINE:48
     def all: JavaScriptReverseRoute = JavaScriptReverseRoute(
       "controllers.PlansController.all",
       """
@@ -430,6 +460,16 @@ package controllers.javascript {
       """
         function() {
           return _wA({method:"POST", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/users"})
+        }
+      """
+    )
+  
+    // @LINE:26
+    def find: JavaScriptReverseRoute = JavaScriptReverseRoute(
+      "controllers.UsersController.find",
+      """
+        function(id) {
+          return _wA({method:"GET", url:"""" + _prefix + { _defaultPrefix } + """" + "api/v1/users/" + (""" + implicitly[PathBindable[Int]].javascriptUnbind + """)("id", id)})
         }
       """
     )
