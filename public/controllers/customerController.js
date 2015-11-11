@@ -91,8 +91,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
 var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService, commonService) {
     $scope.title = "Create";
     var today = new Date();
-    console.log(today);
-    $scope.dt = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + (today.getDay() + 1);
+    $scope.dt = today.toLocaleDateString('en-GB');
 
     $scope.open = function () {
         $timeout(function () {
