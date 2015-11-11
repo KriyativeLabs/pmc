@@ -7,7 +7,6 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 
         $scope.logout = function () {
             cookieService.destroy();
-            $location.path("/login");
         };
 
         $scope.getNotifications = function () {
