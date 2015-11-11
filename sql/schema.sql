@@ -10,6 +10,7 @@ CREATE TABLE public.companies (
                 address TEXT NOT NULL,
                 sms_count INTEGER NOT NULL DEFAULT 0,
                 price_per_customer INTEGER NOT NULL,
+                receipt_sequence BIGINT NOT NULL DEFAULT 1,
                 CONSTRAINT pk_companies PRIMARY KEY (id));
 
 ALTER SEQUENCE public.companies_id_seq OWNED BY  public.companies.id;
@@ -27,6 +28,7 @@ CREATE TABLE public.users (
   password VARCHAR(255) NOT NULL,
   contact_no BIGINT NOT NULL,
   email VARCHAR(128),
+  address VARCHAR(512),
   account_type VARCHAR(10) NOT NULL,
 CONSTRAINT pk_users PRIMARY KEY (id));
 
@@ -149,7 +151,7 @@ CREATE TABLE public.payments (
   paid_amount INT NOT NULL,
   discounted_amount INT NOT NULL,
   paid_on TIMESTAMP NOT NULL DEFAULT now(),
-  user_id INT NOT NULL,
+  agent_id INT NOT NULL,
   remarks TEXT,
   company_id INT NOT NULL,
   CONSTRAINT pk_payments PRIMARY KEY (id));
@@ -162,7 +164,7 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
-ALTER TABLE public.payments ADD CONSTRAINT payments_user_fk FOREIGN KEY (user_id)
+ALTER TABLE public.payments ADD CONSTRAINT payments_user_fk FOREIGN KEY (agent_id)
 REFERENCES public.users(id)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
@@ -183,6 +185,7 @@ CREATE TABLE public.connections (
   id INTEGER NOT NULL DEFAULT nextval('public.connections_id_seq'),
   customer_id INT NOT NULL,
   setup_box_id VARCHAR(300),
+  box_serial_no VARCHAR(300),
   plan_id INT NOT NULL,
   discount INT NOT NULL DEFAULT 0,
   installation_date TIMESTAMP NOT NULL,
