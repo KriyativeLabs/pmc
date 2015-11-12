@@ -38,7 +38,7 @@
                 <tbody>
                 <tr ng-repeat="agent in agents | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
                     <td>#{{$index + 1}}</td>
-                    <td>{{agent.name}}</td>
+                    <td><u><a ng-href="/agents/{{agent.id}}">{{agent.name}}</a></u></td>
                     <td>{{agent.contactNo}}</td>
                     <td>{{agent.email}}</td>
                     <td>{{agent.loginId}}</td>

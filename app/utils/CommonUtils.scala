@@ -13,4 +13,6 @@ object CommonUtils {
       case e: Exception => None
     }
   }
+
+  def yesterday = DateTime.now().minusDays(1).withTime(23, 59, 59, 999)
 }

@@ -2,7 +2,7 @@ var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.
 
 pmcApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.when("/login", {
-        templateUrl: 'login.html',
+        templateUrl: 'login_old.html',
         controller: 'authenticationController'
     }).when("/", {
         templateUrl: 'dashboard.html',
@@ -18,7 +18,7 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
         controller: 'customerController'
     }).when("/customers/:id", {
         templateUrl: "customer-view.html",
-        controller: 'customerController'
+        controller: 'customerViewController'
     }).when("/plans", {
         templateUrl: "plans.html",
         controller: 'planController'
@@ -34,6 +34,9 @@ pmcApp.config(['$routeProvider', function ($routeProvider) {
     }).when("/agents", {
         templateUrl: "agents.html",
         controller: 'agentController'
+    }).when("/agents/:id", {
+        templateUrl: "agent-view.html",
+        controller: 'agentViewController'
     }).when("/change_password", {
         templateUrl: "change_password.html",
         controller: 'settingsController'

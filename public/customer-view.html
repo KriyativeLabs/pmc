@@ -2,34 +2,31 @@
     <div class="vbox bg-white">
         <header class="header b-b b-light hidden-print">
             <button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>
-            <p>Customer View</p>
+            <h4>Customer Details</h4>
         </header>
         <div class="scrollable wrapper">
             <div class="row">
                 <div class="col-xs-6">
-                    <h4>Customer Name</h4>
+                    <h4>{{customer.name}}</h4>
 
-                    <p>Mobile Number : 800-692-7753</p>
+                    <p>Mobile Number :{{customer.mobileNo}}</p>
 
-                    <p>Email ID : xyz@email.com</p>
+                    <p>Email ID : {{customer.emailId}}</p>
 
-                    <p>City : tiptur</p>
+                    <p>House No : {{customer.houseNo}}</p>
 
-                    <p>Id Proof : suresh</p>
+                    <p>Id Proof : {{connection.idProof}}</p>
 
-                    <p>Old Balance : 1000 INR</p>
+                    <p>Pending Balance : {{customer.balanceAmount}} INR</p>
 
-                    <p>Area : SR road</p>
+                    <!--<p>Area : </p>-->
 
-                    <p>Address: <br>
-                        xyz city, CA<br>
-                        tiputur
+                    <p>Address:{{customer.address}}
                     </p>
 
                 </div>
                 <div class="col-xs-6 text-right">
-                    <p class="h4">Customer Serial number #200</p>
-                    <h5>29th Mar 2013</h5>
+                    <p class="h4">Customer Serial number: {{customer.houseNo}}</p>
                 </div>
             </div>
             <div class="well m-t">
@@ -38,21 +35,21 @@
                 <div class="row">
                     <div class="col-xs-8">
 
-                        <p>STB Number : ef0085678<br/>
-                            CAF : #caf 0006777<br/>
-                            Box Series :# 01234 box Series<br/>
+                        <p>STB Number : {{connection.setupBoxId}}<br/>
+                            CAF : {{connection.cafId}}<br/>
+                            Box Series : {{connection.boxSerialNo}}<br/>
                         </p>
                     </div>
                     <div class="col-xs-4">
                         <p class="m-t m-b">
-                            status: <span class="label bg-success">Active</span><br>
-                            Plan : <strong>Montly 200</strong><br/>
-                            Discounted : <strong> 10 INR</strong>
+                            status: <span ng-if="connection.status == 1" class="label bg-success">Active</span><span ng-if="connection.status != 1" class="label bg-danger">InActive</span><br>
+                            Plan : <strong>{{plan.name}}-{{plan.amount}}</strong><br/>
+                            Discounted : <strong> {{connection.discount}} INR</strong>
                         </p>
 
                     </div>
                 </div>
-                <div class="line bg-white"></div>
+                <!--<div class="line bg-white"></div>
 
                 <div class="row">
                     <div class="col-xs-8">
@@ -70,7 +67,41 @@
                         </p>
 
                     </div>
-                </div>
+                </div>-->
+            </div>
+
+            <div class="well m-t">
+                <h5><strong>Recent Payment Details</strong></h5>
+                <hr>
+                <table class="table table-striped m-b-none" data-ride="datatables">
+                    <thead>
+                    <tr>
+                        <th width="20%">Receipt No.</th>
+                        <!--<th width="20%">Customer Name</th>-->
+                        <th width="10%">Paid On</th>
+                        <th width="15%">Amount</th>
+                        <th width="20%">Remarks</th>
+                        <th width="15%">Agent</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="receipt in payments">
+                        <td>{{receipt.receiptNo}}</td>
+                        <!--<td>{{receipt.customerDetails}}</td>-->
+                        <td>{{receipt.paidOn}}</td>
+                        <td>{{receipt.paidAmount}}</td>
+                        <td>{{receipt.remarks}}</td>
+                        <td>{{receipt.agentDetails}}</td>
+                        <!--<td>
+                            <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm" style="padding:1px 10px !important;" ng-click="openReciept(customerCap.customer.id)">Pay</button>
+                            <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
+                                    style="padding:1px 10px !important;">Edit
+                            </button>
+                        </td>-->
+
+                    </tr>
+                    </tbody>
+                </table>
             </div>
 
         </div>

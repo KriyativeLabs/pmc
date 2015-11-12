@@ -1,7 +1,7 @@
 pmcApp.factory('cookieService',['$cookies','$window', function($cookies, $window) {
 
         var setCookie = function(key,value){
-            $cookies.put(key,value);
+            $cookies.put(key,value,{path:'/'});
         };
 
         var getCookie = function(key) {
@@ -15,10 +15,10 @@ pmcApp.factory('cookieService',['$cookies','$window', function($cookies, $window
         var destroyCookie = function(){
             var cookies = $cookies.getAll();
             angular.forEach(cookies, function (v, k) {
-                //console.log(k);
-                //$cookies.remove(k);
+                $cookies.remove(k,{path:'/'});
             });
-            //$window.location = "/login.html";
+
+            $window.location = "/login.html";
         };
 
          return {

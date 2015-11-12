@@ -183,23 +183,16 @@
             </a>
             <ul class="dropdown-menu animated fadeInRight">
                 <li>
-                    <span class="arrow top"></span>
-                    <a href="#">Settings</a>
+                    <a href="#" ng-click="openChangePass()">Change Password</a>
                 </li>
-                <li>
-                    <a href="profile.html">Profile</a>
-                </li>
-                <li>
+                <!--<li>
                     <a href="#">
                         <span class="badge bg-danger pull-right">3</span> Notifications
                     </a>
-                </li>
-                <li>
-                    <a href="docs.html">Help</a>
-                </li>
+                </li>-->
                 <li class="divider"></li>
                 <li>
-                    <a href="modal.lockme.html" data-toggle="ajaxModal">Logout</a>
+                    <a href="#" ng-click="logout()">Logout</a>
                 </li>
             </ul>
         </li>
@@ -275,13 +268,13 @@
                             <div class="text-muted text-xs hidden-nav-xs padder m-t-sm m-b-sm">Settings</div>
                             <ul class="nav">
                                 <li ng-class="{ active: isActive('/change_password') }">
-                                    <a ng-click="openChangePass()" class="auto">
+                                    <a href="#" ng-click="openChangePass()" class="auto">
                                         <i class="i i-retweet icon"></i>
                                         <span class="font-bold">Change Password</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <a ng-click="logout()">
+                                    <a href="#" ng-click="logout()">
                                         <i class="i i-logout icon"></i>
                                         <span class="font-bold">Logout</span>
                                     </a>
@@ -346,11 +339,13 @@
 <script src="controllers/mainController.js"></script>
 <script src="controllers/dashboardController.js"></script>
 <script src="controllers/customerController.js"></script>
+<script src="controllers/customerViewController.js"></script>
 <script src="controllers/planController.js"></script>
 <script src="controllers/areaController.js"></script>
 <script src="controllers/paymentController.js"></script>
 <script src="controllers/authenticationController.js"></script>
 <script src="controllers/agentController.js"></script>
+<script src="controllers/agentViewController.js"></script>
 
 <script src="vendor/angular-chart.js"></script>
 

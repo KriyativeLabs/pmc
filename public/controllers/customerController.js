@@ -125,11 +125,8 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         connection.planId = parseInt($scope.plan);
         connection.discount = $scope.discount;
         connection.idProof = $scope.id_proof;
-        if (Object.prototype.toString.call($scope.dt) === '[object Date]') {
-            connection.installationDate = $scope.dt.getFullYear() + "-" + ($scope.dt.getMonth() + 1) + "-" + ($scope.dt.getDay() + 1);
-        } else{
-            connection.installationDate = $scope.dt;
-        }
+
+       connection.installationDate = commonService.getDateString($scope.dt);
 
         createObj.connections = [connection];
 
@@ -143,7 +140,6 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
             }
         });
     };
-
 
     $scope.ok = function () {
         $modalInstance.close($scope.dt);
@@ -180,7 +176,7 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         $scope.plan = connection.planId;
         $scope.discount = connection.discount;
         $scope.id_proof = connection.idProof;
-        $scope.dt = connection.installationDate; //.getFullYear()+"-"+($scope.dt.getMonth()+1)+"-"+($scope.dt.getDay()+1);
+        $scope.dt = connection.installationDate;
 
     }, function (errorResponse) {
         apiService.NOTIF_ERROR(errorResponse.data.message);
@@ -222,7 +218,7 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         connection.discount = $scope.discount;
         connection.idProof = $scope.id_proof;
         $scope.dt = new Date($scope.dt);
-        connection.installationDate = $scope.dt.getFullYear() + "-" + ($scope.dt.getMonth() + 1) + "-" + ($scope.dt.getDay() + 1);
+        connection.installationDate = commonService.getDateString($scope.dt);
 
         createObj.connections = [connection];
 
