@@ -62,7 +62,7 @@
                 <section class="panel panel-default">
                     <div class="panel-body">
                         <form role="form">
-                            <div class="row">
+                            <!--<div class="row">-->
                             <div class="form-group">
                                 <label>Plan Name</label>
                                 <input ng-model="name" ng-disabled="{{isUpdate}}" class="form-control" type="text"
@@ -72,14 +72,14 @@
                                 <label>Plan Amount</label>
                                 <input ng-model="amount" class="form-control" type="number" placeholder="Plan Amount">
                             </div>
-                                </div>
-                            <div class="row">
+                               <!-- </div>-->
+                           <!-- <div class="row">-->
                             <div class="form-group">
                                 <label>Plan Duration</label>
                                 <input ng-model="duration" class="form-control" type="number"
                                        placeholder="Plan Duration">
                             </div>
-                            </div>
+                           <!-- </div>-->
                                 <div class="row pull-right">
                              <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
                             <button class="btn btn-sm btn-primary" ng-click="planFunc()"><i class="fa fa-check"></i>{{title}}</button>
