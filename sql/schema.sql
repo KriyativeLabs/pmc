@@ -152,6 +152,7 @@ CREATE TABLE public.payments (
   discounted_amount INT NOT NULL,
   paid_on TIMESTAMP NOT NULL DEFAULT now(),
   agent_id INT NOT NULL,
+  receipt_no VARCHAR(32),
   remarks TEXT,
   company_id INT NOT NULL,
   CONSTRAINT pk_payments PRIMARY KEY (id));
