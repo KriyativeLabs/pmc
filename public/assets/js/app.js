@@ -172,6 +172,11 @@ Modernizr.addTest('ios',function(){return!!navigator.userAgent.match(/iPhone|iPa
     $target.bjax(option);
     e.preventDefault();
   })
+  
+  $('.nav a').on('click', function(){
+    $('.btn-navbar').click(); //bootstrap 2.x
+    $('.navbar-toggle').click() //bootstrap 3.x by Richard
+});
 }(jQuery);
 
 Date.now = Date.now || function() { return +new Date; };
