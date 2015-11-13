@@ -353,6 +353,12 @@ Date.now = Date.now || function() { return +new Date; };
 
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
+    
+    $(document).ready(function () {
+  $(".navbar-nav li a").click(function(event) {
+    $(".navbar-collapse").collapse('hide');
+  });
+});
 
     // dropdown still
     $(document).on('click.bs.dropdown.data-api', '.dropdown .on, .dropup .on, .open .on', function (e) { e.stopPropagation() });
