@@ -355,7 +355,7 @@ Date.now = Date.now || function() { return +new Date; };
     });
     
 $("btn").click(function(){
-    $("a").removeClass("nav-off-screen");
+    $("aside").addClass("manoj");
 }); 
 
 
