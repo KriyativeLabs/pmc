@@ -354,7 +354,7 @@ Date.now = Date.now || function() { return +new Date; };
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
     
-$("btn").click(function(){
+$(".navbar-header > .btn").click(function(){
     $("aside").addClass("manoj");
 }); 
 
