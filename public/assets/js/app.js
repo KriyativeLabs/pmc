@@ -354,7 +354,8 @@ Date.now = Date.now || function() { return +new Date; };
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
     
-$(".navbar-header > .btn .active ").click(function(){
+$(".navbar-header > .btn").click(function(){
+ if(!$('.navbar-header > .btn').hasClass('active')) 
     $("aside").addClass("manoj");
 }); 
 
