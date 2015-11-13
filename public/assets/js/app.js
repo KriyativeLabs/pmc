@@ -354,7 +354,7 @@ Date.now = Date.now || function() { return +new Date; };
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
     
- $(".nav > li:active").click(function(){      
+ $(".nav > li > .active").click(function(){      
    $('#nav').addClass('open');
 });
 
