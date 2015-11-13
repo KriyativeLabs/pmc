@@ -355,8 +355,10 @@ Date.now = Date.now || function() { return +new Date; };
     });
     
 $(".navbar-header > .btn").click(function(){
- if(!$('.navbar-header > .btn').hasClass('active')) 
+ if(!$('.navbar-header > .btn').hasClass('active');
     $("aside").addClass("manoj");
+ ) 
+ 
 }); 
 
 
