@@ -360,7 +360,7 @@ $(".navbar-header > .btn").click(function(){
 // ) 
   if($this).hasClass('active')
     {
-        $("aside").removeClass('manoj');
+        $("aside").addClass('manoj');
         
     }
 }); 
