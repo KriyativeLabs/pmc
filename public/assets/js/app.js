@@ -354,8 +354,8 @@ Date.now = Date.now || function() { return +new Date; };
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
     
-$(document).on('click','#nav',function(e) {
-    $("active").removeClass("nav-off-screen");
+$("btn").click(function(){
+    $("#nav").removeClass("nav-off-screen");
 }); 
 
 
