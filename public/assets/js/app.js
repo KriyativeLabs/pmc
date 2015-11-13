@@ -355,7 +355,7 @@ Date.now = Date.now || function() { return +new Date; };
     });
     
  $(".navbar-header > .btn").click(function(){      
-   if(!$('#nav').hasClass('nav-off-screen')) // it checks if mobile_billing is not open
+   if(!$('#nav').hasClass('nav-off-screen2')) // it checks if mobile_billing is not open
      $('#nav').addClass('open');
 });
 
