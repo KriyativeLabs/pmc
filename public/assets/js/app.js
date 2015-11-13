@@ -354,16 +354,10 @@ Date.now = Date.now || function() { return +new Date; };
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
     
-$(".navbar-header > .btn").click(function(){
-// if(!$('.navbar-header > .btn').hasClass('active');
-//    $("aside").addClass("manoj");
-// ) 
-  if($this).hasClass('active')
-    {
-        $("aside").addClass('manoj');
-        
-    }
-}); 
+ $(".navbar-header > .btn").click(function(){      
+   if(!$('#nav').hasClass('nav-off-screen')) // it checks if mobile_billing is not open
+     $('#nav').addClass('open');
+});
 
 
 
