@@ -355,7 +355,7 @@ Date.now = Date.now || function() { return +new Date; };
     });
     
 $("btn").click(function(){
-    $("#nav").removeClass("nav-off-screen");
+    $("aside").removeClass("nav-off-screen");
 }); 
 
 
