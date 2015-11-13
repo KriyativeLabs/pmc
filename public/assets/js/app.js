@@ -355,10 +355,9 @@ Date.now = Date.now || function() { return +new Date; };
     });
     
 $(document).on('click','#nav',function(e) {
-    if( $(e.target).is('a') ) {
-        $(this).collapse('hide');
-    }
-});
+    $("active").removeClass("nav-off-screen");
+}); 
+
 
     // dropdown still
     $(document).on('click.bs.dropdown.data-api', '.dropdown .on, .dropup .on, .open .on', function (e) { e.stopPropagation() });
