@@ -359,6 +359,11 @@ $(".navbar-header > .btn").click(function(){
 }); 
 
 
+$(".navbar-header > .btn").click(function(){      
+   if(!$("aside").hasClass('nav-off-screen')) // it checks if mobile_billing is not open
+     $('aside').removeClass('nav-off-screen');
+});
+
     // dropdown still
     $(document).on('click.bs.dropdown.data-api', '.dropdown .on, .dropup .on, .open .on', function (e) { e.stopPropagation() });
 
