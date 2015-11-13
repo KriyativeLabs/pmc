@@ -167,8 +167,7 @@ Modernizr.addTest('ios',function(){return!!navigator.userAgent.match(/iPhone|iPa
     if(!Bjax.prototype.enable(e)) return;
     var $this   = $(this);
     var $url    = $this.attr('href');
-    //var $target = $( $this.attr('data-target') || 'html' );
-    var $target = $( $this.attr('data-target') || '#' );
+    var $target = $( $this.attr('data-target') || 'html' );
     var option  = $.extend({ url: $url }, $target.data(), $this.data());
     $target.bjax(option);
     e.preventDefault();
