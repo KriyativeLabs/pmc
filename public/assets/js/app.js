@@ -355,10 +355,14 @@ Date.now = Date.now || function() { return +new Date; };
     });
     
 $(".navbar-header > .btn").click(function(){
- if(!$('.navbar-header > .btn').hasClass('active');
-    $("aside").addClass("manoj");
- ) 
- 
+// if(!$('.navbar-header > .btn').hasClass('active');
+//    $("aside").addClass("manoj");
+// ) 
+  if($this).hasClass('active')
+    {
+        $("aside").removeClass('manoj');
+        
+    }
 }); 
 
 
