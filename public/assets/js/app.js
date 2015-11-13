@@ -354,15 +354,12 @@ Date.now = Date.now || function() { return +new Date; };
       setTimeout(function(){ $(document).trigger('updateNav'); }, 300);      
     });
     
-$(".navbar-header > .btn").click(function(){
+$(".navbar-header > .btn .active ").click(function(){
     $("aside").addClass("manoj");
 }); 
 
 
-$(".navbar-header > .btn").click(function(){      
-   if(!$("aside").hasClass('nav-off-screen')) // it checks if mobile_billing is not open
-     $('aside').removeClass('nav-off-screen');
-});
+
 
     // dropdown still
     $(document).on('click.bs.dropdown.data-api', '.dropdown .on, .dropup .on, .open .on', function (e) { e.stopPropagation() });
