@@ -95,7 +95,7 @@ object Customers {
   def update(customer: CustomerCreate)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
     val con = customer.connections(0)
     val updateQuery = for {
-      cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId)
+      cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId, p.balanceAmount)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId, customer.balanceAmount)
       conns <- connectionsQuery.filter(_.customerId === customer.id).map(c => (c.setupBoxId, c.boxSerialNo, c.cafId, c.discount, c.idProof, c.planId, c.status)).update(con.setupBoxId, con.boxSerialNo, con.cafId, con.discount, con.idProof, con.planId, con.status)
     } yield cust
     try {
