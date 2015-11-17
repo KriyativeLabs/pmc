@@ -1,5 +1,5 @@
-pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location,$modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location,$modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
         $scope.getAgents = function () {
@@ -31,8 +31,7 @@ pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal',
         };
         
         $scope.dtOptions = DTOptionsBuilder.newOptions()
-            //.withColumnFilter()
-            //.withDOM('<"input-group"f>pitrl')
+            .withOption('responsive', true)
             .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
@@ -44,6 +43,19 @@ pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal',
                 search: "Search: ",
                 lengthMenu: "_MENU_ records per page"
             });
+
+        $scope.dtColumns = [
+            DTColumnBuilder.newColumn('sNo').withTitle('S.No'),
+            DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
+            DTColumnBuilder.newColumn('mobile').withTitle('Mobile No').withClass('all'),
+            DTColumnBuilder.newColumn('email').withTitle('Email'),
+            DTColumnBuilder.newColumn('loginId').withTitle('Login ID'),
+            DTColumnBuilder.newColumn('accType').withTitle('Account Type'),
+            DTColumnBuilder.newColumn('action').withTitle('Action').withClass('all')
+        ];
+
+
+
         $scope.changeData = function (search) {
             $scope.agents = $filter('filter')($scope.agentsBackup, search);
         };

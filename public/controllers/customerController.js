@@ -1,5 +1,5 @@
-pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
 //########################################Customers Page########################################
         var query = $location.search().query;
@@ -32,6 +32,8 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             //.withColumnFilter()
             //.withDOM('<"input-group"f>pitrl')
+        // Active Responsive plugin
+            .withOption('responsive', true)
             .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
@@ -44,6 +46,15 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
                 search: "Search: ",
                 lengthMenu: "_MENU_ records per page"
             });
+
+        $scope.dtColumns = [
+            DTColumnBuilder.newColumn('hNo').withTitle('H.No'),
+            DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
+            DTColumnBuilder.newColumn('mobile').withTitle('Mobile No'),
+            DTColumnBuilder.newColumn('sbt').withTitle('STB No.'),
+            DTColumnBuilder.newColumn('balance').withTitle('Balance').withClass('all'),
+            DTColumnBuilder.newColumn('action').withTitle('Action').withClass('all')
+        ];
 
         $scope.changeData = function (search) {
             commonService.getResultFromLink("/customersearch?search=" + search).then(function (result) {

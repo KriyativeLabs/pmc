@@ -1,5 +1,5 @@
-pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location, $route, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location, $route, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
         $scope.sNo = 1;
         $scope.getAreas = function () {
             apiService.GET("/areas").then(function (response) {
@@ -46,7 +46,12 @@ pmcApp.controller('areaController', ['$scope', '$filter', '$location', '$route',
                 lengthMenu: "_MENU_ records per page"
             });
 
-
+        $scope.dtColumns = [
+            DTColumnBuilder.newColumn('sNo').withTitle('S.No'),
+            DTColumnBuilder.newColumn('code').withTitle('Code'),
+            DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
+            DTColumnBuilder.newColumn('action').withTitle('Action').withClass('all')
+        ];
         $scope.changeData = function (search) {
             $scope.areas = $filter('filter')($scope.areasBackup, search);
         };

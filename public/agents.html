@@ -23,8 +23,8 @@
     </section>
     <section class="panel panel-default">
         <div class="table-responsive">
-            <table datatable="ng" dt-options="dtOptions" class="table table-striped m-b-none">
-                <thead>
+            <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                <!--<thead>
                 <tr>
                     <th width="5%">Sl.No</th>
                     <th width="15%">Name</th>
@@ -34,7 +34,7 @@
                     <th width="15%">Account Type</th>
                     <th width="25%">Action</th>
                 </tr>
-                </thead>
+                </thead>-->
                 <tbody>
                 <tr ng-repeat="agent in agents | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
                     <td>#{{$index + 1}}</td>

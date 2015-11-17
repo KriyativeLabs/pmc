@@ -22,8 +22,8 @@
         </section>
         <div class="panel panel-default">
             <div class="table-responsive">
-                <table class="table table-striped m-b-none" data-ride="datatables">
-                    <thead>
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                    <!--<thead>
                     <tr>
                         <th width="10%">S.No</th>
                         <th width="15%">Name</th>
@@ -31,7 +31,7 @@
                         <th width="20%">No of Months</th>
                         <th width="20%">Actions</th>
                     </tr>
-                    </thead>
+                    </thead>-->
                     <tbody>
                     <tr ng-repeat="plan in plans | filter:search | orderBy:'name'">
                         <td>#{{$index + 1}}</td>

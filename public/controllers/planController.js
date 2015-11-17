@@ -1,5 +1,5 @@
-pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnDefBuilder',
-    function ($scope, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnDefBuilder) {
+pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
         $scope.getPlans = function () {
@@ -27,6 +27,32 @@ pmcApp.controller('planController', ['$scope', '$filter', '$location', '$modal',
                 });
             }
         };
+
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('responsive', true)
+            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            //.withPaginationType('full_numbers')
+            .withDisplayLength(40)
+            .withOption('order', [4, 'desc'])
+            .withOption('language', {
+                paginate: {
+                    next: "",
+                    previous: ""
+                },
+                search: "Search: ",
+                lengthMenu: "_MENU_ records per page"
+            });
+
+        $scope.dtColumns = [
+            DTColumnBuilder.newColumn('sNo').withTitle('S.No'),
+            DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
+            DTColumnBuilder.newColumn('amount').withTitle('Price').withClass('all'),
+            DTColumnBuilder.newColumn('noOfMonths').withTitle('No Of Months').withClass('all'),
+            DTColumnBuilder.newColumn('actions').withTitle('Actions')
+        ];
+
+
 //############################################Modal###########################################
         $scope.open = function () {
             var modalInstance = $modal.open({
