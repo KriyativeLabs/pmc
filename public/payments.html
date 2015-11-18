@@ -17,45 +17,37 @@
 
     <div class="row m-b-md">
         <div class="col-sm-6">
-            <a class="btn btn-s-md btn-primary" ng-click="toggleadv()" >Advanced search</a>
+            <a class="btn btn-s-md btn-primary" ng-click="toggleadv()">Advanced search</a>
 
-            <div ng-hide="advHide"><br>Start Date:<p class="input-group">
-            <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
-                   ng-model="startDate" is-open="openedStart" ng-required="true"
-                   close-text="Close"/>
+            <div ng-hide="advHide"><br>Start Date:
+                <p class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
+                           ng-model="startDate" is-open="openedStart" ng-required="true"
+                           close-text="Close"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openStart()"><i
                         class="glyphicon glyphicon-calendar"></i></button>
               </span>
-            </p>
-            End Date:<p class="input-group">
+                </p>
+                End Date:
+                <p class="input-group">
 
-        <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
-               ng-model="endDate" is-open="openedEnd" ng-required="true"
-               close-text="Close"/>
+                    <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
+                           ng-model="endDate" is-open="openedEnd" ng-required="true"
+                           close-text="Close"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="openEnd()"><i
                         class="glyphicon glyphicon-calendar"></i></button>
               </span>
-    </p>
+                </p>
 
-            <a class="btn btn-s-md btn-primary" ng-click="advancedSearch()">Search</a>
-                </div>
+                <a class="btn btn-s-md btn-primary" ng-click="advancedSearch()">Search</a>
+            </div>
         </div>
     </div>
     <div class="panel panel-default">
         <div class="table-responsive">
-            <table class="table table-striped m-b-none" data-ride="datatables">
-                <thead>
-                    <tr>
-                        <th width="20%">Receipt No.</th>
-                        <th width="20%">Customer Name</th>
-                        <th width="10%">Date</th>
-                        <th width="15%">Amount</th>
-                        <th width="20%">Remarks</th>
-                        <th width="15%">Agent</th>
-                    </tr>
-                </thead>
+            <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                 <tbody>
                 <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">
                     <td>{{receipt.receiptNo}}</td>
@@ -64,13 +56,6 @@
                     <td>{{receipt.paidAmount}}</td>
                     <td>{{receipt.remarks}}</td>
                     <td>{{receipt.agentDetails}}</td>
-                    <!--<td>
-                        <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm" style="padding:1px 10px !important;" ng-click="openReciept(customerCap.customer.id)">Pay</button>
-                        <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
-                                style="padding:1px 10px !important;">Edit
-                        </button>
-                    </td>-->
-
                 </tr>
                 </tbody>
             </table>

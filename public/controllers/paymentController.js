@@ -1,5 +1,5 @@
-pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout', '$log', 'apiService', 'commonService',
-    function ($scope, $location,$modal,$timeout, $log, apiService, commonService) {
+pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $location,$modal,$timeout, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.getReceipts = function () {
             apiService.GET("/payments").then(function (response) {
@@ -51,6 +51,30 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout
 
 
         };
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('responsive', true)
+            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            //.withPaginationType('full_numbers')
+            .withDisplayLength(40)
+            .withOption('order', [4, 'desc'])
+            .withOption('language', {
+                paginate: {
+                    next: "",
+                    previous: ""
+                },
+                search: "Search: ",
+                lengthMenu: "_MENU_ records per page"
+            });
+
+        $scope.dtColumns = [
+            DTColumnBuilder.newColumn('receiptNo').withTitle('Receipt No').withClass('all'),
+            DTColumnBuilder.newColumn('customerDetails').withTitle('Customer Name').withClass('all'),
+            DTColumnBuilder.newColumn('paidOn').withTitle('Date'),
+            DTColumnBuilder.newColumn('paidAmount').withTitle('Amount').withClass('all'),
+            DTColumnBuilder.newColumn('remarks').withTitle('Remarks'),
+            DTColumnBuilder.newColumn('agentDetails').withTitle('Agent')
+        ];
 
 
     }]);

@@ -1,5 +1,5 @@
-pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService',
-    function ($scope, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService) {
+pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location, $modal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
 
         var custId = $location.path().split(/[\s/]+/).pop();
         if (angular.isNumber(parseInt(custId))) {
@@ -37,6 +37,28 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
             };
             getCustomerData();
         }
+
+        $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('responsive', true)
+            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withPaginationType('full_numbers')
+            .withDisplayLength(40)
+            .withOption('language', {
+                paginate: {
+                    next: "",
+                    previous: ""
+                },
+                search: "Search: ",
+                lengthMenu: "_MENU_ records per page"
+            });
+
+        $scope.dtColumns = [
+            DTColumnBuilder.newColumn('receiptNo').withTitle('Receipt No.').withClass('all'),
+            DTColumnBuilder.newColumn('paidOn').withTitle('Paid On').withClass('all'),
+            DTColumnBuilder.newColumn('amount').withTitle('Amount'),
+            DTColumnBuilder.newColumn('remarks').withTitle('Remarks'),
+            DTColumnBuilder.newColumn('agent').withTitle('Agent').withClass('all')
+        ];
 
     }]);
 
