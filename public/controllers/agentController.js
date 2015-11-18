@@ -1,5 +1,5 @@
-pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $filter, $location,$modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$location','$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope,$compile, $filter, $location,$modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
         $scope.getAgents = function () {
@@ -14,8 +14,8 @@ pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal',
             });
         };
 
-        $scope.delete = function (id, name) {
-            var userConfirmation = confirm("Are you sure you want to delete agent:" + name);
+        $scope.deleteAgent = function (id) {
+            var userConfirmation = confirm("Are you sure you want to delete agent?");
             if (userConfirmation) {
                 apiService.DELETE("/users/" + id).then(function (response) {
                     apiService.NOTIF_SUCCESS(response.data.message);
@@ -31,6 +31,7 @@ pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal',
         };
         
         $scope.dtOptions = DTOptionsBuilder.newOptions()
+            .withOption('createdRow', createdRow)
             .withOption('responsive', true)
             .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
             .withPaginationType('full_numbers')
@@ -46,13 +47,24 @@ pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal',
 
         $scope.dtColumns = [
             DTColumnBuilder.newColumn('sNo').withTitle('S.No'),
+            DTColumnBuilder.newColumn('id').withTitle('Id').withClass('none'),
             DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
             DTColumnBuilder.newColumn('mobile').withTitle('Mobile No').withClass('all'),
             DTColumnBuilder.newColumn('email').withTitle('Email'),
             DTColumnBuilder.newColumn('loginId').withTitle('Login ID'),
             DTColumnBuilder.newColumn('accType').withTitle('Account Type'),
-            DTColumnBuilder.newColumn('action').withTitle('Action').withClass('all')
+            DTColumnBuilder.newColumn(null).withTitle('Action').withClass('all').notSortable().renderWith(actionsHtml)
         ];
+
+
+        function actionsHtml(data, type, full, meta) {
+            return '<button ng-click="openUpdate('+data.id+')" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>'+
+            '<button ng-click="deleteAgent('+data.id+')" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
+        }
+
+        function createdRow(row, data, dataIndex) {
+            $compile(angular.element(row).contents())($scope);
+        }
 
 
 
@@ -83,21 +95,6 @@ pmcApp.controller('agentController', ['$scope', '$filter', '$location','$modal',
                 resolve: {
                     agentId: function () {
                         return agentId;
-                    },
-                    agentName: function () {
-                        return agentName;
-                    },
-                    agentContactNo: function () {
-                        return contactNo;
-                    },
-                    agentEmail: function () {
-                        return email;
-                    },
-                    agentLoginId: function () {
-                        return loginId;
-                    },
-                    agentAccountType: function () {
-                        return accountType;
                     }
                 }
             });
@@ -149,7 +146,7 @@ var AgentCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 };
 
 
-var AgentUpdateCtrl = function ($scope, $modalInstance, $location, apiService, agentId,agentName,agentContactNo, agentEmail,agentLoginId, agentAccountType) {
+var AgentUpdateCtrl = function ($scope, $modalInstance, $location, apiService, agentId) {
     $scope.title = "Update";
     $scope.isUpdate = true;
 
@@ -160,12 +157,23 @@ var AgentUpdateCtrl = function ($scope, $modalInstance, $location, apiService, a
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+    apiService.GET("/users/" + agentId).then(function (response) {
+                    
+            $scope.name = response.data.data.name;
+            $scope.contactNo = response.data.data.contactNo;
+            $scope.email = response.data.data.email;
+            $scope.loginId = response.data.data.loginId;
+            $scope.accountType = response.data.data.accountType;
+        
+                }, function (errorResponse) {
+                    apiService.NOTIF_ERROR(errorResponse.data.message);
+                    if (errorResponse.status != 200) {
+                        if (errorResponse.status == 304)
+                            alert(errorResponse);
+                    }
+                });
+    
 
-    $scope.name = agentName;
-    $scope.contactNo = agentContactNo;
-    $scope.email = agentEmail;
-    $scope.loginId = agentLoginId;
-    $scope.accountType = agentAccountType;
 
     $scope.createOrUpdate = function () {
         var createObj = {};

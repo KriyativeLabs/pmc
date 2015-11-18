@@ -26,28 +26,32 @@
             <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                 <thead>
                 <tr>
+                    <th width="5%">Id</th>
                     <th width="5%">H.No</th>
                     <th width="20%">Name</th>
                     <th width="15%">Mobile No.</th>
                     <th width="20%">STB No.</th>
+                    <th width="20%">Box Serial No.</th>
                     <th width="10%">Balance</th>
                     <th width="15%">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="customerCap in customers | orderBy:'name'">
+                    <td>{{customerCap.customer.id}}</td>
                     <td>{{customerCap.customer.houseNo}}</td>
                     <td><u><a ng-href="/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u></td>
                     <td>{{customerCap.customer.mobileNo}}</td>
                     <td>{{customerCap.connection.setupBoxId}}</td>
+                    <td>{{customerCap.connection.boxSerialNo}}</td>
                     <td>{{customerCap.customer.balanceAmount}}</td>
                     <td class="all">
-                        <button onclick="test('{{customerCap.customer.id}}')" ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm"
+                    <!--    <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm"
                                 style="padding:1px 10px !important;" ng-click="openReceipt(customerCap.customer.id)">Pay
                         </button>
                         <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
                                 style="padding:1px 10px !important;">Edit
-                        </button>
+                        </button>-->
                     </td>
                 </tr>
                 </tbody>

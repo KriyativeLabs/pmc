@@ -23,26 +23,28 @@
         <div class="panel panel-default">
             <div class="table-responsive">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                    <!--<thead>
+                    <thead>
                     <tr>
                         <th width="10%">S.No</th>
+                        <th ng-hide="true" width="5%">Id</th>
                         <th width="15%">Name</th>
                         <th width="20%">Price</th>
                         <th width="20%">No of Months</th>
                         <th width="20%">Actions</th>
                     </tr>
-                    </thead>-->
+                    </thead>
                     <tbody>
                     <tr ng-repeat="plan in plans | filter:search | orderBy:'name'">
                         <td>#{{$index + 1}}</td>
+                        <td>{{plan.id}}</td>
                         <td>{{plan.name}}</td>
                         <td>{{plan.amount}}</td>
                         <td>{{plan.noOfMonths}}</td>
                         <td>
-                            <button ng-click="openUpdate(plan.id,plan.name,plan.amount, plan.noOfMonths)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
+                            <!--<button ng-click="openUpdate(plan.id,plan.name,plan.amount, plan.noOfMonths)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
                             <button ng-click="delete(plan.id,plan.name)" class="btn btn-danger btn-sm"
                                     style="padding:1px 10px !important;">Delete
-                            </button>
+                            </button>-->
                         </td>
                     </tr>
                     </tbody>

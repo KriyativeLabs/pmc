@@ -1,7 +1,7 @@
-pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $compile, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
-//########################################Customers Page########################################
+        //########################################Customers Page########################################
         var query = $location.search().query;
         if (!query) {
             query = "all";
@@ -21,7 +21,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
                 $scope.customersBackUp = result.data.data;
-            },function (errorResponse) {
+            }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
@@ -32,7 +32,8 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             //.withColumnFilter()
             //.withDOM('<"input-group"f>pitrl')
-        // Active Responsive plugin
+            // Active Responsive plugin
+            .withOption('createdRow', createdRow)
             .withOption('responsive', true)
             .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
             .withPaginationType('full_numbers')
@@ -48,13 +49,28 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
             });
 
         $scope.dtColumns = [
+            DTColumnBuilder.newColumn('id').withTitle('Id').withClass('none'),
             DTColumnBuilder.newColumn('hNo').withTitle('H.No'),
             DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
             DTColumnBuilder.newColumn('mobile').withTitle('Mobile No'),
             DTColumnBuilder.newColumn('sbt').withTitle('STB No.'),
+            DTColumnBuilder.newColumn('boxSerialNo').withTitle('Box Serial No.').withClass('none'),
             DTColumnBuilder.newColumn('balance').withTitle('Balance').withClass('all'),
-            DTColumnBuilder.newColumn('action').withTitle('Action').withClass('all')
+            DTColumnBuilder.newColumn(null).withTitle('Action').withClass('all').notSortable().renderWith(actionsHtml)
         ];
+
+        function actionsHtml(data, type, full, meta) {
+            return '<button ng-disabled="'+(data.balanceAmount == 0)+'" class="btn btn-success btn-sm"' +
+                                'style="padding:1px 10px !important;" ng-click="openReceipt('+data.id+')">Pay'+
+                        '</button> &nbsp;'+
+                        '<button class="btn btn-primary btn-sm" ng-click="openUpdate('+data.id+')"'+
+                                'style="padding:1px 10px !important;">Edit'+
+                        '</button>';
+        }
+
+        function createdRow(row, data, dataIndex) {
+            $compile(angular.element(row).contents())($scope);
+        }
 
         $scope.changeData = function (search) {
             commonService.getResultFromLink("/customersearch?search=" + search).then(function (result) {
@@ -62,7 +78,7 @@ pmcApp.controller('customerController', ['$scope', '$filter', '$location', '$mod
                 $scope.customersBackUp = result.data.data;
             });
         };
-//#############################################################################################
+        //#############################################################################################
         $scope.open = function () {
 
             var modalInstance = $modal.open({
@@ -137,7 +153,7 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         connection.discount = $scope.discount;
         connection.idProof = $scope.id_proof;
 
-       connection.installationDate = commonService.getDateString($scope.dt);
+        connection.installationDate = commonService.getDateString($scope.dt);
 
         createObj.connections = [connection];
 
@@ -233,7 +249,7 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
 
         createObj.connections = [connection];
 
-        apiService.PUT("/customers/"+$scope.id, createObj).then(function (response) {
+        apiService.PUT("/customers/" + $scope.id, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
             $modalInstance.close($scope.dt);
         }, function (errorResponse) {

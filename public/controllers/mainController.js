@@ -35,7 +35,6 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 
 //############################################Modal###########################################
         $scope.openReceipt = function (customerId) {
-            alert("Open Receipt");
             var modalInstance = $modal.open({
                 templateUrl: 'receiptModal.html',
                 controller: PaymentReceiptCtrl,
