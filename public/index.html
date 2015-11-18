@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="vendor/angular-chart.css">
     <link rel="stylesheet" href="vendor/angular-csp.css">
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
+    <link rel="stylesheet" href="vendor/dataTables.responsive.css">
+    
     <style>
         /*
         .modal-dialog {
@@ -50,7 +52,7 @@
     </style>
 </head>
 
-<body class="" ng-controller="mainController">
+<body class="" id="bodyId" ng-controller="mainController">
 <section class="vbox">
 <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
     <div class="navbar-header text-center aside-md dk">
@@ -172,7 +174,6 @@
             </section>
         </li>
     </ul>
-
     <ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user user">
 
         <li class="dropdown">
@@ -326,6 +327,7 @@
 <script src="vendor/angular-datatables.factory.js"></script>
 <script src="vendor/angular-datatables.options.js"></script>
 <script src="vendor/angular-datatables.js"></script>
+<script src="vendor/dataTables.responsive.js"></script>
 <script src="vendor/ui-bootstrap.js"></script>
 <script src="vendor/ui-bootstrap-tpls.js"></script>
 <script type="text/javascript" src="vendor/Chart.min.js"></script>

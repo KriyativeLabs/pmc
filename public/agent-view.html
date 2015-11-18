@@ -26,17 +26,16 @@
             <div class="well m-t">
                 <h5><strong>Todays Collections(Amount Collected:{{getTotal()}})</strong></h5>
                 <hr>
-                <table class="table table-striped m-b-none" data-ride="datatables">
-                    <thead>
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                    <!--<thead>
                     <tr>
                         <th width="20%">Receipt No.</th>
                         <th width="20%">Customer Name</th>
                         <th width="10%">Paid On</th>
                         <th width="15%">Amount</th>
                         <th width="20%">Remarks</th>
-                        <!--<th width="15%">Agent</th>-->
                     </tr>
-                    </thead>
+                    </thead>-->
                     <tbody>
                     <tr ng-repeat="receipt in paymentstoday">
                         <td>{{receipt.receiptNo}}</td>
@@ -44,7 +43,6 @@
                         <td>{{receipt.paidOn}}</td>
                         <td>{{receipt.paidAmount}}</td>
                         <td>{{receipt.remarks}}</td>
-                        <!--<td>{{receipt.agentDetails}}</td>-->
 
 
                     </tr>
@@ -55,17 +53,16 @@
             <div class="well m-t">
                 <h5><strong>Old Collection Details</strong></h5>
                 <hr>
-                <table class="table table-striped m-b-none" data-ride="datatables">
-                    <thead>
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                    <!--<thead>
                     <tr>
                         <th width="20%">Receipt No.</th>
                         <th width="20%">Customer Name</th>
                         <th width="10%">Paid On</th>
                         <th width="15%">Amount</th>
                         <th width="20%">Remarks</th>
-                        <!--<th width="15%">Agent</th>-->
                     </tr>
-                    </thead>
+                    </thead>-->
                     <tbody>
                     <tr ng-repeat="receipt in payments">
                         <td>{{receipt.receiptNo}}</td>
@@ -73,9 +70,6 @@
                         <td>{{receipt.paidOn}}</td>
                         <td>{{receipt.paidAmount}}</td>
                         <td>{{receipt.remarks}}</td>
-                        <!--<td>{{receipt.agentDetails}}</td>-->
-
-
                     </tr>
                     </tbody>
                 </table>
