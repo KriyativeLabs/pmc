@@ -28,7 +28,7 @@
                         <th ng-hide="true" width="5%">Id</th>
                         <th width="30%">Area Code</th>
                         <th width="35%">Area Name</th>
-                        <th width="15%">Action</th>
+                        <th ng-hide="isAgent" width="15%">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,7 +37,7 @@
                             <td>{{area.id}}</td>
                             <td>{{area.code}}</td>
                             <td>{{area.name}}</td>
-                            <td>
+                            <td  ng-hide="isAgent">
                                 <!--<button ng-click="openUpdate(area.id,area.name,area.code)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
                                 <button ng-click="deleteArea(area.id,area.name)" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>-->
                             </td>

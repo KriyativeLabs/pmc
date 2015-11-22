@@ -30,7 +30,7 @@
                         <th width="15%">Name</th>
                         <th width="20%">Price</th>
                         <th width="20%">No of Months</th>
-                        <th width="20%">Actions</th>
+                        <th ng-hide="isAgent" width="20%">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -40,7 +40,7 @@
                         <td>{{plan.name}}</td>
                         <td>{{plan.amount}}</td>
                         <td>{{plan.noOfMonths}}</td>
-                        <td>
+                        <td  ng-hide="isAgent">
                             <!--<button ng-click="openUpdate(plan.id,plan.name,plan.amount, plan.noOfMonths)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
                             <button ng-click="delete(plan.id,plan.name)" class="btn btn-danger btn-sm"
                                     style="padding:1px 10px !important;">Delete
