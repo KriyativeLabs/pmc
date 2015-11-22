@@ -54,11 +54,8 @@ pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location'
         ];
 
         function actionsHtml(data, type, full, meta) {
-            return '<button ng-click="openUpdate('+data.id+')" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>'+
-                '<button ng-click="deleteArea('+data.id+')" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
-
-            return '<button ng-click="openUpdate('+data.id+')" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>'+
-                '<button ng-click="deleteArea('+data.id+')" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
+            return '<button ng-click="openUpdate('+data.id+')" ng-hide="'+$scope.isAgent+'" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>'+
+                '<button ng-click="deleteArea('+data.id+')" ng-hide="'+$scope.isAgent+'" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
         }
 
         function createdRow(row, data, dataIndex) {

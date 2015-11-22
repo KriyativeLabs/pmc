@@ -246,7 +246,7 @@
                                         <span class="font-bold">Areas</span>
                                     </a>
                                 </li>
-                                <li ng-class="{ active: isActive('/sms') }">
+                                <li  ng-hide="isAgent" ng-class="{ active: isActive('/sms') }">
                                     <a ng-click="openSms()" class="auto">
                                         <i class="i i-mail icon"></i>
                                         <span class="font-bold">Send Sms</span>
@@ -258,7 +258,7 @@
                                         <span class="font-bold">Plans</span>
                                     </a>
                                 </li>
-                                <li ng-class="{ active: isActive('/agents') }">
+                                <li  ng-hide="isAgent" ng-class="{ active: isActive('/agents') }">
                                     <a href="/agents" class="auto">
                                         <i class="i i-user2 icon"></i>
                                         <span class="font-bold">Agents</span>

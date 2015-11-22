@@ -63,7 +63,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             return '<button ng-disabled="'+(data.balanceAmount == 0)+'" class="btn btn-success btn-sm"' +
                                 'style="padding:1px 10px !important;" ng-click="openReceipt('+data.id+')">Pay'+
                         '</button> &nbsp;'+
-                        '<button class="btn btn-primary btn-sm" ng-click="openUpdate('+data.id+')"'+
+                        '<button class="btn btn-primary btn-sm" ng-hide="'+$scope.isAgent+'" ng-click="openUpdate('+data.id+')"'+
                                 'style="padding:1px 10px !important;">Edit'+
                         '</button>';
         }
