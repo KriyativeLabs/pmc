@@ -14,7 +14,7 @@ object DatabaseSession {
 
   type QUERY = DBIOAction[Any, NoStream, Nothing]
 
-  val timeout:Int = 2000
+  val timeout:Int = 20000
 
   def run(query: QUERY) = {
     try {
