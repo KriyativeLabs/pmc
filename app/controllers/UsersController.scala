@@ -16,7 +16,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
     request.body.validate[User].fold(
       errors => BadRequest(errors.mkString),
       user => {
-        val newUser = if(request.user.userType == UserType.OWNER) user.copy(companyId = request.user.companyId) else user
+        val newUser = user.copy(companyId = request.user.companyId)
         Users.insert(newUser) match {
           case Left(e) =>  BadRequest(e)
           case Right(id) => created (Some (newUser), s"Successfully Created New User:${newUser.name}")
@@ -67,6 +67,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
   }
 
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
+    implicit val loggedInUser = request.user
     request.body.validate[User].fold(
       errors => BadRequest(errors.mkString),
       user => {

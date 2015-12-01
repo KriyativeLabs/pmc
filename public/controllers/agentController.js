@@ -124,7 +124,7 @@ var AgentCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
         var createObj = {};
         createObj.name = $scope.name;
         createObj.contactNo = parseInt($scope.contactNo);
-        createObj.password = "";
+        createObj.password = $scope.password;
         createObj.address = "";
         createObj.email = $scope.email;
         createObj.loginId = $scope.loginId;
@@ -164,6 +164,7 @@ var AgentUpdateCtrl = function ($scope, $modalInstance, $location, apiService, a
             $scope.email = response.data.data.email;
             $scope.loginId = response.data.data.loginId;
             $scope.accountType = response.data.data.accountType;
+            $scope.password = response.data.data.password;
         
                 }, function (errorResponse) {
                     apiService.NOTIF_ERROR(errorResponse.data.message);

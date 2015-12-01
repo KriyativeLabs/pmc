@@ -84,6 +84,10 @@
                                 <label>Login Id</label>
                                 <input class="form-control" ng-model="loginId" ng-disabled="{{isUpdate}}" type="text" placeholder="Login Id">
                             </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input class="form-control" ng-model="password" type="password" placeholder="Password">
+                            </div>
                              <div class ="pull-right">
                             <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
                             <button class="btn btn-sm btn-primary" ng-click="createOrUpdate()"><i class="fa fa-check"></i>{{title}}</button>
