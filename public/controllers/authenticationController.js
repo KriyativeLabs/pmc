@@ -16,6 +16,7 @@ pmcApp.controller('authenticationController', ['$scope','$window', 'cookieServic
                 cookieService.set(constantsService.TOKEN,response.data.data.token);
                 cookieService.set(constantsService.USERNAME, response.data.data.name);
                 cookieService.set(constantsService.COMPANY_NAME, response.data.data.company);
+                cookieService.set(constantsService.ACC_TYPE, response.data.data.type);
                 $window.location.href = "/";
             },function(errorRespose){
                 if(errorRespose.status !=200){

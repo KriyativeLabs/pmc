@@ -34,7 +34,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
           case Right(r) => {
             val token = Authentication.encryptAuthHeader(r.id.get, r.companyId, 3, UserType.withName(r.accountType))
             val company = Companies.findById(r.companyId)
-            ok(Json.obj("token" -> token, "name" -> r.name,"company" -> company.get.name), s"Successfully logged in!")
+            ok(Json.obj("token" -> token, "name" -> r.name,"company" -> company.get.name, "type" -> r.accountType), s"Successfully logged in!")
           }
         }
       }
