@@ -33,9 +33,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
             return txt.toUpperCase();
         });
 
-        alert(cookieService.get(constantsService.ACC_TYPE));
         $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
-        alert($scope.isAgent);
 
 
 //############################################Modal###########################################
