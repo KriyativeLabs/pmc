@@ -2,7 +2,7 @@ package models
 
 import play.api.libs.Codecs
 import play.api.libs.json.Json
-import security.{LoggedInUser, LoggedInUser_1}
+import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
 
