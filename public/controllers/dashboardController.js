@@ -45,7 +45,7 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
         ];
 
         $scope.barlabels = [];
-        $scope.barseries = ['Closing Balance:', 'Collected:'];
+        $scope.barseries = ['Closing Balance ', 'Collected '];
 
         $scope.bardata = [
             [],
