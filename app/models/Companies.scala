@@ -7,13 +7,16 @@ import com.github.tototoshi.slick.JdbcJodaSupport._
 import utils.{APIException, EntityNotFoundException}
 
 
-case class Company(id: Option[Int], name: String, owner: String, contactNo: Long, address: String, receiptNo:Long)
+case class Company(id: Option[Int], name: String, owner: String, contactNo: Long, address: String, receiptNo: Long,
+                   customerSeqNo: Option[Int], lastBillGeneratedOn: Option[DateTime], billStatus: Option[Boolean],
+                   smsCount: Int, pricePerCustomer: Int)
 
 object Company {
   implicit val fmt = Json.format[Company]
 }
 
 case class DashboardData(unpaidCustomers: Int, totalCustomers: Int, balanceAmount: Long, amountCollected: Int)
+
 object DashboardData {
   implicit val fmt = Json.format[DashboardData]
 }
@@ -30,9 +33,19 @@ class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
   def address = column[String]("address")
 
   def receiptNo = column[Long]("receipt_sequence")
-  def * = (id.?, name, owner, contactNo, address, receiptNo) <>((Company.apply _).tupled, Company.unapply _)
-}
 
+  def customerSeqNo = column[Option[Int]]("customer_seq_no")
+
+  def lastBillGeneratedOn = column[Option[DateTime]]("last_bill_generated_on")
+
+  def billStatus = column[Option[Boolean]]("bill_status")
+
+  def smsCount = column[Int]("sms_count")
+
+  def pricePerCustomer = column[Int]("price_per_customer")
+
+  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer) <>((Company.apply _).tupled, Company.unapply _)
+}
 
 object Companies {
   private lazy val companyQuery = TableQuery[CompaniesTable]
@@ -83,11 +96,26 @@ object Companies {
 
   def nextReceiptNo(companyId: Int): Long = {
     val company = findById(companyId).getOrElse(throw EntityNotFoundException(s"Company not found with Id:$companyId"))
-    val query = companyQuery.filter(x => x.id === companyId && x.receiptNo === company.receiptNo).map(_.receiptNo).update(company.receiptNo+1)
-    if(DatabaseSession.run(query).asInstanceOf[Int] == 1){
+    val query = companyQuery.filter(x => x.id === companyId && x.receiptNo === company.receiptNo).map(_.receiptNo).update(company.receiptNo + 1)
+    if (DatabaseSession.run(query).asInstanceOf[Int] == 1) {
       company.receiptNo
     } else {
       throw new APIException("Cannot generate receipt right now. Please try again later!")
     }
+  }
+
+  def startBilling(companyId:Int):Boolean = {
+    val updateQuery = companyQuery.filter(_.id === companyId).map(c => (c.billStatus, c.lastBillGeneratedOn,c.customerSeqNo)).update(Some(false),Some(DateTime.now().withDayOfMonth(1)),Some(0))
+    DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
+  }
+
+  def endBilling(companyId:Int):Boolean = {
+    val updateQuery = companyQuery.filter(_.id === companyId).map(_.billStatus).update(Some(true))
+    DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
+  }
+
+  def updateCustomerSeqNo(companyId:Int, customerId:Int):Boolean = {
+    val updateQuery = companyQuery.filter(_.id === companyId).map(_.customerSeqNo).update(Some(customerId))
+    DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
   }
 }

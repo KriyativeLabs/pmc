@@ -18,5 +18,6 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-jackson" % "3.2.11",
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
   "org.json4s" %% "json4s-ext" % "3.2.11",
-  "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0"
+  "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
+  "org.quartz-scheduler" % "quartz" % "2.2.2"
 )

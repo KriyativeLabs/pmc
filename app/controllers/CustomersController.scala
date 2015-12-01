@@ -3,14 +3,13 @@ package controllers
 import helpers.enums.UserType
 import helpers.json.CustomerSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Connection, Customers, Customer}
-import org.joda.time.DateTime
-import play.api.libs.json._
-import security.{LoggedInUser_1, IsAuthenticated, PermissionCheckAction}
+import models.{Connection, Customers}
 import play.api._
+import play.api.libs.json._
 import play.api.mvc._
+import security.{IsAuthenticated, PermissionCheckAction}
 
-case class CustomerCreate(id: Option[Int], name: String, mobileNo: Long, emailId: String, address: String, areaId: Int, balanceAmount: Int, connections: List[Connection])
+case class CustomerCreate(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String], address: String, areaId: Int, balanceAmount: Int, connections: List[Connection])
 
 object CustomerCreate {
   implicit val fmt = Json.format[CustomerCreate]

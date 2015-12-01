@@ -9,8 +9,11 @@ CREATE TABLE public.companies (
                 contact_no BIGINT NOT NULL,
                 address TEXT NOT NULL,
                 sms_count INTEGER NOT NULL DEFAULT 0,
-                price_per_customer INTEGER NOT NULL,
+                price_per_customer DECIMAL NOT NULL,
                 receipt_sequence BIGINT NOT NULL DEFAULT 1,
+                customer_seq_no INTEGER,
+                last_bill_generated_on TIMESTAMP,
+                bill_status boolean,
                 CONSTRAINT pk_companies PRIMARY KEY (id));
 
 ALTER SEQUENCE public.companies_id_seq OWNED BY  public.companies.id;

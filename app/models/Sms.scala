@@ -15,7 +15,7 @@ object SmsGateway {
     Right("Sent")
   }
 
-  def sendSms(message:String,contactNo:Long):Either[String,String] = {
+  def sendSms(message:String,contactNo:Option[Long]):Either[String,String] = {
     Right("Sent")
   }
 }

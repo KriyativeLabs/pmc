@@ -1,18 +1,17 @@
 package models
 
 import controllers.CustomerCreate
-import helpers.enums.UserType
-import helpers.enums.UserType.UserType
 import helpers.enums.UserType.UserType
 import play.api.libs.json.Json
-import security.{LoggedInUser_1, LoggedInUser}
+import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 //import scala.concurrent.ExecutionContext.Implicits.global
 
-case class Customer(id: Option[Int], name: String, mobileNo: Long, emailId: String, address: String, companyId: Int, areaId: Int, houseNo: Option[String], balanceAmount: Int)
+case class Customer(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String], address: String, companyId: Int, areaId: Int, houseNo: Option[String], balanceAmount: Int)
 
 object Customer {
   implicit val fmt = Json.format[Customer]
@@ -29,9 +28,9 @@ class CustomersTable(tag: Tag) extends Table[Customer](tag, "customers") {
 
   def name = column[String]("name")
 
-  def mobileNo = column[Long]("mobile_no")
+  def mobileNo = column[Option[Long]]("mobile_no")
 
-  def emailId = column[String]("email_id")
+  def emailId = column[Option[String]]("email_id")
 
   def address = column[String]("address")
 
@@ -77,18 +76,20 @@ object Customers {
     }
   }
 
-  def updateAmount(customerId: Int, paidAmount: Int)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
-    val customer = findById(customerId)
-    if (customer.isDefined) {
-      val updateQuery = customerQuery.filter(x => x.id === customerId && x.balanceAmount === customer.get.customer.balanceAmount).
-        map(c => c.balanceAmount).
-        update(customer.get.customer.balanceAmount - paidAmount)
-      try {
-        Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
-      } catch {
-        case e: Exception => Left(e.getMessage)
-      }
-    } else Left(s"Customer with id:$customerId not found")
+  def updateAmount(customerId: Int, paidAmount: Int): Boolean = {
+    val custQuery = customerQuery.filter(x => x.id === customerId)
+    val custResult = DatabaseSession.run(custQuery.result.headOption).asInstanceOf[Option[Customer]]
+    val customer = custResult.getOrElse(throw EntityNotFoundException(s"Customer not found with Id:$customerId"))
+
+    val updateQuery = customerQuery.filter(x => x.id === customerId && x.balanceAmount === customer.balanceAmount).
+      map(c => c.balanceAmount).
+      update(customer.balanceAmount - paidAmount)
+
+    if (DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1) {
+      true
+    } else {
+      false
+    }
   }
 
 
@@ -108,9 +109,9 @@ object Customers {
   def getUnpaidCustomers(userType: UserType, userId: Int)(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     //val filterQuery = if (userType == UserType.OWNER) {
 
-    val filterQuery =  for {
+    val filterQuery = for {
       (cust, conn) <- customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0) joinLeft connectionsQuery on (_.id === _.customerId)
-      } yield (cust, conn)
+    } yield (cust, conn)
 
     /*} else {
       for {
@@ -147,7 +148,7 @@ object Customers {
     }
 
     val filterQueryForConn = for {
-      (conn, cust) <- connectionsQuery.filter(y => (y.boxSerialNo.toLowerCase like s"%${search.toLowerCase}%") || (y.cafId.toLowerCase like s"%${search.toLowerCase}%") || (y.setupBoxId.toLowerCase like s"%${search.toLowerCase}%")) join customerQuery.filter(x => x.companyId === loggedInUser.companyId)  on (_.customerId === _.id)
+      (conn, cust) <- connectionsQuery.filter(y => (y.boxSerialNo.toLowerCase like s"%${search.toLowerCase}%") || (y.cafId.toLowerCase like s"%${search.toLowerCase}%") || (y.setupBoxId.toLowerCase like s"%${search.toLowerCase}%")) join customerQuery.filter(x => x.companyId === loggedInUser.companyId) on (_.customerId === _.id)
     } yield (cust, conn)
 
     /*} else {
@@ -180,6 +181,7 @@ object Customers {
     }
   }
 
+
   def getAll()(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
 
     val filterQuery = for {
@@ -187,5 +189,21 @@ object Customers {
     } yield (cust, conn)
 
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]].map(x => (CustomerCapsule.apply _).tupled(x))
+  }
+
+  def getAll(companyId: Int): Vector[CustomerCapsule] = {
+    val filterQuery = for {
+      (cust, conn) <- customerQuery.filter(x => x.companyId === companyId).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)
+    } yield (cust, conn)
+
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Connection)]].map(x => CustomerCapsule(x._1, Some(x._2))) //(CustomerCapsule.apply _).tupled(x))
+  }
+
+  def getAll(companyId: Int, customerIdSeq:Int): Vector[CustomerCapsule] = {
+    val filterQuery = for {
+      (cust, conn) <- customerQuery.filter(x => x.companyId === companyId && x.id > customerIdSeq).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)
+    } yield (cust, conn)
+
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Connection)]].map(x => CustomerCapsule(x._1, Some(x._2))) //(CustomerCapsule.apply _).tupled(x))
   }
 }

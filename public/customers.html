@@ -69,7 +69,6 @@
             <div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <form>
                             <div>{{createErrorMsg}}</div>
                             <div>
                                 <div>
@@ -78,34 +77,27 @@
                                     <div class="row">
                                         <div class="col-sm-4" style="padding-right:20px;">
                                             <p>Name*</p>
-                                            <input ng-model="name" class="form-control" type="text"
+                                            <input ng-model="name" class="form-control" maxlength="128" type="text"
                                                    data-trigger="change"
                                                    data-required="true" placeholder="Customer Name">
                                         </div>
                                         <div class="col-sm-4" style="padding-right:20px;">
                                             <p>Mobile Number</p>
-                                            <input ng-model="mobile_no" class="form-control" type="number" size="10"
-                                                   data-trigger="change" data-required="false"
-                                                   placeholder="Customer Mobile Number">
+                                            <input class="form-control" type="number" ng-model="mobile_no" maxlength="10" placeholder="Customer Mobile Number" limit-to="10"/>
                                         </div>
                                         <div class="col-sm-4" style="padding-right:20px;">
                                             <p>Email</p>
-                                            <input ng-model="email" class="form-control" type="text"
-                                                   data-trigger="change"
-                                                   data-required="false" placeholder="Customer Email ID">
+                                            <input ng-model="email" class="form-control" type="email" placeholder="Customer Email ID">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-4" style="padding-right:20px;">
                                             <p>Old Balance</p>
-                                            <input ng-model="old_balance" class="form-control" type="number"
-                                                   data-trigger="change" data-required="true"
-                                                   placeholder="Old Balance If Any?">
+                                            <input ng-model="old_balance" class="form-control" type="number" placeholder="Old Balance If Any?">
                                         </div>
                                         <div class="col-sm-4" style="padding-right:20px;">
                                             <p>Area*</p>
-                                            <select ng-model="area" class="form-control" data-trigger="change"
-                                                    data-required="true">
+                                            <select ng-model="area" class="form-control">
                                                 <option value="">Select Area</option>
                                                 <option ng-repeat="area in areas" value="{{area.id}}"
                                                         ng-selected="areaId == area.id">{{area.name}}
@@ -154,8 +146,8 @@
                                             <p>Connection Status</p>
                                             <select ng-model="status" class="form-control" data-trigger="change"
                                                     data-required="true">
-                                                <option value="1" ng-selected="status==1">Active</option>
-                                                <option value="2" ng-selected="status==2">In-Active</option>
+                                                <option value="ACTIVE" ng-selected="status=='ACTIVE'">Active</option>
+                                                <option value="IN_ACTIVE" ng-selected="status=='IN_ACTIVE'">In-Active</option>
                                             </select>
 
                                         </div>
@@ -199,7 +191,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
                     </div>
 
                 </div>

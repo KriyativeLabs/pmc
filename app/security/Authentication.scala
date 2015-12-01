@@ -17,23 +17,6 @@ import java.lang._
 
 case class LoggedInUser(userId:Int,companyId:Int,expiryDay:Int,userType:UserType)
 
-object LoggedInUser_1{
-  private val user:ThreadLocal[Option[LoggedInUser]] = new InheritableThreadLocal[Option[LoggedInUser]]
-  def set(u:LoggedInUser) : Unit = {
-    println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"+u)
-    user.set(Some(u))
-  }
-  def reset() :Unit = {
-    user.set(None)
-  }
-  def apply() : LoggedInUser = {
-    println(user.get())
-    user.get().getOrElse({
-      throw new Exception("No User configured for thread =>" + Thread.currentThread().getId )
-    })
-  }
-}
-
 class AuthenticatedRequest[A](val user: LoggedInUser, request: Request[A]) extends WrappedRequest[A](request)
 
 object Authentication {
@@ -86,7 +69,7 @@ object IsAuthenticated extends ActionBuilder[AuthenticatedRequest] with ActionRe
       }
       Authentication.decryptAuthHeader(authString.get) match {
         case Left(s) => Left(unAuthorized("Invalid user")(request))
-        case Right(l) => {LoggedInUser_1.set(l);println(l);Right(new AuthenticatedRequest(l, request))}
+        case Right(l) => Right(new AuthenticatedRequest(l, request))
       }
     } catch {
       case e: IllegalArgumentException => {

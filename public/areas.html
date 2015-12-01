@@ -61,11 +61,11 @@
                         <form role="form">
                             <div class="form-group">
                                 <label for="validation-city">Area Code</label>
-                                <input ng-model="code" class="form-control" type="text" placeholder="Area Code ">
+                                <input ng-model="code" maxlength="5" class="form-control" type="text" placeholder="Area Code ">
                             </div>
                             <div class="form-group">
                                 <label for="validation-city">Area Name</label>
-                                <input ng-model="name" class="form-control" type="text" id="validation-city" name="validation-city" placeholder="Area Name">
+                                <input ng-model="name" maxlength="64" class="form-control" type="text" id="validation-city" name="validation-city" placeholder="Area Name">
                             </div>
                             <div class ="pull-right">
                             <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>

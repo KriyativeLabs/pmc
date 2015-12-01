@@ -6,17 +6,18 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
         $scope.doughnutlabels = [];
         $scope.doughnutdata = [];
         $scope.doughnutcolors = [
+
             {
-                "fillColor": "rgb(23,123,187)",
-                "strokeColor": "rgb(23,123,187)",
+                "fillColor": "rgba(227,50,68,0.8)",
+                "strokeColor": "rgba(227,50,68,0.8)",
                 "pointColor": "rgba(220,220,220,1)",
                 "pointStrokeColor": "#fff",
                 "pointHighlightFill": "#fff",
                 "pointHighlightStroke": "rgba(151,187,205,0.8)"
             },
             {
-                "fillColor": "rgba(227,50,68,0.8)",
-                "strokeColor": "rgba(227,50,68,0.8)",
+                "fillColor": "rgb(23,123,187)",
+                "strokeColor": "rgb(23,123,187)",
                 "pointColor": "rgba(220,220,220,1)",
                 "pointStrokeColor": "#fff",
                 "pointHighlightFill": "#fff",
@@ -57,9 +58,23 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
                 $scope.unpaidCustomers = response.data.data.unpaidCustomers;
                 $scope.paidCustomers = response.data.data.totalCustomers - response.data.data.unpaidCustomers;
                 $scope.balanceAmount = response.data.data.balanceAmount;
-                $scope.doughnutlabels.push("Balance Amount");
-                $scope.doughnutdata.push($scope.balanceAmount);
                 $scope.amountCollected = response.data.data.amountCollected;
+                apiService.GET("/agent_stats").then(function (response) {
+                    var responseData = response.data.data;
+                    $scope.doughnutlabels.push("Balance Amount");
+                    $scope.doughnutdata.push($scope.balanceAmount);
+                    for (var key in responseData) {
+                        if (responseData.hasOwnProperty(key)) {
+                            $scope.doughnutlabels.push(key);
+                            $scope.doughnutdata.push(responseData[key]);
+                        }
+                    }
+                }, function (errorResponse) {
+                    apiService.NOTIF_ERROR(errorResponse.data.message);
+                    if (errorResponse.status != 200) {
+                        console.log(errorResponse);
+                    }
+                });
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
@@ -70,23 +85,11 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
 
         $scope.getDashboardData();
 
-        var agentStats = function () {
-            apiService.GET("/agent_stats").then(function (response) {
-                var responseData = response.data.data;
-                for (var key in responseData) {
-                    if (responseData.hasOwnProperty(key)) {
-                        $scope.doughnutlabels.push(key);
-                        $scope.doughnutdata.push(responseData[key]);
-                    }
-                }
-            }, function (errorResponse) {
-                apiService.NOTIF_ERROR(errorResponse.data.message);
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
-            });
+/*        var agentStats = function () {
+
         };
         agentStats();
+        */
 
         var monthlyStats = function () {
             apiService.GET("/company_stats").then(function (response) {
