@@ -18,6 +18,10 @@ pmcApp.config(function setUpConfig($httpProvider){
             responseError: function (rejection) {
                 console.log("interceptor");
                 console.log(rejection);
+                if(rejection.status == 0){
+                    alert("Unable to reach our servers. Please check your internet connection!");
+                    window.stop();
+                }
                 if (rejection.status == 403 || rejection.status == 401) {
                     cookieService.destroy();
                     $window.location.href = "/login.html";
