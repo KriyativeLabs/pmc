@@ -103,7 +103,7 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
 
                 if(responseData.length == 0){
                     var dateDummy = new Date();
-                    $scope.barlabels.push(monthNames[dateDummy.getMonth()] + "'" + dateDummy.getFullYear());
+                    $scope.barlabels.push(monthNames[dateDummy.getMonth()-1] + "'" + dateDummy.getFullYear());
                     $scope.bardata[0].push(0);
                     $scope.bardata[1].push(0);
                 }
