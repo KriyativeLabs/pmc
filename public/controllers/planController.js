@@ -1,5 +1,5 @@
 pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope,$compile, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+    function ($scope, $compile, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
         $scope.getPlans = function () {
@@ -56,18 +56,17 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
 
 
         function actionsHtml(data, type, full, meta) {
-            if(!$scope.isAgent) {
+            if ($scope.isAgent) {
+                return "";
+            } else {
                 return '<button ng-click="openUpdate(' + data.id + ')"  ng-hide="' + $scope.isAgent + '" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>' +
                     '<button ng-click="deletePlan(' + data.id + ')"  ng-hide="' + $scope.isAgent + '" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
-            }else{
-                return '';
             }
         }
 
         function createdRow(row, data, dataIndex) {
             $compile(angular.element(row).contents())($scope);
         }
-
 
 
 //############################################Modal###########################################
