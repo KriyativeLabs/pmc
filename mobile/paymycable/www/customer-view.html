@@ -1,0 +1,83 @@
+<div id="content">
+    <div class="vbox bg-white">
+        <header class="header b-b b-light hidden-print">
+            <button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>
+            <h4>Customer Details</h4>
+        </header>
+        <div class="scrollable wrapper">
+            <div class="row">
+                <div class="col-xs-6">
+                    <h4>{{customer.name}}</h4>
+
+                    <p>Mobile Number :{{customer.mobileNo}}</p>
+
+                    <p>Email ID : {{customer.emailId}}</p>
+
+                    <p>House No : {{customer.houseNo}}</p>
+
+                    <p>Id Proof : {{connection.idProof}}</p>
+
+                    <p>Pending Balance : {{customer.balanceAmount}} INR</p>
+
+                    <!--<p>Area : </p>-->
+
+                    <p>Address:{{customer.address}}
+                    </p>
+
+                </div>
+                <div class="col-xs-6 text-right">
+                    <p class="h4">Customer Serial number: {{customer.houseNo}}</p>
+                </div>
+            </div>
+            <div class="well m-t">
+                <strong>Plans & CAF Details</strong>
+
+                <div class="row">
+                    <div class="col-xs-8">
+
+                        <p>STB Number : {{connection.setupBoxId}}<br/>
+                            CAF : {{connection.cafId}}<br/>
+                            Box Series : {{connection.boxSerialNo}}<br/>
+                        </p>
+                    </div>
+                    <div class="col-xs-4">
+                        <p class="m-t m-b">
+                            status: <span ng-if="connection.status == 1" class="label bg-success">Active</span><span ng-if="connection.status != 1" class="label bg-danger">InActive</span><br>
+                            Plan : <strong>{{plan.name}}-{{plan.amount}}</strong><br/>
+                            Discounted : <strong> {{connection.discount}} INR</strong>
+                        </p>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="well m-t">
+                <h5><strong>Recent Payment Details</strong></h5>
+                <hr>
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                    <!--<thead>
+                    <tr>
+                        <th width="20%">Receipt No.</th>
+                        <th width="10%">Paid On</th>
+                        <th width="15%">Amount</th>
+                        <th width="20%">Remarks</th>
+                        <th width="15%">Agent</th>
+                    </tr>
+                    </thead>-->
+                    <tbody>
+                    <tr ng-repeat="receipt in payments">
+                        <td>{{receipt.receiptNo}}</td>
+                        <td>{{receipt.paidOn}}</td>
+                        <td>{{receipt.paidAmount}}</td>
+                        <td>{{receipt.remarks}}</td>
+                        <td>{{receipt.agentDetails}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>
+</div>

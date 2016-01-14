@@ -1,0 +1,81 @@
+<div id="content">
+    <div class="vbox bg-white">
+        <header class="header b-b b-light hidden-print">
+            <button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>
+            <h4>Agent Details</h4>
+        </header>
+        <div class="scrollable wrapper">
+            <div class="row">
+                <div class="col-xs-6">
+                    <h4>{{agent.name}}</h4>
+
+                    <p>Login Id : {{agent.loginId}}</p>
+
+                    <p>Mobile Number :{{agent.contactNo}}</p>
+
+                    <p>Email ID : {{agent.email}}</p>
+
+                    <p>Address:{{agent.address}}
+                    </p>
+
+                </div>
+                <div class="col-xs-6 text-right">
+                    <p class="h4">Account Type: {{agent.accountType}}</p>
+                </div>
+            </div>
+            <div class="well m-t">
+                <h5><strong>Todays Collections(Amount Collected:{{getTotal()}})</strong></h5>
+                <hr>
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                    <!--<thead>
+                    <tr>
+                        <th width="20%">Receipt No.</th>
+                        <th width="20%">Customer Name</th>
+                        <th width="10%">Paid On</th>
+                        <th width="15%">Amount</th>
+                        <th width="20%">Remarks</th>
+                    </tr>
+                    </thead>-->
+                    <tbody>
+                    <tr ng-repeat="receipt in paymentstoday">
+                        <td>{{receipt.receiptNo}}</td>
+                        <td>{{receipt.customerDetails}}</td>
+                        <td>{{receipt.paidOn}}</td>
+                        <td>{{receipt.paidAmount}}</td>
+                        <td>{{receipt.remarks}}</td>
+
+
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="well m-t">
+                <h5><strong>Old Collection Details</strong></h5>
+                <hr>
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                    <!--<thead>
+                    <tr>
+                        <th width="20%">Receipt No.</th>
+                        <th width="20%">Customer Name</th>
+                        <th width="10%">Paid On</th>
+                        <th width="15%">Amount</th>
+                        <th width="20%">Remarks</th>
+                    </tr>
+                    </thead>-->
+                    <tbody>
+                    <tr ng-repeat="receipt in payments">
+                        <td>{{receipt.receiptNo}}</td>
+                        <td>{{receipt.customerDetails}}</td>
+                        <td>{{receipt.paidOn}}</td>
+                        <td>{{receipt.paidAmount}}</td>
+                        <td>{{receipt.remarks}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <a href="#" class="hide nav-off-screen-block" data-toggle="class:nav-off-screen" data-target="#nav"></a>
+</div>
