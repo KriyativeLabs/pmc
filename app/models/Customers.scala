@@ -76,6 +76,31 @@ object Customers {
     }
   }
 
+  def tempinsert(customer: CustomerCreate): Either[String, Int] = {
+    val newCustomer = Customer(None, customer.name, customer.mobileNo, customer.emailId, customer.address,1, customer.areaId, None, customer.balanceAmount)
+    val houseNo = Areas.getIdSequence(newCustomer.areaId, newCustomer.companyId)
+    houseNo match {
+      case Left(e) => {
+        Left(e)
+      }
+      case Right(s) => {
+        try {
+          val resultQuery = for {
+            id <- customerQuery returning customerQuery.map(_.id) += newCustomer.copy(houseNo = Some(s))
+            conns <- connectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(1)))
+          } yield id
+          val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
+          //Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
+          //val company = Companies.findById(loggedInUser.companyId).getOrElse(throw EntityNotFoundException(s"Company with id:${loggedInUser.companyId} not found"))
+          //SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
+          Right(result)
+        } catch {
+          case e: Exception => Left(e.getMessage)
+        }
+      }
+    }
+  }
+
   def updateAmount(customerId: Int, paidAmount: Int): Boolean = {
     val custQuery = customerQuery.filter(x => x.id === customerId)
     val custResult = DatabaseSession.run(custQuery.result.headOption).asInstanceOf[Option[Customer]]
