@@ -40,7 +40,7 @@
                 <tr ng-repeat="customerCap in customers | orderBy:'name'">
                     <td>{{customerCap.customer.id}}</td>
                     <td>{{customerCap.customer.houseNo}}</td>
-                    <td><u><a ng-href="/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u></td>
+                    <td><u><a ng-href="#/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u></td>
                     <td>{{customerCap.customer.mobileNo}}</td>
                     <td>{{customerCap.connection.setupBoxId}}</td>
                     <td>{{customerCap.connection.boxSerialNo}}</td>

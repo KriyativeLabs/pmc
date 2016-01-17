@@ -78,6 +78,11 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 $scope.customersBackUp = result.data.data;
             });
         };
+
+
+        $scope.myPagingFunction = function(){
+           alert("Hello");
+        };
         //#############################################################################################
         $scope.open = function () {
 

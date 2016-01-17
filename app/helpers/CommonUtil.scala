@@ -15,4 +15,19 @@ trait CommonUtil {
     request.user
   }
 
+  def paginationAttributes(implicit request: AuthenticatedRequest[_]): (Option[String],Option[String], Option[Int], Option[Int]) = {
+    val sortBy = request.getQueryString("sortBy")
+    val sortOrder = request.getQueryString("sortOrder")
+    val pageSize = request.getQueryString("pageSize") match {
+      case Some(x) => if (x.forall(_.isDigit)) Some(x.toInt) else None
+      case None => None
+    }
+    val pageNo = request.getQueryString("pageNo") match {
+      case Some(x) => if (x.forall(_.isDigit)) Some(x.toInt) else None
+      case None => None
+    }
+
+    (sortBy, sortOrder, pageSize, pageNo)
+  }
+
 }
