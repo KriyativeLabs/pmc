@@ -1,8 +1,8 @@
 pmcApp.controller('authenticationController', ['$scope','$window', 'cookieService', 'apiService', 'constantsService',
     function($scope, $window, cookieService, apiService,constantsService) {
         console.log("authentication controller loaded");
-        $scope.loginid="krupa_login_1";
-        $scope.password="Surya@123";
+        //$scope.loginid="krupa_login_1";
+        //$scope.password="Surya@123";
         $scope.isError = false;
         $scope.error = "";
         if(cookieService.get(constantsService.TOKEN)){
