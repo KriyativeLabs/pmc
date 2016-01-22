@@ -224,7 +224,7 @@ object Customers {
 
 
   def getAllCount()(implicit loggedInUser: LoggedInUser): Int = {
-    val filterQuery = customerQuery.filter(x => x.companyId === loggedInUser.companyId).countDistinct
+    val filterQuery = customerQuery.filter(x => x.companyId === loggedInUser.companyId).length
     DatabaseSession.run(filterQuery.result).asInstanceOf[Int]
   }
 
