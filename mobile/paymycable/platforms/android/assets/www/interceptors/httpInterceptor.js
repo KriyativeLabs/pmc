@@ -17,7 +17,8 @@ pmcApp.config(function setUpConfig($httpProvider){
             },
             responseError: function (rejection) {
                 if(rejection.status == 0){
-		    alert(rejection.config.url);
+		          alert(rejection.config.url);
+                    
                     alert("Unable to reach our servers. Please check your internet connection!");
                     window.stop();
                 }
