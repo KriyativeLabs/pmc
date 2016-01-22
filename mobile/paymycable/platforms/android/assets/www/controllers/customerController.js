@@ -18,7 +18,8 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         }
 
         var getCustomers = function () {
-            apiService.GET(link).then(function (result) {
+            alert(finalLink);
+            apiService.GET(finalLink).then(function (result) {
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
                 $scope.customersBackUp = result.data.data;
@@ -33,6 +34,11 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.getCustomersCount = function () {
             apiService.GET(link+"/count").then(function (result) {
                 $scope.customersCount = result.data.data.count;
+                $scope.noOfPages = $scope.customersCount/pageSize;
+                if($scope.customersCount % pageSize > 0) {
+                    $scope.noOfPages = $scope.noOfPages +1;
+                }
+                alert($scope.customersCount);
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
@@ -45,13 +51,25 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
         $scope.loadNext = function(buttonId){
             if(buttonId == -2 ){
-                link = link+"?pageNo=1&pageSize="+pageSize;
+                finalLink = link+"?pageNo=1&pageSize="+pageSize;
             } else if(buttonId == -1){
-                link = link+"?pageNo="+(pageNo-1)+"&pageSize="+pageSize;
+                if(pageNo-1 > 0){
+                   pageNo = pageNo-1;
+                } else {
+                    pageNo = 1;
+                }
+                finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
             } else if(buttonId == 1){
-                link = link+"?pageNo="+(pageNo+1)+"&pageSize="+pageSize;
+
+                if(pageNo+1 <= $scope.noOfPages){
+                    pageNo = pageNo+1;
+                } else {
+                    pageNo = $scope.noOfPages;
+                }
+                finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
             } else {
-                link = link+"?pageNo="+(pageNo-1)+"&pageSize="+pageSize;
+                pageNo = $scope.noOfPages;
+                finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
             }
             getCustomers()
         };
@@ -65,7 +83,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             .withDOM('tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
-            .withOption('order', [4, 'desc'])
+            .withOption('order', [6, 'desc'])
             .withOption('language', {
                 paginate: {
                     next: "",

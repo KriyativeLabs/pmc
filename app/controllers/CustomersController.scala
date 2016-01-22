@@ -52,13 +52,15 @@ object CustomersController extends Controller with CustomerSerializer with Commo
 
   def unpaidCustomers() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
-    val customerList = Customers.getUnpaidCustomers(request.user.userType, request.user.userId)
+    val pageAttributes = paginationAttributes
+    val customerList = Customers.getUnpaidCustomers(request.user.userType, request.user.userId, pageAttributes._1, pageAttributes._2, pageAttributes._3, pageAttributes._4)
     ok(Json.toJson(customerList), "List of customers")
   }
 
   def paidCustomers() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
-    val customerList = Customers.getPaidCustomers(request.user.userType, request.user.userId)
+    val pageAttributes = paginationAttributes
+    val customerList = Customers.getPaidCustomers(request.user.userType, request.user.userId, pageAttributes._1, pageAttributes._2, pageAttributes._3, pageAttributes._4)
     ok(Json.toJson(customerList), "List of customers")
   }
 
