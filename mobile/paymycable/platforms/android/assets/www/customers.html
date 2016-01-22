@@ -21,6 +21,11 @@
             <button ng-hide="{{isAgent}}" class="btn btn-s-md btn-primary" ng-click="open()"><i class="i i-plus2"></i> Add Customer</button>
         </div>
     </section>
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <button class="btn btn-s-md btn-primary" ng-click="open()"><i class="i i-arrow-left"></i>Previous</button>&nbsp;<button class="btn btn-s-md btn-primary" ng-click="open()">Next<i class="i i-arrow-right"></i></button>
+        </div>
+    </section>
     <div class="panel panel-default">
         <div class="table-responsive">
             <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
@@ -40,7 +45,7 @@
                 <tr ng-repeat="customerCap in customers | orderBy:'name'">
                     <td>{{customerCap.customer.id}}</td>
                     <td>{{customerCap.customer.houseNo}}</td>
-                    <td><u><a ng-href="/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u></td>
+                    <td><u><a ng-href="#/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u></td>
                     <td>{{customerCap.customer.mobileNo}}</td>
                     <td>{{customerCap.connection.setupBoxId}}</td>
                     <td>{{customerCap.connection.boxSerialNo}}</td>

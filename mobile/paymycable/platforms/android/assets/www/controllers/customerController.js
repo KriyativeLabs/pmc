@@ -35,7 +35,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             // Active Responsive plugin
             .withOption('createdRow', createdRow)
             .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withDOM('tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
             .withOption('order', [4, 'desc'])

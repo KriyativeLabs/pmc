@@ -1,4 +1,4 @@
-<div data-ng-init="getCustomers()">
+<div data-ng-init="loadNext(-2)">
     <div class="row m-b-md">
         <div class="col-sm-6">
             <h3 class="m-b-xs text-black">Customers</h3>
@@ -19,6 +19,11 @@
     <section class="row m-b-md">
         <div class="col-sm-6">
             <button ng-hide="{{isAgent}}" class="btn btn-s-md btn-primary" ng-click="open()"><i class="i i-plus2"></i> Add Customer</button>
+        </div>
+    </section>
+    <section class="row m-b-md">
+        <div class="col-sm-6">
+            <button class="btn btn-s-md btn-primary" ng-click="loadNext(-1)"><i class="i i-arrow-left"></i>Previous</button>&nbsp;<button class="btn btn-s-md btn-primary" ng-click="loadNext(1)">Next<i class="i i-arrow-right"></i></button>
         </div>
     </section>
     <div class="panel panel-default">

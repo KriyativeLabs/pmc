@@ -6,7 +6,8 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         if (!query) {
             query = "all";
         }
-
+        var pageSize = 20;
+        var pageNo = 1;
         var link = "/customers";
         if (query == "paid") {
             link = "/customers/paid";
@@ -16,7 +17,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             link = "/customers";
         }
 
-        $scope.getCustomers = function () {
+        var getCustomers = function () {
             apiService.GET(link).then(function (result) {
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
@@ -29,13 +30,39 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             });
         };
 
+        $scope.getCustomersCount = function () {
+            apiService.GET(link+"/count").then(function (result) {
+                $scope.customersCount = result.data.data.count;
+            }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+            });
+        };
+
+        $scope.getCustomersCount();
+
+        $scope.loadNext = function(buttonId){
+            if(buttonId == -2 ){
+                link = link+"?pageNo=1&pageSize="+pageSize;
+            } else if(buttonId == -1){
+                link = link+"?pageNo="+(pageNo-1)+"&pageSize="+pageSize;
+            } else if(buttonId == 1){
+                link = link+"?pageNo="+(pageNo+1)+"&pageSize="+pageSize;
+            } else {
+                link = link+"?pageNo="+(pageNo-1)+"&pageSize="+pageSize;
+            }
+            getCustomers()
+        };
+
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             //.withColumnFilter()
             //.withDOM('<"input-group"f>pitrl')
             // Active Responsive plugin
             .withOption('createdRow', createdRow)
             .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withDOM('tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
             .withOption('order', [4, 'desc'])

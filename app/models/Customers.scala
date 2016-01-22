@@ -207,13 +207,25 @@ object Customers {
   }
 
 
-  def getAll()(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
+  def getAlll(sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
+    val filterQuery = if(pageSize.isDefined && pageNo.isDefined) {
+      for {
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop(pageNo.get * pageSize.get).take(pageSize.get)
+      } yield (cust, conn)
+    } else {
+      for {
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
+      } yield (cust, conn)
 
-    val filterQuery = for {
-      (cust, conn) <- customerQuery.filter(x => x.companyId === loggedInUser.companyId).sortBy(_.balanceAmount) joinLeft connectionsQuery on (_.id === _.customerId)
-    } yield (cust, conn)
+    }
 
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]].map(x => (CustomerCapsule.apply _).tupled(x))
+  }
+
+
+  def getAllCount()(implicit loggedInUser: LoggedInUser): Int = {
+    val filterQuery = customerQuery.filter(x => x.companyId === loggedInUser.companyId).countDistinct
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Int]
   }
 
   def getAll(companyId: Int): Vector[CustomerCapsule] = {

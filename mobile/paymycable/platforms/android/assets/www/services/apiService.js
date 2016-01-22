@@ -28,11 +28,11 @@ pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Not
     };
 
     var errorTime = function (msg) {
-        Notification.error({message: msg, delay: 10000});
+        Notification.error({message: msg, delay: 10000, positionY: 'top', positionX: 'center'});
     };
 
     var successTime = function (msg) {
-        Notification.success({message: msg, delay: 5000});
+        Notification.success({message: msg, delay: 5000, positionY: 'top', positionX: 'center'});
     };
 
     return {
