@@ -34,7 +34,7 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
             .withOption('responsive', true)
             .withDOM('<"row"<"col-sm-6 m-xs"i>>tr')
             //.withPaginationType('full_numbers')
-            //.withDisplayLength(40)
+            .withDisplayLength(-1)
             .withOption('order', [2, 'asc'])
             .withOption('language', {
                 paginate: {

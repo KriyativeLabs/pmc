@@ -14,7 +14,7 @@ import utils.CommonUtils
 object PaymentsController extends Controller with PaymentSerializer with PaymentCapsuleSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
-  def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
+  def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     request.body.validate[Payment].fold(
       errors => BadRequest(errors.mkString),
       payment => {
@@ -28,7 +28,7 @@ object PaymentsController extends Controller with PaymentSerializer with Payment
     )
   }
 
-  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val payment = Payments.findById(id.toInt)
     if (payment.isDefined) ok(Json.toJson(payment), "Payment details") else notFound(s"Payment with $id not found")

@@ -56,7 +56,7 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout
             .withOption('responsive', true)
             .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
             //.withPaginationType('full_numbers')
-            //.withDisplayLength(40)
+            .withDisplayLength(-1)
             .withOption('order', [1, 'asc'])
             .withOption('language', {
                 paginate: {
