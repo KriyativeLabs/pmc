@@ -33,9 +33,9 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('createdRow', createdRow)
             .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
             .withPaginationType('full_numbers')
-            .withDisplayLength(40)
+           // .withDisplayLength(40)
             .withOption('language', {
                 paginate: {
                     next: "",
@@ -58,7 +58,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
 
 
         function actionsHtml(data, type, full, meta) {
-            return '<button ng-click="openUpdate('+data.id+')" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>'+
+            return '<button ng-click="openUpdate('+data.id+')" class="btn btn-primary btn-sm" style="padding:1px 17.5px !important;">Edit</button>'+
             '<button ng-click="deleteAgent('+data.id+')" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
         }
 

@@ -1,32 +1,37 @@
 <div id="content">
     <div class="vbox bg-white">
-        <header class="header b-b b-light hidden-print">
-            <button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>
-            <h4>Agent Details</h4>
-        </header>
+        <!--<header class="header b-b b-light hidden-print">-->
+        <!--&lt;!&ndash;<button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>&ndash;&gt;
+        -->
+        <!--<h4>Agent Details</h4>-->
+        <!--</header>-->
         <div class="scrollable wrapper">
             <div class="row">
-                <div class="col-xs-6">
-                    <h4>{{agent.name}}</h4>
+                <div class="col-xs-12">
+                    <h3 class="text-primary" style="margin-top:-8px;margin-bottom:-8px;">Agent Details</h3>
+                    <hr>
+                    <h5 style="margin-top:-8px;margin-bottom:-8px;"><b>{{agent.name}}</b></h5>
+                    <hr/>
 
-                    <p>Login Id : {{agent.loginId}}</p>
+                    <p><b>Login ID:</b> {{agent.loginId}}</p>
 
-                    <p>Mobile Number :{{agent.contactNo}}</p>
+                    <p><b>Mobile Number:</b> {{agent.contactNo}}</p>
 
-                    <p>Email ID : {{agent.email}}</p>
+                    <p><b>Email ID:</b> {{agent.email}}</p>
 
-                    <p>Address:{{agent.address}}
+                    <p><b>Address:</b> {{agent.address}}
                     </p>
 
-                </div>
-                <div class="col-xs-6 text-right">
-                    <p class="h4">Account Type: {{agent.accountType}}</p>
+                    <p><b>Account Type:</b> {{agent.accountType}}</p>
                 </div>
             </div>
             <div class="well m-t">
-                <h5><strong>Todays Collections(Amount Collected:{{getTotal()}})</strong></h5>
+                <h5><strong>Today's Collections:</strong></h5>
+                    <h5><strong>(Amount Collected:{{getTotal()}})</strong></h5>
                 <hr>
-                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                <div class="table-responsive" ng-show="todayDisplay">
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns_1"
+                       class="table table-striped m-b-none">
                     <!--<thead>
                     <tr>
                         <th width="20%">Receipt No.</th>
@@ -40,7 +45,7 @@
                     <tr ng-repeat="receipt in paymentstoday">
                         <td>{{receipt.receiptNo}}</td>
                         <td>{{receipt.customerDetails}}</td>
-                        <td>{{receipt.paidOn}}</td>
+                        <!--<td>{{receipt.paidOn}}</td>-->
                         <td>{{receipt.paidAmount}}</td>
                         <td>{{receipt.remarks}}</td>
 
@@ -48,12 +53,18 @@
                     </tr>
                     </tbody>
                 </table>
+                    </div>
+                <div ng-hide="todayDisplay">
+                    No Today's Collections!
+                </div>
             </div>
 
             <div class="well m-t">
                 <h5><strong>Old Collection Details</strong></h5>
                 <hr>
-                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                <div class="table-responsive" ng-show="oldDisplay">
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns"
+                       class="table table-striped m-b-none">
                     <!--<thead>
                     <tr>
                         <th width="20%">Receipt No.</th>
@@ -73,6 +84,10 @@
                     </tr>
                     </tbody>
                 </table>
+                    </div>
+                <div ng-hide="oldDisplay">
+                    No Recent Payments!
+                </div>
             </div>
 
         </div>

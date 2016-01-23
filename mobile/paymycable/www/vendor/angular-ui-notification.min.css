@@ -7,8 +7,8 @@
  */
 .ui-notification {
     position: fixed;
-    //z-index: 9999;
-    //width: 90%;
+    z-index: 9999;
+    width: 90%;
     cursor: pointer;
     -webkit-transition: all ease .5s;
     -o-transition: all ease .5s;

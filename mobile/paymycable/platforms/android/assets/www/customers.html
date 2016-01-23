@@ -1,33 +1,50 @@
 <div data-ng-init="loadNext(-2)">
-    <div class="row m-b-md">
-        <div class="col-sm-6">
+    <div class="row">
+        <!--<div class="col-sm-6">
             <h3 class="m-b-xs text-black">Customers</h3>
-        </div>
-        <div class="col-sm-6 text-right text-left-xs m-t-md">
+        </div>-->
+        <div class="col-sm-12 text-right text-left-xs">
             <form class="m-b-none" action="">
                 <div class="input-group">
                     <input type="search" placeholder="Type to Search.." ng-model="search" class="form-control">
                     <span class="input-group-btn">
                               <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i
-                                      class="i i-search2"></i> Search
+                                      class="i i-search2"></i>
                               </button>
-                            </span>
+                     </span>
                 </div>
             </form>
         </div>
     </div>
-    <section class="row m-b-md">
+    <section class="row">
+        <!--<div class="col-sm-6">-->
+            <!--<button ng-hide="{{isAgent}}" class="btn btn-sm btn-primary" ng-click="open()"><i class="i i-plus2"></i>Add</button>-->
+        <!--</div>-->
+   <!-- </section>
+    <section class="row m-b-md">-->
         <div class="col-sm-6">
-            <button ng-hide="{{isAgent}}" class="btn btn-s-md btn-primary" ng-click="open()"><i class="i i-plus2"></i> Add Customer</button>
-        </div>
-    </section>
-    <section class="row m-b-md">
-        <div class="col-sm-6">
-            <button class="btn btn-s-md btn-primary" ng-click="loadNext(-1)"><i class="i i-arrow-left"></i>Previous</button>&nbsp;<button class="btn btn-s-md btn-primary" ng-click="loadNext(1)">Next<i class="i i-arrow-right"></i></button>
+            <table width="100%">
+                <tr>
+                    <td align="left">
+            <button ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0"  class="btn btn-sm btn-primary" ng-click="open()"><i class="i i-plus2"></i>Add</button>
+                    </td>
+                    <td align="right" style="float:right !important; bottom: 0">
+        <ul class="pagination pagination-sm">
+                <li><a ng-click="loadNext(-2)"><i class="fa fa-fast-backward"></i></a></li>
+                <li><a ng-click="loadNext(-1)"><i class="fa fa-step-backward"></i></a></li>
+                <li><a ng-click="loadNext(1)"><i class="fa fa-step-forward"></i></a></li>
+                <li><a ng-click="loadNext(2)"><i class="fa fa-fast-forward"></i></a></li>
+            </ul>
+                    </td>
+                </tr>
+            </table>
+            <!--<button class="btn btn-s-md btn-primary" ng-click="loadNext(-1)"><i class="i i-arrow-left"></i>Previous</button>&nbsp;<button class="btn btn-s-md btn-primary" ng-click="loadNext(1)">Next<i class="i i-arrow-right"></i></button>-->
+           <!--<p class="m-xs bg-white">Showing {{from}} to {{to}} of {{customersCount}}</p>-->
         </div>
     </section>
     <div class="panel panel-default">
         <div class="table-responsive">
+            <div class="col-sm-12 m-xs"><div aria-live="polite" role="status" id="DataTables_Table_4_info" class="dataTables_info">Showing {{from}} to {{to}} of {{customersCount}}</div></div>
             <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                 <thead>
                 <tr>
@@ -184,7 +201,7 @@
                                             <p>Plan Starts On*</p>
 
                                             <p class="input-group">
-                                                <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
+                                                <input type="text" ng-disabled="true" class="form-control" datepicker-popup="dd/MM/yyyy"
                                                        ng-model="dt" is-open="opened" ng-required="true"
                                                        close-text="Close"/>
               <span class="input-group-btn">

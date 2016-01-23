@@ -60,13 +60,12 @@
         <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="#nav">
             <i class="fa fa-bars"></i>
         </a>
-        <a ng-href="#/" class="navbar-brand">
-            <img src="assets/images/logo.png" class="m-r-sm" alt="paymycable">
-
+        <a class="navbar-brand">
+            <i ng-class="titleClass"></i> {{title}}
         </a>
-        
-        <a class="btn btn-link visible-xs" data-toggle="dropdown" data-target=".user">
-            <i class="fa fa-cog"></i>
+
+        <a class="btn btn-link visible-xs">
+            <img src="assets/images/pay-logo.png" style="width:15%;float:right;margin-top:-5px !important;">
         </a>
     </div>
     <ul class="nav navbar-nav hidden-xs">
@@ -195,7 +194,7 @@
                 </li>-->
                 <li class="divider"></li>
                 <li>
-                    <a style="cursor:pointer" ng-click="logout()">Logout</a>
+                    <a style="cursor:pointer" ng-click="logout()">Not {{username}}? Logout</a>
                 </li>
             </ul>
         </li>
@@ -279,7 +278,7 @@
                                 <li>
                                     <a style="cursor:pointer" ng-click="logout()">
                                         <i class="i i-logout icon"></i>
-                                        <span class="font-bold">Logout</span>
+                                        <span class="font-bold">Not {{username}}? Logout</span>
                                     </a>
                                 </li>
 
@@ -329,6 +328,7 @@
 <script src="vendor/angular-datatables.factory.js"></script>
 <script src="vendor/angular-datatables.options.js"></script>
 <script src="vendor/angular-datatables.js"></script>
+<script src="vendor/angular-sanitize.js"></script>
 <script src="vendor/dataTables.responsive.js"></script>
 <script src="vendor/ui-bootstrap.js"></script>
 <script src="vendor/ui-bootstrap-tpls.js"></script>
@@ -406,7 +406,7 @@ var app = {
                                         <label>Choose a date*</label>
 
                                         <p class="input-group">
-                                            <input type="text" class="form-control" datepicker-popup ng-model="paidOn"
+                                            <input type="text" ng-disabled="true" class="form-control" datepicker-popup ng-model="paidOn"
                                                    is-open="opened" init-date="initialDate" ng-required="true"
                                                    close-text="Close"/>
               <span class="input-group-btn">

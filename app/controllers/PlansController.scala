@@ -26,7 +26,7 @@ object PlansController extends Controller with PlanSerializer with CommonUtil wi
     )
   }
 
-  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     val plan = if(request.user.userType == UserType.OWNER) Plans.findById(id.toInt,Some(request.user.companyId)) else Plans.findById(id.toInt)
     if (plan.isDefined) ok(Json.toJson(plan), "Plan details") else notFound(s"Plan with $id not found")
   }

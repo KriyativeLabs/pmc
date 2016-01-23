@@ -54,10 +54,10 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout
 
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
             //.withPaginationType('full_numbers')
-            .withDisplayLength(40)
-            .withOption('order', [4, 'desc'])
+            //.withDisplayLength(40)
+            .withOption('order', [1, 'asc'])
             .withOption('language', {
                 paginate: {
                     next: "",

@@ -2,7 +2,8 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
     function ($scope, $filter, apiService, cookieService, constantsService) {
 
         var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
+        //$scope.titleHtml = "<i class='i i-chart icon'></i> Dashboard";
+        $scope.title = "Dashboard";
         $scope.doughnutlabels = [];
         $scope.doughnutdata = [];
         $scope.doughnutcolors = [

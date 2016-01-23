@@ -40,19 +40,19 @@ object PaymentsController extends Controller with PaymentSerializer with Payment
     ok(Json.toJson(paymentList), "List of payments")
   }
 
-  def findByCustomerId(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def findByCustomerId(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val paymentList = Payments.findByCustId(id.toInt)
     ok(Json.toJson(paymentList), "List Payment details")
   }
 
-  def findByAgentId(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def findByAgentId(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val paymentList = Payments.findByAgentId(id.toInt)
     ok(Json.toJson(paymentList), "List Payment details")
   }
 
-  def findByAgentIdToday(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def findByAgentIdToday(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val paymentList = Payments.findByAgentIdToday(id.toInt)
     ok(Json.toJson(paymentList), "List Payment details")

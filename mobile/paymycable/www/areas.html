@@ -1,14 +1,14 @@
 <div data-ng-init="getAreas()">
     <section class="row m-b-md">
-        <div class="col-sm-6">
+        <!-- <div class="col-sm-6">
             <h3 class="m-b-xs text-black">Areas</h3>
-        </div>
-        <div class="col-sm-6 text-right text-left-xs m-t-md">
+        </div> -->
+        <div class="col-sm-6 text-right text-left-xs">
             <form class="m-b-none" action="">
                 <div class="input-group">
                     <input type="text" placeholder="Type to Search.." ng-model="search" class="form-control">
                     <span class="input-group-btn">
-                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2" ></i> Search</button>
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2" ></i></button>
                             </span>
                 </div>
             </form>
@@ -16,7 +16,7 @@
     </section>
         <section class="row m-b-md">
         <div class="col-sm-6">
-            <a class="btn btn-s-md btn-primary"  ng-hide="isAgent"  ng-click="open()"><i class="i i-plus2"></i>Add Area</a>
+            <a class="btn btn-sm btn-primary"  style="padding:4px 10px !important; bottom: 0" ng-hide="isAgent"  ng-click="open()"><i class="i i-plus2"></i>Add</a>
         </div>
     </section>
     <section class="panel panel-default">

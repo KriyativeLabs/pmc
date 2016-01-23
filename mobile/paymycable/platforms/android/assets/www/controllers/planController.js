@@ -32,10 +32,10 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('createdRow', createdRow)
             .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withDOM('<"row"<"col-sm-6 m-xs"i>>tr')
             //.withPaginationType('full_numbers')
-            .withDisplayLength(40)
-            .withOption('order', [4, 'desc'])
+            //.withDisplayLength(40)
+            .withOption('order', [2, 'asc'])
             .withOption('language', {
                 paginate: {
                     next: "",
@@ -59,7 +59,7 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
             if ($scope.isAgent) {
                 return "";
             } else {
-                return '<button ng-click="openUpdate(' + data.id + ')"  ng-hide="' + $scope.isAgent + '" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>' +
+                return '<button ng-click="openUpdate(' + data.id + ')"  ng-hide="' + $scope.isAgent + '" class="btn btn-primary btn-sm" style="padding:1px 17.5px !important;">Edit</button>' +
                     '<button ng-click="deletePlan(' + data.id + ')"  ng-hide="' + $scope.isAgent + '" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
             }
         }

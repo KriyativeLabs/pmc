@@ -54,13 +54,13 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
     )
   }
 
-  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val userDao = Users.findById(id.toInt)
     if (userDao.isDefined) ok(Json.toJson(userDao), "User details") else notFound(s"User with $id not found")
   }
 
-  def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val userList = Users.getAll()
     ok(Json.toJson(userList), "List of users")

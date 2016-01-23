@@ -25,7 +25,7 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
     )
   }
 
-  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+  def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     val area = if(request.user.userType != UserType.ADMIN) Areas.findById(id.toInt,Some(request.user.companyId)) else Areas.findById(id.toInt)
     if (area.isDefined) ok(Json.toJson(area), "Area details") else notFound(s"Area with $id not found")
   }

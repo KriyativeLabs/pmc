@@ -1,6 +1,7 @@
 pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
     function ($scope, $filter, $location, $modal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
-
+        $scope.todayDisplay=true;
+        $scope.oldDisplay=true;
         var agentId = $location.path().split(/[\s/]+/).pop();
         if (angular.isNumber(parseInt(agentId))) {
             var getAgentData = function () {
@@ -11,6 +12,9 @@ pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$mo
                     //payments
                     apiService.GET("/users/"+agentId+"/payments/today").then(function (result) {
                         $scope.paymentstoday = result.data.data;
+                        if($scope.paymentstoday.length == 0) {
+                            $scope.todayDisplay = false;
+                        }
                     }, function (errorResponse) {
                         apiService.NOTIF_ERROR(errorResponse.data.message);
                         if (errorResponse.status != 200) {
@@ -22,6 +26,9 @@ pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$mo
                     apiService.GET("/users/"+agentId+"/payments").then(function (result) {
                         $scope.payments = result.data.data;
                         console.log($scope.payments);
+                        if($scope.payments.length == 0) {
+                            $scope.oldDisplay = false;
+                        }
 
                     }, function (errorResponse) {
                         apiService.NOTIF_ERROR(errorResponse.data.message);
@@ -51,7 +58,7 @@ pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$mo
 
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-6"i><"col-sm-6"p>>tr')
+            .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
             .withPaginationType('full_numbers')
             .withDisplayLength(40)
             .withOption('language', {
@@ -67,6 +74,14 @@ pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$mo
             DTColumnBuilder.newColumn('receiptNo').withTitle('Receipt No.'),
             DTColumnBuilder.newColumn('custName').withTitle('Customer Name').withClass('all'),
             DTColumnBuilder.newColumn('paidOn').withTitle('Paid On').withClass('all'),
+            DTColumnBuilder.newColumn('amount').withTitle('Amount'),
+            DTColumnBuilder.newColumn('remarks').withTitle('Remarks')
+        ];
+
+        $scope.dtColumns_1 = [
+            DTColumnBuilder.newColumn('receiptNo').withTitle('Receipt No.'),
+            DTColumnBuilder.newColumn('custName').withTitle('Customer Name').withClass('all'),
+//            DTColumnBuilder.newColumn('paidOn').withTitle('Paid On').withClass('all'),
             DTColumnBuilder.newColumn('amount').withTitle('Amount'),
             DTColumnBuilder.newColumn('remarks').withTitle('Remarks')
         ];

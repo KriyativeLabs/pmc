@@ -1,9 +1,32 @@
 pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService',
     function ($scope, $location, $modal, $log, apiService, cookieService, constantsService) {
 
+        $scope.titleClass = "i i-chart icon";
+        $scope.title = "Dashboard";
         $scope.isActive = function (viewLocation) {
+            if ($location.path().match('/dashboard')) {
+                $scope.titleClass = "i i-chart icon";
+                $scope.title = "Dashboard";
+            } else if ($location.path().match('/customers')) {
+                $scope.titleClass = "i i-users2 icon";
+                $scope.title = "Customers";
+            } else if ($location.path().match('/payments')) {
+                $scope.titleClass = "i i-stack2 icon";
+                $scope.title = "Payments";
+            } else if ($location.path().match('/areas')) {
+                $scope.titleClass = "i i-pin icon";
+                $scope.title = "Areas";
+            } else if ($location.path().match('/plans')) {
+                $scope.titleClass = "i i-tag2 icon";
+                $scope.title = "Plans";
+            } else if ($location.path().match('/agents')) {
+                $scope.titleClass = "i i-user2 icon";
+                $scope.title = "Agents";
+            }
+
             return ($location.path().match(viewLocation));
         };
+
 
         $scope.logout = function () {
             cookieService.destroy();

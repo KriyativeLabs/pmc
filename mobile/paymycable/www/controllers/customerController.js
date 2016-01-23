@@ -6,8 +6,10 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         if (!query) {
             query = "all";
         }
-        var pageSize = 20;
+         var pageSize = 20;
         var pageNo = 1;
+        $scope.from = 1;
+        $scope.to = 20;
         var link = "/customers";
         if (query == "paid") {
             link = "/customers/paid";
@@ -18,7 +20,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         }
 
         var getCustomers = function () {
-            alert(finalLink);
             apiService.GET(finalLink).then(function (result) {
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
@@ -32,13 +33,12 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
         $scope.getCustomersCount = function () {
-            apiService.GET(link+"/count").then(function (result) {
+            apiService.GET("/customers/count").then(function (result) {
                 $scope.customersCount = result.data.data.count;
                 $scope.noOfPages = $scope.customersCount/pageSize;
                 if($scope.customersCount % pageSize > 0) {
                     $scope.noOfPages = $scope.noOfPages +1;
                 }
-                alert($scope.customersCount);
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
@@ -51,16 +51,15 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
         $scope.loadNext = function(buttonId){
             if(buttonId == -2 ){
-                finalLink = link+"?pageNo=1&pageSize="+pageSize;
+                finalLink = link+"?pageNo=1&pageSize="+ pageSize;
             } else if(buttonId == -1){
                 if(pageNo-1 > 0){
-                   pageNo = pageNo-1;
+                    pageNo = pageNo-1;
                 } else {
                     pageNo = 1;
                 }
                 finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
             } else if(buttonId == 1){
-
                 if(pageNo+1 <= $scope.noOfPages){
                     pageNo = pageNo+1;
                 } else {
@@ -71,6 +70,10 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 pageNo = $scope.noOfPages;
                 finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
             }
+
+            $scope.from = (pageSize * pageNo) - pageSize + 1;
+            $scope.to = pageSize * pageNo;
+
             getCustomers()
         };
 
@@ -106,7 +109,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
         function actionsHtml(data, type, full, meta) {
             return '<button ng-disabled="'+(data.balanceAmount == 0)+'" class="btn btn-success btn-sm"' +
-                                'style="padding:1px 10px !important;" ng-click="openReceipt('+data.id+')">Pay'+
+                                'style="padding:1px 11px !important;" ng-click="openReceipt('+data.id+')">Pay'+
                         '</button> &nbsp;'+
                         '<button class="btn btn-primary btn-sm" ng-hide="'+$scope.isAgent+'" ng-click="openUpdate('+data.id+')"'+
                                 'style="padding:1px 10px !important;">Edit'+

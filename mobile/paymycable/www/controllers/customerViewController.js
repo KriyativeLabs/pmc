@@ -1,6 +1,7 @@
 pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
     function ($scope, $filter, $location, $modal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
 
+        $scope.displayPayments = true;
         var custId = $location.path().split(/[\s/]+/).pop();
         if (angular.isNumber(parseInt(custId))) {
             var getCustomerData = function () {
@@ -21,6 +22,10 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
                     //payments
                     apiService.GET("/customers/"+custId+"/payments").then(function (result) {
                         $scope.payments = result.data.data;
+                        if($scope.payments.length == 0) {
+                            $scope.displayPayments = false;
+                        }
+
                         console.log($scope.payments);
                     }, function (errorResponse) {
                         apiService.NOTIF_ERROR(errorResponse.data.message);

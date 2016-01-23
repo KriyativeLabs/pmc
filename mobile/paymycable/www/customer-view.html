@@ -1,50 +1,53 @@
 <div id="content">
     <div class="vbox bg-white">
-        <header class="header b-b b-light hidden-print">
-            <button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>
-            <h4>Customer Details</h4>
-        </header>
+        <!--<header class="header b-b b-light hidden-print">-->
+           <!-- <button href="#" class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</button>-->
+
+        <!--</header>-->
+
+
         <div class="scrollable wrapper">
             <div class="row">
-                <div class="col-xs-6">
-                    <h4>{{customer.name}}</h4>
+                <div class="col-xs-12">
+                    <h3 class="text-primary" style="margin-top:-8px;margin-bottom:-8px;">Customer Details</h3>
+                    <hr>
 
-                    <p>Mobile Number :{{customer.mobileNo}}</p>
+                    <h5 style="margin-top:-8px;margin-bottom:-8px;"><b>{{customer.name}}</b></h5>
+                    <hr/>
+                    <p><b>Customer Serial Number:</b> {{customer.houseNo}}</p>
 
-                    <p>Email ID : {{customer.emailId}}</p>
+                    <p><b>Mobile Number:</b> {{customer.mobileNo}}</p>
 
-                    <p>House No : {{customer.houseNo}}</p>
+                    <p><b>Email ID:</b> {{customer.emailId}}</p>
 
-                    <p>Id Proof : {{connection.idProof}}</p>
+                    <p><b>House No:</b> {{customer.houseNo}}</p>
 
-                    <p>Pending Balance : {{customer.balanceAmount}} INR</p>
+                    <p><b>Id Proof:</b> {{connection.idProof}}</p>
+
+                    <p><b>Pending Balance:</b> {{customer.balanceAmount}} INR</p>
 
                     <!--<p>Area : </p>-->
 
-                    <p>Address:{{customer.address}}
+                    <p><b>Address:</b> {{customer.address}}
                     </p>
 
                 </div>
-                <div class="col-xs-6 text-right">
-                    <p class="h4">Customer Serial number: {{customer.houseNo}}</p>
+                <div class="col-xs-12">
+
                 </div>
             </div>
             <div class="well m-t">
                 <strong>Plans & CAF Details</strong>
 
                 <div class="row">
-                    <div class="col-xs-8">
+                    <div class="col-xs-12">
 
-                        <p>STB Number : {{connection.setupBoxId}}<br/>
-                            CAF : {{connection.cafId}}<br/>
-                            Box Series : {{connection.boxSerialNo}}<br/>
-                        </p>
-                    </div>
-                    <div class="col-xs-4">
-                        <p class="m-t m-b">
-                            status: <span ng-if="connection.status == 1" class="label bg-success">Active</span><span ng-if="connection.status != 1" class="label bg-danger">InActive</span><br>
-                            Plan : <strong>{{plan.name}}-{{plan.amount}}</strong><br/>
-                            Discounted : <strong> {{connection.discount}} INR</strong>
+                        <p>STB Number: {{connection.setupBoxId}}<br/>
+                            CAF: {{connection.cafId}}<br/>
+                            Box Series: {{connection.boxSerialNo}}<br/>
+                            Status: <span ng-if="connection.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="connection.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
+                            Plan: <strong>{{plan.name}}-{{plan.amount}}</strong><br/>
+                            Discounted: <strong> {{connection.discount}} INR</strong>
                         </p>
 
                     </div>
@@ -55,6 +58,7 @@
             <div class="well m-t">
                 <h5><strong>Recent Payment Details</strong></h5>
                 <hr>
+                <div class="table-responsive" ng-show="displayPayments">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                     <!--<thead>
                     <tr>
@@ -75,6 +79,10 @@
                     </tr>
                     </tbody>
                 </table>
+                    </div>
+                <div ng-hide="displayPayments">
+                    No Recent Payments!
+                </div>
             </div>
 
         </div>
