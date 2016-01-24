@@ -41,6 +41,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val customerList = (Customers.getAlll _).tupled(paginationAttributes)
+    println(customerList)
     ok(Json.toJson(customerList), "List of customers")
   }
 
