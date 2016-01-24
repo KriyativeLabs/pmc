@@ -9,6 +9,9 @@ import play.api.libs.ws._
 import utils.APIException
 import play.api.libs.ws.ning._
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 case class Sms(smsType: String, message: String)
 
 object Sms {
@@ -30,6 +33,8 @@ object SmsGateway {
         val url = smsUrl.replace("%%CONTACTS%%", contactNo.get.toString).replace("%%MSG%%", message)
         val response = WS.clientUrl(url).get()
         logger.info(url)
+        println(url)
+        Await.result(response,Duration.Inf)
         Right("Sent")
       } catch {
         case e: Throwable => e.printStackTrace(); Left("Error" + e.getMessage)
