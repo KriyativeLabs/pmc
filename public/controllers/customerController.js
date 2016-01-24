@@ -80,9 +80,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
 
-        $scope.myPagingFunction = function(){
-           alert("Hello");
-        };
         //#############################################################################################
         $scope.open = function () {
 
@@ -131,12 +128,28 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         });
     };
 
-    commonService.getAreas.then(function (result) {
-        $scope.areas = result.data.data
-    });
-    commonService.getPlans.then(function (result) {
-        $scope.plans = result.data.data
-    });
+    $scope.getAreas = function () {
+        apiService.GET("/areas").then(function (result) {
+            $scope.areas = result.data.data;
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+
+    $scope.getAreas = function () {
+        apiService.GET("/plans").then(function (result) {
+            $scope.plans = result.data.data
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+
 
     $scope.customerFunc = function () {
         var createObj = {};

@@ -174,12 +174,30 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         });
     };
 
-    commonService.getAreas.then(function (result) {
-        $scope.areas = result.data.data
-    });
-    commonService.getPlans.then(function (result) {
-        $scope.plans = result.data.data
-    });
+    $scope.getAreas = function () {
+        apiService.GET("/areas").then(function (result) {
+            $scope.areas = result.data.data;
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+
+    $scope.getAreas();
+
+    $scope.getPlans = function () {
+        apiService.GET("/plans").then(function (result) {
+            $scope.plans = result.data.data
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+    $scope.getPlans();
 
     $scope.customerFunc = function () {
         var createObj = {};
@@ -230,6 +248,32 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
     var today = new Date();
     $scope.dt = today.toLocaleDateString('en-GB');
 
+    $scope.getAreas = function () {
+        apiService.GET("/areas").then(function (result) {
+            $scope.areas = result.data.data;
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+
+    $scope.getAreas();
+
+    $scope.getPlans = function () {
+        apiService.GET("/plans").then(function (result) {
+            $scope.plans = result.data.data
+        }, function (errorResponse) {
+            apiService.NOTIF_ERROR(errorResponse.data.message);
+            if (errorResponse.status != 200) {
+                console.log(errorResponse);
+            }
+        });
+    };
+    $scope.getPlans();
+
+
     apiService.GET("/customers/" + id).then(function (response) {
 
         var customerData = response.data.data.customer;
@@ -265,13 +309,6 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
             $scope.opened = true;
         });
     };
-
-    commonService.getAreas.then(function (result) {
-        $scope.areas = result.data.data
-    });
-    commonService.getPlans.then(function (result) {
-        $scope.plans = result.data.data
-    });
 
     $scope.customerFunc = function () {
         var createObj = {};
