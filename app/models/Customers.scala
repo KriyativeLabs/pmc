@@ -136,7 +136,7 @@ object Customers {
 
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop(pageNo.get * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get-1) * pageSize.get).take(pageSize.get)
       } yield (cust, conn)
     } else {
       for {
@@ -157,7 +157,7 @@ object Customers {
   def getPaidCustomers(userType: UserType, userId: Int, sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount === 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop(pageNo.get * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount === 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get-1) * pageSize.get).take(pageSize.get)
       } yield (cust, conn)
     } else {
       for {
@@ -218,7 +218,7 @@ object Customers {
   def getAlll(sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop(pageNo.get * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get-1) * pageSize.get).take(pageSize.get)
       } yield (cust, conn)
     } else {
       for {
