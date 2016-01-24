@@ -9,6 +9,7 @@ crossPaths := false
 ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
 libraryDependencies ++= Seq(
+  ws,
   filters,
   "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
   "com.typesafe" % "config" % "1.3.0",

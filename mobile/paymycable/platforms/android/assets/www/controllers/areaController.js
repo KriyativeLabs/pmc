@@ -35,7 +35,7 @@ pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location'
             .withOption('stateSave', true)
             .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
             .withPaginationType('full_numbers')
-            //.withDisplayLength(40)
+            .withDisplayLength(-1)
             .withOption('language', {
                 paginate: {
                     next: "",

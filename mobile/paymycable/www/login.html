@@ -5,46 +5,73 @@
     <title>PayMycable</title>
     <meta name="description"
           content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav"/>
-	  <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; connect-src http://52.32.136.52:9000">-->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; connect-src http://52.32.136.52:9000">-->
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
+    <style>
+        html, body {
+            height: 100%;
+            background: url("assets/images/bg-main.png");
+            background-repeat:repeat;
+            background-size:30%;
+        }
+
+        .main {
+            height: 100%;
+            width: 100%;
+            display: table;
+        }
+
+        .wrapper {
+            display: table-cell;
+            height: 100%;
+            text-align: right !important;
+            vertical-align: middle;
+        }
+    </style>
 </head>
-<body class="" style="background-color:rgba(0,0,0,0.8) !important;" ng-app="pmcApp">
-<section id="content" class="m-t-xl m-b-lg wrapper-md animated fadeInUp">
-    <div class="container aside-xl" ng-controller="authenticationController">
-        <a class="text-center block" href="index.html"> <img style="width:300px" src="assets/images/logo_y.png"
-                                                             class="m-r-sm" alt="paymycable"></a>
-        <section class="m-b-lg">
-            <header class="wrapper text-center">
-                <strong>Sign in to get in touch</strong>
-            </header>
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <input type="text" ng-model="loginid" placeholder="Email" class="form-control no-border">
+<body class="" style="background-color: white;" ng-app="pmcApp">
+<div class="main">
+    <div class="wrapper">
+        <div id="content" class="m-t-xl m-b-lg wrapper-md animated fadeInUp" style="background:#fff;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);border-radius: 10px;">
+            <div class="container aside-xl" ng-controller="authenticationController">
+                <a class="text-center block" href="index.html"> <img style="width:200px" src="assets/images/logo1.png"
+                                                                     class="m-r-sm" alt="paymycable"></a>
+                <hr style="border-color:#aaa;">
+                <div class="m-b-lg">
+                    <p class="text-center">
+                        <strong class="text-center">Sign in to get in touch</strong>
+                    </p>
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            <input type="text" ng-model="loginid" placeholder="Email" class="form-control no-border">
+                        </div>
+                        <div class="list-group-item">
+                            <input type="password" ng-model="password" placeholder="Password"
+                                   class="form-control no-border">
+                        </div>
                     </div>
-                    <div class="list-group-item">
-                        <input type="password" ng-model="password" placeholder="Password" class="form-control no-border">
-                    </div>
+                    <button type="button" ng-click="login()" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                  <!--  <div class="text-center m-t m-b"><a href="#">
+                        <small style="color:#aaa;">Forgot password?</small>
+                    </a></div>-->
                 </div>
-                <button type="button" ng-click="login()" class="btn btn-lg btn-primary btn-block">Sign in</button>
-                <div class="text-center m-t m-b"><a href="#">
-                    <small style="color:#aaa;">Forgot password?</small>
-                </a></div>
-        </section>
+            </div>
+        </div>
+        <!-- footer -->
+        <footer id="footer">
+            <div class="text-center padder">
+                <p>
+                    <small>PayMyCable<br>&copy; 2016</small>
+                </p>
+            </div>
+        </footer>
     </div>
-</section>
-<!-- footer -->
-<footer id="footer">
-    <div class="text-center padder">
-        <p>
-            <small>PayMyCable<br>&copy; 2015</small>
-        </p>
-    </div>
-</footer>
+</div>
 <!--
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/bootstrap.js"></script>
@@ -114,10 +141,10 @@
 <script src="services/cookieService.js"></script>
 <script src="controllers/authenticationController.js"></script>
 <script type="text/javascript">
-	$(document).bind("mobileinit", function() {
-	    $.support.cors = true;
-	        $.mobile.allowCrossDomainPages = true;
-		});
-	</script>
+    $(document).bind("mobileinit", function () {
+        $.support.cors = true;
+        $.mobile.allowCrossDomainPages = true;
+    });
+</script>
 </body>
 </html>
