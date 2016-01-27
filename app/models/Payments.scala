@@ -63,7 +63,7 @@ object Payments {
 
     try {
       val result = DatabaseSession.run(resultQuery.transactionally).asInstanceOf[(Int, Int)]
-      if(result._1 > 0 && result._2 == 0) {
+      if(result._1 > 0 && result._2 == 1) {
         Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
         val sms = paymentSMSTemplate.
           replace("%%NAME%%", customer.customer.name).
