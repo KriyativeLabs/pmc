@@ -59,20 +59,31 @@ object Payments {
     val resultQuery = for {
       id <- paymentsQuery returning paymentsQuery.map(_.id) += payment.copy(receiptNo = receiptNo)
       customerUpdate <- customersQuery.filter(_.id === payment.customerId).map(_.balanceAmount).update((customer.customer.balanceAmount - payment.paidAmount-payment.discountedAmount))
-    } yield id
+    } yield (id, customerUpdate)
+
     try {
-      val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
-      Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
-      val sms = paymentSMSTemplate.
-                replace("%%NAME%%",customer.customer.name).
-                replace("%%RECEIPT%%",receiptNo).
-                replace("%%PAMOUNT%%",payment.paidAmount.toString).
-                replace("%%BALANCE%%",(customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
-      val future = Future {
-        SmsGateway.sendSms(sms, customer.customer.mobileNo)
+      val result = DatabaseSession.run(resultQuery.transactionally).asInstanceOf[(Int, Int)]
+      if(result._1 > 0 && result._2 == 0) {
+        Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
+        val sms = paymentSMSTemplate.
+          replace("%%NAME%%", customer.customer.name).
+          replace("%%RECEIPT%%", receiptNo).
+          replace("%%PAMOUNT%%", payment.paidAmount.toString).
+          replace("%%BALANCE%%", (customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
+        val future = Future {
+          SmsGateway.sendSms(sms, customer.customer.mobileNo)
+        }
+        Await.result(future, Duration(5, SECONDS))
+        Right(result._1)
+      } else {
+        Notifications.createNotification(s"Payment failed from Customer(${customer.customer.name}) ", loggedInUser.userId)
+        val resultQuery = for {
+          id <- paymentsQuery.filter(_.id === result._1).delete
+          customerUpdate <- customersQuery.filter(_.id === payment.customerId).map(_.balanceAmount).update(customer.customer.balanceAmount)
+        } yield (id, customerUpdate)
+          DatabaseSession.run(resultQuery.transactionally).asInstanceOf[(Int, Int)]
+        Left("Payment failed due to some error! Please try again")
       }
-      Await.result(future, Duration(5, SECONDS))
-      Right(result)
     } catch {
       case e: Exception => Left(e.getMessage)
     }
