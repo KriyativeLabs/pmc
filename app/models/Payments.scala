@@ -8,6 +8,7 @@ import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import utils.{APIException, CommonUtils, EntityNotFoundException}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 case class Payment(id: Option[Int], receiptNo:String, customerId: Int, paidAmount: Int, discountedAmount: Int, paidOn: DateTime, remarks: Option[String], agentId: Int, companyId: Int)
 
@@ -66,7 +67,9 @@ object Payments {
                 replace("%%RECEIPT%%",receiptNo).
                 replace("%%PAMOUNT%%",payment.paidAmount.toString).
                 replace("%%BALANCE%%",(customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
-      SmsGateway.sendSms(sms, customer.customer.mobileNo)
+      val future = Future {
+        SmsGateway.sendSms(sms, customer.customer.mobileNo)
+      }
       Right(result)
     } catch {
       case e: Exception => Left(e.getMessage)
