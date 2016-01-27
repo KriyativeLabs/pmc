@@ -8,7 +8,8 @@ import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import utils.{APIException, CommonUtils, EntityNotFoundException}
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 case class Payment(id: Option[Int], receiptNo:String, customerId: Int, paidAmount: Int, discountedAmount: Int, paidOn: DateTime, remarks: Option[String], agentId: Int, companyId: Int)
 
@@ -70,6 +71,7 @@ object Payments {
       val future = Future {
         SmsGateway.sendSms(sms, customer.customer.mobileNo)
       }
+      Await.result(future, Duration(5, SECONDS))
       Right(result)
     } catch {
       case e: Exception => Left(e.getMessage)
