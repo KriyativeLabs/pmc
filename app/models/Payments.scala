@@ -62,7 +62,7 @@ object Payments {
       val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
       Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
       val sms = paymentSMSTemplate.
-                replace("%%NAME%%%",customer.customer.name).
+                replace("%%NAME%%",customer.customer.name).
                 replace("%%RECEIPT%%",receiptNo).
                 replace("%%PAMOUNT%%",payment.paidAmount.toString).
                 replace("%%BALANCE%%",(customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
