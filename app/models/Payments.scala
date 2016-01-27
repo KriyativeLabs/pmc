@@ -1,11 +1,12 @@
 package models
 
 import org.joda.time.DateTime
+import play.api.Play
 import play.api.libs.json.Json
 import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
-import utils.{CommonUtils, EntityNotFoundException}
+import utils.{APIException, CommonUtils, EntityNotFoundException}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Payment(id: Option[Int], receiptNo:String, customerId: Int, paidAmount: Int, discountedAmount: Int, paidOn: DateTime, remarks: Option[String], agentId: Int, companyId: Int)
@@ -46,6 +47,7 @@ object Payments {
   private lazy val paymentsQuery = TableQuery[PaymentsTable]
   private lazy val customersQuery = TableQuery[CustomersTable]
   private lazy val agentsQuery = TableQuery[UsersTable]
+  val paymentSMSTemplate = Play.current.configuration.getString("sms.payment.template").getOrElse(throw new APIException("SMS Settings not found in conf"))
 
   def insert(payment: Payment)(implicit loggedInUser:LoggedInUser): Either[String, Int] = {
     val customer = Customers.findById(payment.customerId).getOrElse(throw EntityNotFoundException(s"Customer not found with id:${payment.id}"))
@@ -59,7 +61,12 @@ object Payments {
     try {
       val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
       Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
-      SmsGateway.sendSms(s"Payment ${payment.paidAmount} Rs received for your cable connection", customer.customer.mobileNo)
+      val sms = paymentSMSTemplate.
+                replace("%%NAME%%%",customer.customer.name).
+                replace("%%RECEIPT%%",receiptNo).
+                replace("%%PAMOUNT%%",payment.paidAmount.toString).
+                replace("%%BALANCE%%",(customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
+      SmsGateway.sendSms(sms, customer.customer.mobileNo)
       Right(result)
     } catch {
       case e: Exception => Left(e.getMessage)
