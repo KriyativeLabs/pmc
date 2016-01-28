@@ -1,16 +1,9 @@
-import java.util.Date
-
 import jobs.BalanceUpdaterMonthly
-import org.quartz.JobBuilder.newJob
 import org.quartz.CronScheduleBuilder.cronSchedule
+import org.quartz.JobBuilder.newJob
 import org.quartz.TriggerBuilder.newTrigger
 import org.quartz.impl.StdSchedulerFactory
-import org.quartz.Job
-import org.quartz.JobExecutionContext
-
-import play.api.Application
-import play.api.GlobalSettings
-import play.api.Logger
+import play.api.{Application, GlobalSettings, Logger}
 
 object Global extends GlobalSettings {
 

@@ -70,10 +70,8 @@ object Payments {
           replace("%%RECEIPT%%", receiptNo).
           replace("%%PAMOUNT%%", payment.paidAmount.toString).
           replace("%%BALANCE%%", (customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
-        val future = Future {
-          SmsGateway.sendSms(sms, customer.customer.mobileNo)
-        }
-        Await.result(future, Duration(5, SECONDS))
+        SmsGateway.sendSms(sms, customer.customer.mobileNo)
+        //Await.result(future, Duration(5, SECONDS))
         Right(result._1)
       } else {
         Notifications.createNotification(s"Payment failed from Customer(${customer.customer.name}) ", loggedInUser.userId)

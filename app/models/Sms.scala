@@ -33,7 +33,7 @@ object SmsGateway {
         val url = smsUrl.replace("%%CONTACTS%%", contactNo.get.toString).replace("%%MSG%%", message)
         val response = WS.clientUrl(url).get()
         logger.info(url)
-        Await.result(response,Duration.Inf)
+        //Await.result(response,Duration.Inf)
         Right("Sent")
       } catch {
         case e: Throwable => e.printStackTrace(); Left("Error" + e.getMessage)
