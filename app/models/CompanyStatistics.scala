@@ -47,7 +47,7 @@ object CompanyStats {
     queryResult.groupBy(_._1.agentId).map(x => x._2(0)._2.name -> x._2.map(y => y._1.paidAmount).sum)
   }
 
-  def generateCompanyStats(companyId:Int):Int ={
+  def generateCompanyStats(companyId:Int):Int = {
     val lastMonth = DateTime.now().minusMonths(1).withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
 
     val paymentQuery = paymentsQuery.filter(x => x.companyId === companyId && x.paidOn > lastMonth && x.paidOn < DateTime.now().withDayOfMonth(1)).map(_.paidAmount).sum

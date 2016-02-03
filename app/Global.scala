@@ -1,4 +1,4 @@
-import jobs.BalanceUpdaterMonthly
+import jobs.{SmsAlertsMonthly, BalanceUpdaterMonthly}
 import org.quartz.CronScheduleBuilder.cronSchedule
 import org.quartz.JobBuilder.newJob
 import org.quartz.TriggerBuilder.newTrigger
@@ -24,7 +24,7 @@ object Global extends GlobalSettings {
     scheduler.scheduleJob(balanceJob, balanceTrigger)
 
     // Sms Alerts Cron Job
-    val smsJob = newJob(classOf[BalanceUpdaterMonthly]).withIdentity("smsJob", "smsGroup").build()
+    val smsJob = newJob(classOf[SmsAlertsMonthly]).withIdentity("smsJob", "smsGroup").build()
 
     val smsTrigger = newTrigger()
       .withIdentity("smsTrigger", "smsGroup")
