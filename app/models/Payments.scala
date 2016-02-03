@@ -65,12 +65,14 @@ object Payments {
       val result = DatabaseSession.run(resultQuery.transactionally).asInstanceOf[(Int, Int)]
       if(result._1 > 0 && result._2 == 1) {
         Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
+        if (company.smsEnabled) {
         val sms = paymentSMSTemplate.
           replace("%%NAME%%", customer.customer.name).
           replace("%%RECEIPT%%", receiptNo).
           replace("%%PAMOUNT%%", payment.paidAmount.toString).
           replace("%%BALANCE%%", (customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
         SmsGateway.sendSms(sms, customer.customer.mobileNo)
+        }
         //Await.result(future, Duration(5, SECONDS))
         Right(result._1)
       } else {

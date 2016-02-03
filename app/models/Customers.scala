@@ -67,7 +67,9 @@ object Customers {
           val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
           Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
           val company = Companies.findById(loggedInUser.companyId).getOrElse(throw EntityNotFoundException(s"Company with id:${loggedInUser.companyId} not found"))
-          SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
+          if (company.smsEnabled) {
+            SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
+          }
           Right(result)
         } catch {
           case e: Exception => Left(e.getMessage)
@@ -214,7 +216,6 @@ object Customers {
     }
   }
 
-
   def getAlll(sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
@@ -228,7 +229,6 @@ object Customers {
 
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]].map(x => (CustomerCapsule.apply _).tupled(x))
   }
-
 
   def getAllCount()(implicit loggedInUser: LoggedInUser): Int = {
     val filterQuery = customerQuery.filter(x => x.companyId === loggedInUser.companyId).length
