@@ -406,8 +406,8 @@ var app = {
                                         <label>Choose a date*</label>
 
                                         <p class="input-group">
-                                            <input type="text" ng-disabled="true" class="form-control" datepicker-popup ng-model="paidOn"
-                                                   is-open="opened" init-date="initialDate" ng-required="true"
+                                            <input type="text" class="form-control" uib-datepicker-popup ng-model="paidOn"
+                                                datepicker-options="dateOptions" is-open="opened" init-date="initialDate" ng-required="true"
                                                    close-text="Close"/>
               <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open()"><i

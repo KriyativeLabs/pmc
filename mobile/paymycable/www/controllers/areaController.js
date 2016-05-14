@@ -1,5 +1,5 @@
-pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location', '$route', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $route, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $compile, $filter, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
         $scope.sNo = 1;
         $scope.getAreas = function () {
             apiService.GET("/areas").then(function (response) {
@@ -69,7 +69,7 @@ pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location'
 
 //############################################Modal###########################################
         $scope.open = function () {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'areaCreate.html',
                 controller: AreaCreateCtrl
             });
@@ -85,7 +85,7 @@ pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location'
 
 //############################################Modal###########################################
         $scope.openUpdate = function (areaId) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'areaCreate.html',
                 controller: AreaUpdateCtrl,
                 resolve: {
@@ -105,14 +105,14 @@ pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location'
 //################End##########
     }]);
 
-var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
+var AreaCreateCtrl = function ($scope, $uibModalInstance, $location, apiService) {
     $scope.title = "Create";
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.areaFunc = function () {
@@ -124,7 +124,7 @@ var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
         createObj.idSequence = 0;
         apiService.POST("/areas", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -136,14 +136,14 @@ var AreaCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 };
 
 
-var AreaUpdateCtrl = function ($scope, $modalInstance, $location, apiService, areaId) {
+var AreaUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService, areaId) {
     $scope.title = "Update";
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     apiService.GET("/areas/" + areaId).then(function (response) {
@@ -170,7 +170,7 @@ var AreaUpdateCtrl = function ($scope, $modalInstance, $location, apiService, ar
 
         apiService.PUT("/areas/" + areaId, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
