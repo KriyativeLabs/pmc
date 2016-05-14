@@ -232,7 +232,7 @@
                                                                ng-model="con.dt" is-open="con.opened" ng-required="true"
                                                                close-text="Close"/>
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="open()"><i
+                <button type="button" class="btn btn-default" ng-click="open(con)"><i
                         class="glyphicon glyphicon-calendar"></i></button>
               </span>
                                                     </p>
@@ -240,7 +240,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            button class="pull-right" ng-click="remove($index)">x</button>
+                                            <button class="pull-right" ng-click="remove($index)">x</button>
                                         </div>
                                     </uib-accordion-group>
                                 </uib-accordion>
@@ -250,6 +250,7 @@
 
                 </div>
             </div>
+        </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-danger" ng-click="cancel()">Cancel</button>

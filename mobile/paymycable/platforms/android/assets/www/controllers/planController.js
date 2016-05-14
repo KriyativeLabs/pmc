@@ -1,5 +1,5 @@
-pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
         $scope.getPlans = function () {
@@ -71,7 +71,7 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
 
 //############################################Modal###########################################
         $scope.open = function () {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'planCreate.html',
                 controller: PlanCreateCtrl
             });
@@ -86,7 +86,7 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
 
 //############################################Modal###########################################
         $scope.openUpdate = function (planId) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'planCreate.html',
                 controller: PlanUpdateCtrl,
                 resolve: {
@@ -108,14 +108,14 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
     }]);
 
 
-var PlanCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
+var PlanCreateCtrl = function ($scope, $uibModalInstance, $location, apiService) {
     $scope.title = "Create";
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.planFunc = function () {
@@ -127,7 +127,7 @@ var PlanCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 
         apiService.POST("/plans", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -138,13 +138,13 @@ var PlanCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 };
 
 
-var PlanUpdateCtrl = function ($scope, $modalInstance, $location, apiService, planId) {
+var PlanUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService, planId) {
     $scope.title = "Update";
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     apiService.GET("/plans/" + planId).then(function (response) {
@@ -170,7 +170,7 @@ var PlanUpdateCtrl = function ($scope, $modalInstance, $location, apiService, pl
 
         apiService.PUT("/plans/" + planId, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {

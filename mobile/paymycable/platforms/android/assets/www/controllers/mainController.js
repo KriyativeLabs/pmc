@@ -1,5 +1,5 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $location, $modal, $log, apiService, cookieService, constantsService) {
+pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
+    function ($scope, $location, $uibModal, $log, apiService, cookieService, constantsService) {
 
         $scope.titleClass = "i i-chart icon";
         $scope.title = "Dashboard";
@@ -26,7 +26,6 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 
             return ($location.path().match(viewLocation));
         };
-
 
         $scope.logout = function () {
             cookieService.destroy();
@@ -61,7 +60,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 
 //############################################Modal###########################################
         $scope.openReceipt = function (customerId) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'receiptModal.html',
                 controller: PaymentReceiptCtrl,
                 resolve: {
@@ -81,7 +80,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 
 //############################################SMS Modal###########################################
         $scope.openSms = function () {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'smsModal.html',
                 controller: SmsCtrl
             });
@@ -97,7 +96,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 
 //############################################SMS Modal###########################################
         $scope.openChangePass = function () {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'changePasswordModal.html',
                 controller: PasswordChangeCtrl
             });
@@ -111,7 +110,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$modal', '$log', 'a
 //###########################################End##############################################
     }]);
 
-var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, apiService, commonService, customerId) {
+var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService, commonService, customerId) {
 
     $scope.discount = 0;
     $scope.remarks = "No Problems";
@@ -136,11 +135,11 @@ var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, 
     }
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.recordPayment = function () {
@@ -156,7 +155,7 @@ var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, 
 
         apiService.POST("/payments", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -170,23 +169,32 @@ var PaymentReceiptCtrl = function ($scope, $modalInstance, $timeout, $location, 
         $scope.alerts.splice(index, 1);
     };
 
-    var today = new Date();
-    $scope.paidOn = today.toLocaleDateString('en-GB');
-
     $scope.open = function () {
         $timeout(function () {
             $scope.opened = true;
         });
     };
+
+    $scope.dateOptions = {
+        maxDate: new Date(),
+        //minDate: new Date(),
+        startingDay: 1
+    };
+
+    $scope.today = function() {
+        $scope.paidOn = new Date();
+    };
+    $scope.today();
+
 };
 
-var SmsCtrl = function ($scope, $modalInstance, $timeout, $location, apiService) {
+var SmsCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService) {
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.sendSms = function () {
@@ -201,7 +209,7 @@ var SmsCtrl = function ($scope, $modalInstance, $timeout, $location, apiService)
 
         apiService.POST("/sms", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -212,13 +220,13 @@ var SmsCtrl = function ($scope, $modalInstance, $timeout, $location, apiService)
     };
 };
 
-var PasswordChangeCtrl = function ($scope, $modalInstance, $timeout, $location, apiService) {
+var PasswordChangeCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService) {
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.updatePassword = function () {
@@ -229,7 +237,7 @@ var PasswordChangeCtrl = function ($scope, $modalInstance, $timeout, $location, 
 
             apiService.POST("/users/changepassword ", createObj).then(function (response) {
                 apiService.NOTIF_SUCCESS(response.data.message);
-                $modalInstance.close($scope.dt);
+                $uibModalInstance.close($scope.dt);
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {

@@ -1,5 +1,5 @@
-pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $modal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         //########################################Customers Page########################################
         var query = $location.search().query;
@@ -116,6 +116,22 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                         '</button>';
         }
 
+        $scope.stbString = function (cons, isSbt) {
+            var result = "";
+            angular.forEach(cons, function (value, key) {
+                if (result != "") {
+                    result = result + ",";
+                }
+                    if (isSbt) {
+                        result = result + value.setupBoxId;
+                    } else {
+                        result = result + value.boxSerialNo;
+                    }
+            });
+            return result;
+        };
+
+
         function createdRow(row, data, dataIndex) {
             $compile(angular.element(row).contents())($scope);
         }
@@ -129,7 +145,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         //#############################################################################################
         $scope.open = function () {
 
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'customerModal.html',
                 controller: CustomerCreateCtrl
             });
@@ -144,7 +160,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
         $scope.openUpdate = function (id) {
 
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'customerModal.html',
                 controller: CustomerUpdateCtrl,
                 resolve: {
@@ -163,14 +179,14 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
     }]);
 
-var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService, commonService) {
+var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService) {
     $scope.title = "Create";
-    var today = new Date();
-    $scope.dt = today.toLocaleDateString('en-GB');
+//    var today = new Date();
+//    $scope.dt = today.toLocaleDateString('en-GB');
 
-    $scope.open = function () {
+    $scope.open = function (con) {
         $timeout(function () {
-            $scope.opened = true;
+            con.opened = true;
         });
     };
 
@@ -209,23 +225,25 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         createObj.areaId = parseInt($scope.area);
         createObj.address = $scope.address;
 
-        var connection = {};
-        connection.setupBoxId = $scope.sbt_no;
+        var connections = [];
+        angular.forEach($scope.cons, function (value, key) {
+            connections.push({
+                setupBoxId: value.sbt_no,
+                cafId: value.caf,
+                boxSerialNo: value.box_series,
+                status: value.status,
+                planId: parseInt(value.plan),
+                discount: value.discount,
+                idProof: value.id_proof,
+                installationDate: commonService.getDateString(value.dt)
+            });
+        });
 
-        connection.cafId = $scope.caf;
-        connection.boxSerialNo = $scope.box_series;
-        connection.status = $scope.status;
-        connection.planId = parseInt($scope.plan);
-        connection.discount = $scope.discount;
-        connection.idProof = $scope.id_proof;
-
-        connection.installationDate = commonService.getDateString($scope.dt);
-
-        createObj.connections = [connection];
+        createObj.connections = connections;
 
         apiService.POST("/customers", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -235,18 +253,60 @@ var CustomerCreateCtrl = function ($scope, $modalInstance, $timeout, apiService,
     };
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
+    };
+    $scope.cons = [];
+    $scope.conCount = 1;
+    $scope.cons.push({
+        title: 'Connection - ' + ($scope.conCount),
+        dt: new Date(),
+        opened: false
+    });
+
+    $scope.add = function () {
+        $scope.cons.push({
+            title: 'Connection - ' + ($scope.conCount + 1),
+            dt: new Date(),
+            opened: false
+        });
+        $scope.conCount = $scope.conCount + 1;
+    };
+
+    $scope.remove = function (index) {
+        $scope.cons.splice(index, 1);
+    };
+
+    $scope.dateOptions = {
+        maxDate: new Date(),
+        //minDate: new Date(),
+        startingDay: 1
     };
 };
 
-var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService, commonService, id) {
+var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, id) {
     $scope.title = "Update";
     var today = new Date();
     $scope.dt = today.toLocaleDateString('en-GB');
+
+    $scope.cons = [];
+    $scope.conCount = 0;
+
+    $scope.add = function () {
+        $scope.cons.push({
+            title: 'Connection - ' + ($scope.conCount + 1),
+            dt: new Date(),
+            opened: false
+        });
+        $scope.conCount = $scope.conCount + 1;
+    };
+
+    $scope.remove = function (index) {
+        $scope.cons.splice(index, 1);
+    };
 
     $scope.getAreas = function () {
         apiService.GET("/areas").then(function (result) {
@@ -286,16 +346,23 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         $scope.area = customerData.areaId;
         $scope.address = customerData.address;
 
-        var connection = response.data.data.connection;
-        $scope.sbt_no = connection.setupBoxId;
-        $scope.caf = connection.cafId;
-        $scope.box_series = connection.boxSerialNo;
-        $scope.status = connection.status;
-        $scope.planId = connection.planId;
-        $scope.plan = connection.planId;
-        $scope.discount = connection.discount;
-        $scope.id_proof = connection.idProof;
-        $scope.dt = connection.installationDate;
+        var connections = response.data.data.connections;
+        angular.forEach(connections, function (value, key) {
+            $scope.conCount = $scope.conCount + 1;
+            $scope.cons.push({
+                title: 'Connection - ' + ($scope.conCount),
+                opened: false,
+                sbt_no: value.setupBoxId,
+                caf: value.cafId,
+                box_series: value.boxSerialNo,
+                status: value.status,
+                planId: value.planId,
+                plan: value.planId,
+                discount: value.discount,
+                id_proof: value.idProof,
+                dt: new Date(value.installationDate)
+            });
+        });
 
     }, function (errorResponse) {
         apiService.NOTIF_ERROR(errorResponse.data.message);
@@ -321,22 +388,24 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
         createObj.areaId = parseInt($scope.area);
         createObj.address = $scope.address;
 
-        var connection = {};
-        connection.setupBoxId = $scope.sbt_no;
-        connection.cafId = $scope.caf;
-        connection.boxSerialNo = $scope.box_series;
-        connection.status = $scope.status;
-        connection.planId = parseInt($scope.plan);
-        connection.discount = $scope.discount;
-        connection.idProof = $scope.id_proof;
-        $scope.dt = new Date($scope.dt);
-        connection.installationDate = commonService.getDateString($scope.dt);
-
-        createObj.connections = [connection];
+        var connections = [];
+        angular.forEach($scope.cons, function (value, key) {
+            connections.push({
+                setupBoxId: value.sbt_no,
+                cafId: value.caf,
+                boxSerialNo: value.box_series,
+                status: value.status,
+                planId: parseInt(value.plan),
+                discount: value.discount,
+                idProof: value.id_proof,
+                installationDate: commonService.getDateString(value.dt)
+            });
+        });
+        createObj.connections = connections;
 
         apiService.PUT("/customers/" + $scope.id, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -346,10 +415,10 @@ var CustomerUpdateCtrl = function ($scope, $modalInstance, $timeout, apiService,
     };
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 };

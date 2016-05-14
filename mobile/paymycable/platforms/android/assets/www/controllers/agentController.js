@@ -1,5 +1,5 @@
-pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$location','$modal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope,$compile, $filter, $location,$modal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$location','$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
         $scope.getAgents = function () {
@@ -73,7 +73,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
         };
 //############################################Modal###########################################
         $scope.open = function () {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'agentModal.html',
                 controller: AgentCreateCtrl
             });
@@ -89,7 +89,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
 
 //############################################Modal###########################################
         $scope.openUpdate = function (agentId, agentName, contactNo, email, loginId, accountType) {
-            var modalInstance = $modal.open({
+            var modalInstance = $uibModal.open({
                 templateUrl: 'agentModal.html',
                 controller: AgentUpdateCtrl,
                 resolve: {
@@ -110,14 +110,14 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
 
      }]);
 
-var AgentCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
+var AgentCreateCtrl = function ($scope, $uibModalInstance, $location, apiService) {
     $scope.title = "Create";
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
 
     $scope.createOrUpdate = function () {
@@ -133,7 +133,7 @@ var AgentCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 
         apiService.POST("/users", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
@@ -146,16 +146,16 @@ var AgentCreateCtrl = function ($scope, $modalInstance, $location, apiService) {
 };
 
 
-var AgentUpdateCtrl = function ($scope, $modalInstance, $location, apiService, agentId) {
+var AgentUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService, agentId) {
     $scope.title = "Update";
     $scope.isUpdate = true;
 
     $scope.ok = function () {
-        $modalInstance.close($scope.dt);
+        $uibModalInstance.close($scope.dt);
     };
 
     $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss('cancel');
     };
     apiService.GET("/users/" + agentId).then(function (response) {
                     
@@ -190,7 +190,7 @@ var AgentUpdateCtrl = function ($scope, $modalInstance, $location, apiService, a
 
         apiService.PUT("/users/" + agentId, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
-            $modalInstance.close($scope.dt);
+            $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {

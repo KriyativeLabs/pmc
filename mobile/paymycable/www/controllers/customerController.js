@@ -281,7 +281,7 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     };
 
     $scope.dateOptions = {
-        maxDate: new Date(),
+        //maxDate: new Date(),
         //minDate: new Date(),
         startingDay: 1
     };
@@ -289,8 +289,8 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
 
 var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, id) {
     $scope.title = "Update";
-    var today = new Date();
-    $scope.dt = today.toLocaleDateString('en-GB');
+    //var today = new Date();
+    //$scope.dt = today.toLocaleDateString('en-GB');
 
     $scope.cons = [];
     $scope.conCount = 0;
@@ -371,9 +371,9 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
         }
     });
 
-    $scope.open = function () {
+    $scope.open = function (con) {
         $timeout(function () {
-            $scope.opened = true;
+            con.opened = true;
         });
     };
 
@@ -420,5 +420,11 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.dateOptions = {
+        //maxDate: new Date(),
+        //minDate: new Date(),
+        startingDay: 1
     };
 };

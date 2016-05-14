@@ -1,5 +1,5 @@
-pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $location,$modal,$timeout, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$timeout', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $location,$uibModal,$timeout, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.getReceipts = function () {
             apiService.GET("/payments").then(function (response) {
@@ -15,8 +15,8 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout
         $scope.getReceipts();
 
         var today = new Date();
-        $scope.startDate = today.toLocaleDateString('en-GB');
-        $scope.endDate = today.toLocaleDateString('en-GB');
+        $scope.startDate = today;
+        $scope.endDate = today;
 
         $scope.openStart = function () {
             $timeout(function () {
@@ -29,7 +29,6 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout
                 $scope.openedEnd = true;
             });
         };
-
 
 
         $scope.advHide = true;
@@ -76,5 +75,10 @@ pmcApp.controller('paymentController', ['$scope', '$location','$modal','$timeout
             DTColumnBuilder.newColumn('agentDetails').withTitle('Agent')
         ];
 
+        $scope.dateOptions = {
+            maxDate: new Date(),
+            //minDate: new Date(),
+            startingDay: 1
+        };
 
     }]);

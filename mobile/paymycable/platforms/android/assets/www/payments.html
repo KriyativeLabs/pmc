@@ -21,7 +21,7 @@
 
             <div ng-hide="advHide"><br>Start Date:
                 <p class="input-group">
-                    <input type="text" ng-disabled="true" class="form-control" datepicker-popup="dd/MM/yyyy"
+                    <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" datepicker-options="dateOptions"
                            ng-model="startDate" is-open="openedStart" ng-required="true"
                            close-text="Close"/>
               <span class="input-group-btn">
@@ -32,7 +32,7 @@
                 End Date:
                 <p class="input-group">
 
-                    <input type="text" ng-disabled="true" class="form-control" datepicker-popup="dd/MM/yyyy"
+                    <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" datepicker-options="dateOptions"
                            ng-model="endDate" is-open="openedEnd" ng-required="true"
                            close-text="Close"/>
               <span class="input-group-btn">
