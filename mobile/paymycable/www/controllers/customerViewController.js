@@ -1,5 +1,5 @@
-pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $filter, $location, $modal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location, $uibModal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.displayPayments = true;
         var custId = $location.path().split(/[\s/]+/).pop();
@@ -7,25 +7,25 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
             var getCustomerData = function () {
                 apiService.GET("/customers/"+custId).then(function (result) {
                     console.log(result.data.data);
-                    $scope.customer = result.data.data.customer;
-                    $scope.connection = result.data.data.connection;
-
+                    var custRes = result.data.data;
                     //----- get plan details --
-                    apiService.GET("/plans/"+$scope.connection.planId).then(function (result) {
-                        $scope.plan = result.data.data;
+                    apiService.GET("/plans").then(function (result) {
+                        $scope.plans = result.data.data;
+                        $scope.customer = custRes.customer;
+                        $scope.connections = custRes.connections;
                     }, function (errorResponse) {
                         apiService.NOTIF_ERROR(errorResponse.data.message);
                         if (errorResponse.status != 200) {
                             console.log(errorResponse);
                         }
                     });
+
                     //payments
                     apiService.GET("/customers/"+custId+"/payments").then(function (result) {
                         $scope.payments = result.data.data;
                         if($scope.payments.length == 0) {
                             $scope.displayPayments = false;
                         }
-
                         console.log($scope.payments);
                     }, function (errorResponse) {
                         apiService.NOTIF_ERROR(errorResponse.data.message);
@@ -42,6 +42,17 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
             };
             getCustomerData();
         }
+
+        $scope.connectionPlan = function(planId){
+            var plan = {};
+            angular.forEach($scope.plans, function(value, key){
+                if(value.id == planId){
+                        plan = value;
+                }
+            });
+            console.log(plan.name);
+            return plan.name +"-"+ plan.amount;
+        };
 
         $scope.dtOptions = DTOptionsBuilder.newOptions()
             .withOption('responsive', true)

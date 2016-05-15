@@ -7,7 +7,7 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
                 apiService.GET("/customers/"+custId).then(function (result) {
                     console.log(result.data.data);
                     $scope.customer = result.data.data.customer;
-                    $scope.connection = result.data.data.connection;
+                    $scope.connections = result.data.data.connections;
 
                     //----- get plan details --
                     apiService.GET("/plans/"+$scope.connection.planId).then(function (result) {

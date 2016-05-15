@@ -22,7 +22,7 @@
 
                     <p><b>House No:</b> {{customer.houseNo}}</p>
 
-                    <p><b>Id Proof:</b> {{connection.idProof}}</p>
+                    <!--<p><b>Id Proof:</b> {{connection.idProof}}</p>-->
 
                     <p><b>Pending Balance:</b> {{customer.balanceAmount}} INR</p>
 
@@ -38,16 +38,16 @@
             </div>
             <div class="well m-t">
                 <strong>Plans & CAF Details</strong>
-
+                <div ng-repeat="con in connections">
                 <div class="row">
                     <div class="col-xs-12">
 
-                        <p>STB Number: {{connection.setupBoxId}}<br/>
-                            CAF: {{connection.cafId}}<br/>
-                            Box Series: {{connection.boxSerialNo}}<br/>
-                            Status: <span ng-if="connection.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="connection.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
-                            Plan: <strong>{{plan.name}}-{{plan.amount}}</strong><br/>
-                            Discounted: <strong> {{connection.discount}} INR</strong>
+                        <p>STB Number: {{con.setupBoxId}}<br/>
+                            CAF: {{con.cafId}}<br/>
+                            Box Series: {{con.boxSerialNo}}<br/>
+                            Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
+                            Plan: <strong>{{connectionPlan(con.planId)}}</strong><br/>
+                            Discounted: <strong> {{con.discount}} INR</strong>
                         </p>
 
                     </div>

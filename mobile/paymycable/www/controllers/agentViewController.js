@@ -1,5 +1,5 @@
-pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$modal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $filter, $location, $modal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
+    function ($scope, $filter, $location, $uibModal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
         $scope.todayDisplay=true;
         $scope.oldDisplay=true;
         var agentId = $location.path().split(/[\s/]+/).pop();
