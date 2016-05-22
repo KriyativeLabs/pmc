@@ -1,0 +1,65 @@
+<div ng-init="getCustomers()">
+    <div class="m-b-md">
+        <h3 class="m-b-none text-center">Record Payment</h3>
+    </div>
+    <div class="row center-block">
+        <div class="col-sm-8 center-block">
+            <section class="panel panel-default">
+                <div class="panel-body">
+                    <form id="" method="get" action="">
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <div class="form-material">
+                                    <label>Select Customer </label>
+                                    <select ng-model="cust_id" onchange="changed()" class="form-control">
+                                        <option value="">Select Customer</option>
+                                        <option ng-repeat="customer in customers" selected="{{customer.id == query}}" value="{{customer.id}}">{{customer.name+"-("+customer.houseNo+")-"+customer.balanceAmount}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <div class="form-material">
+
+                                    <label>Choose a date*</label>
+                                    <input ng-model="payment_date" class="form-control  datepicker-input" type="text" data-trigger="change" data-required="true" size="16" type="text" placeholder="Select Date?" data-date-format="dd-mm-yyyy">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-6">
+                                <div class="form-material">
+                                    <label for="validation-city">Amount*  (Pending Amount={{}})</label>
+                                    <input ng-model="amount"  class="form-control" type="number" id="validation-city" name="validation-city" placeholder="Amount">
+
+                                </div>
+                            </div>
+                            <div class="form-group col-sm-6 push-5-l">
+                                <div class="form-material">
+                                    <label for="validation-id">Discount</label>
+                                    <input ng-model="discount" class="form-control" type="number" id="validation-id" value="0" name="validation-id" placeholder="Any Discount?">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12 push-5-l">
+                                <div class="form-material">
+                                    <label for="validation-details">Remarks</label>
+                                    <textarea class="form-control" id="validation-details" name="validation-details" rows="2" placeholder="Enter Remarks"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="col-md-12 text-right">
+                        <a ng-href="/payments"><button type="button" class="btn btn-sm btn-danger">Cancel</button></a>
+                        <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary"><i class="fa fa-check"></i>Pay</button>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>

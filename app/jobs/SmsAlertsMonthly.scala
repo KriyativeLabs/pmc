@@ -6,8 +6,8 @@ import play.api.Logger
 
 class SmsAlertsMonthly extends Job {
   override def execute(context: JobExecutionContext) {
-    Companies.getAll.foreach({ company =>
-      if (company.smsEnabled) {
+    Companies.getAll.filter(c => c.isCableNetwork && c.smsEnabled).foreach({ company =>
+
         Logger.info(s"Sms Generation started for company:${company.id}")
         try {
           Customers.getAll(company.id.get).foreach({ customer =>
@@ -19,7 +19,6 @@ class SmsAlertsMonthly extends Job {
         } catch {
           case e: Exception => Logger.info(s"Exception caught in processing bill generation for company:${company.id}", e)
         }
-      }
     })
   }
 }

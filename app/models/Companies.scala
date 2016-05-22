@@ -9,7 +9,7 @@ import utils.{APIException, EntityNotFoundException}
 
 case class Company(id: Option[Int], name: String, owner: String, contactNo: Long, address: String, receiptNo: Long,
                    customerSeqNo: Option[Int], lastBillGeneratedOn: Option[DateTime], billStatus: Option[Boolean],
-                   smsCount: Int, pricePerCustomer: Int, smsEnabled:Boolean)
+                   smsCount: Int, pricePerCustomer: Int, smsEnabled:Boolean, isCableNetwork:Boolean)
 
 object Company {
   implicit val fmt = Json.format[Company]
@@ -46,7 +46,10 @@ class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
 
   def smsEnabled = column[Boolean]("sms_enabled")
 
-  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled) <>((Company.apply _).tupled, Company.unapply _)
+  def isCableNetwork = column[Boolean]("is_cable_network")
+
+
+  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled, isCableNetwork) <>((Company.apply _).tupled, Company.unapply _)
 }
 
 object Companies {

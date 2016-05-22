@@ -1,4 +1,4 @@
-import jobs.{SmsAlertsMonthly, BalanceUpdaterMonthly}
+import jobs.{BalanceUpdaterDailyInternet, SmsAlertsMonthly, BalanceUpdaterMonthlyCable}
 import org.quartz.CronScheduleBuilder.cronSchedule
 import org.quartz.JobBuilder.newJob
 import org.quartz.TriggerBuilder.newTrigger
@@ -14,7 +14,7 @@ object Global extends GlobalSettings {
     scheduler.start()
 
     // Balance Update Cron Job
-    val balanceJob = newJob(classOf[BalanceUpdaterMonthly]).withIdentity("balanceJob", "balanceGroup").build()
+    val balanceJob = newJob(classOf[BalanceUpdaterMonthlyCable]).withIdentity("balanceJob", "balanceGroup").build()
 
     val balanceTrigger = newTrigger()
       .withIdentity("balanceTrigger", "balanceGroup")
@@ -22,6 +22,16 @@ object Global extends GlobalSettings {
       .build()
 
     scheduler.scheduleJob(balanceJob, balanceTrigger)
+
+    // Balance Update Cron Job
+    val internetBalanceJob = newJob(classOf[BalanceUpdaterDailyInternet]).withIdentity("iBalanceJob", "iBalanceGroup").build()
+
+    val internetBalanceTrigger = newTrigger()
+      .withIdentity("iBalanceTrigger", "iBalanceGroup")
+      .withSchedule(cronSchedule("0 0 6 * * ?")) // Runs on every month 2nd around 1`O Clock
+      .build()
+
+    scheduler.scheduleJob(internetBalanceJob, internetBalanceTrigger)
 
     // Sms Alerts Cron Job
     val smsJob = newJob(classOf[SmsAlertsMonthly]).withIdentity("smsJob", "smsGroup").build()
