@@ -60,15 +60,8 @@
                 <hr>
                 <div class="table-responsive" ng-show="displayPayments">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                    <!--<thead>
-                    <tr>
-                        <th width="20%">Receipt No.</th>
-                        <th width="10%">Paid On</th>
-                        <th width="15%">Amount</th>
-                        <th width="20%">Remarks</th>
-                        <th width="15%">Agent</th>
-                    </tr>
-                    </thead>-->
+                    <thead>
+                    </thead>
                     <tbody>
                     <tr ng-repeat="receipt in payments">
                         <td>{{receipt.receiptNo}}</td>

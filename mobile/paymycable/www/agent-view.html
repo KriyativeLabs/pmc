@@ -32,15 +32,15 @@
                 <div class="table-responsive" ng-show="todayDisplay">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns_1"
                        class="table table-striped m-b-none">
-                    <!--<thead>
-                    <tr>
-                        <th width="20%">Receipt No.</th>
-                        <th width="20%">Customer Name</th>
-                        <th width="10%">Paid On</th>
-                        <th width="15%">Amount</th>
-                        <th width="20%">Remarks</th>
-                    </tr>
-                    </thead>-->
+                    <thead>
+                    <!--<tr>-->
+                        <!--<th width="20%">Receipt No.</th>-->
+                        <!--<th width="20%">Customer Name</th>-->
+                        <!--<th width="10%">Paid On</th>-->
+                        <!--<th width="15%">Amount</th>-->
+                        <!--<th width="20%">Remarks</th>-->
+                    <!--</tr>-->
+                    </thead>
                     <tbody>
                     <tr ng-repeat="receipt in paymentstoday">
                         <td>{{receipt.receiptNo}}</td>
@@ -65,15 +65,15 @@
                 <div class="table-responsive" ng-show="oldDisplay">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns"
                        class="table table-striped m-b-none">
-                    <!--<thead>
-                    <tr>
-                        <th width="20%">Receipt No.</th>
-                        <th width="20%">Customer Name</th>
-                        <th width="10%">Paid On</th>
-                        <th width="15%">Amount</th>
-                        <th width="20%">Remarks</th>
-                    </tr>
-                    </thead>-->
+                    <thead>
+                    <!--<tr>-->
+                        <!--<th width="20%">Receipt No.</th>-->
+                        <!--<th width="20%">Customer Name</th>-->
+                        <!--<th width="10%">Paid On</th>-->
+                        <!--<th width="15%">Amount</th>-->
+                        <!--<th width="20%">Remarks</th>-->
+                    <!--</tr>-->
+                    </thead>
                     <tbody>
                     <tr ng-repeat="receipt in payments">
                         <td>{{receipt.receiptNo}}</td>
