@@ -48,6 +48,9 @@
     <div class="panel panel-default">
         <div class="table-responsive">
             <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                <thead>
+
+                </thead>
                 <tbody>
                 <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">
                     <td>{{receipt.receiptNo}}</td>

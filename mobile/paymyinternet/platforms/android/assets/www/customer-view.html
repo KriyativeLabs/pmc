@@ -41,10 +41,9 @@
                 <div ng-repeat="con in connections">
                 <div class="row">
                     <div class="col-xs-12">
-
-                        <p>STB Number: {{con.setupBoxId}}<br/>
+                        <p>User Name: {{con.setupBoxId}}<br/>
                             CAF: {{con.cafId}}<br/>
-                            Box Series: {{con.boxSerialNo}}<br/>
+                            Password: {{con.boxSerialNo}}<br/>
                             Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
                             Plan: <strong>{{connectionPlan(con.planId)}}</strong><br/>
                             Discounted: <strong> {{con.discount}} INR</strong>
@@ -60,7 +59,7 @@
                 <hr>
                 <div class="table-responsive" ng-show="displayPayments">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                    <!--<thead>
+                    <thead>
                     <tr>
                         <th width="20%">Receipt No.</th>
                         <th width="10%">Paid On</th>
@@ -68,7 +67,7 @@
                         <th width="20%">Remarks</th>
                         <th width="15%">Agent</th>
                     </tr>
-                    </thead>-->
+                    </thead>
                     <tbody>
                     <tr ng-repeat="receipt in payments">
                         <td>{{receipt.receiptNo}}</td>
