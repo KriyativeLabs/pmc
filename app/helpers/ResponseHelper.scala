@@ -14,7 +14,7 @@ trait ResponseHelper{// extends CommonUtil {
   def headers = List(
     "Access-Control-Allow-Origin" -> "*",
     "Access-Control-Allow-Methods" -> "GET, POST, OPTIONS, DELETE, PUT",
-    "Access-Control-Allow-Headers" -> "Content-Type, Authorization"
+    "Access-Control-Allow-Headers" -> "Content-Type, Authorization, X-Requested-With"
   )
   private implicit val formats = Serialization.formats(NoTypeHints)
   val corsEnabled = false //Play.current.configuration.getString("cors.enabled").getOrElse("false").toBoolean
