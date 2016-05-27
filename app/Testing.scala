@@ -52,7 +52,7 @@ object Testing {
           "VT" -> 25)
         val cust = CustomerCreate(None, values(1), (if (values(2).length > 0) Some(values(2).toLong) else None), None, values(5), areaMap.getOrElse(values(4), 1), (if(values(3).length >0) values(3).toInt else 0),
           List(Connection(None, None, values(6), values(8), 1, 0, DateTime.now(), "ACTIVE", values(7), values(12), Some(1))))
-        Customers.tempinsert(cust)
+        Customers.tempInsert(cust)
       }
       i = i+1
     }

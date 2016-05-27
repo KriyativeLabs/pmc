@@ -8,10 +8,7 @@
     },
     "installed_plugins": {
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.phonegap.helloworld"
-        },
-        "cordova-plugin-inappbrowser": {
-            "PACKAGE_NAME": "com.couchbase.todolite"
+            "PACKAGE_NAME": "com.pmc.cable"
         }
     },
     "dependent_plugins": {}

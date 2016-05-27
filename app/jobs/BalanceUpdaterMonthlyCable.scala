@@ -24,19 +24,15 @@ class BalanceUpdaterMonthlyCable extends Job {
         } else {
           List()
         }).foreach({ customer =>
-          customer.connection.map(_.planId) match {
-            case Some(p) if customer.connection.map(_.status) == Some("ACTIVE") => {
-              val plan = plans.get(Some(customer.connection.get.planId)).get
-              if ((Months.monthsBetween(customer.connection.get.installationDate, now).getMonths % plan.noOfMonths) == 0) {
-                Logger.info("Updating Customer Id:" + customer.customer.id + " with bill amount:" + (plan.amount - customer.connection.get.discount))
-                if (Customers.updateAmount(customer.customer.id.get, customer.connection.get.discount - plan.amount)) {
-                  Companies.updateCustomerSeqNo(company.id.get, customer.customer.id.get)
+            if (customer._2.status.toUpperCase == "ACTIVE") {
+              val plan = plans.get(Some(customer._2.planId)).get
+              if ((Months.monthsBetween(customer._2.installationDate, now).getMonths % plan.noOfMonths) == 0) {
+                Logger.info("Updating Customer Id:" + customer._1.id + " with bill amount:" + (plan.amount - customer._2.discount))
+                if (Customers.updateAmount(customer._1.id.get, customer._2.discount - plan.amount)) {
+                  Companies.updateCustomerSeqNo(company.id.get, customer._1.id.get)
                 }
               }
             }
-            case _ => {
-            }
-          }
         })
         Companies.endBilling(company.id.get)
       } catch {

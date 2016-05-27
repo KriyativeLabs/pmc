@@ -24,24 +24,21 @@ class BalanceUpdaterDailyInternet extends Job {
         } else {
           List()
         }).foreach({ customer =>
-          customer.connection.map(_.planId) match {
-            case Some(p) if customer.connection.map(_.status) == Some("ACTIVE") => {
-              val plan = plans.get(Some(customer.connection.get.planId)).get
-              if ((Months.monthsBetween(customer.connection.get.installationDate.withDayOfMonth(1), now.withDayOfMonth(1)).getMonths % plan.noOfMonths) == 0) {
-                Logger.info("Updating Customer Id:" + customer.customer.id + " with bill amount:" + (plan.amount - customer.connection.get.discount))
-                if (Customers.updateAmount(customer.customer.id.get, customer.connection.get.discount - plan.amount)) {
-                  Companies.updateCustomerSeqNo(company.id.get, customer.customer.id.get)
-                  customers += customer.customer.id.get
+          val p = customer._2.planId
+            if (customer._2.status.toUpperCase == "ACTIVE") {
+              val plan = plans.get(Some(p)).get
+              if ((Months.monthsBetween(customer._2.installationDate.withDayOfMonth(1), now.withDayOfMonth(1)).getMonths % plan.noOfMonths) == 0) {
+                Logger.info("Updating Customer Id:" + customer._1.id + " with bill amount:" + (plan.amount - customer._2.discount))
+                if (Customers.updateAmount(customer._1.id.get, customer._2.discount - plan.amount)) {
+                  Companies.updateCustomerSeqNo(company.id.get, customer._1.id.get)
+                  customers += customer._1.id.get
                 }
               }
             }
-            case _ => {
-            }
-          }
         })
         Companies.endBilling(company.id.get)
         val customersSmsCompleted = scala.collection.mutable.HashSet.empty[Int]
-        Customers.getAll(company.id.get).map(_.customer).filter(c => customers.contains(c.id.get)).foreach({ customer =>
+        Customers.getAll(company.id.get).map(_._1).filter(c => customers.contains(c.id.get)).foreach({ customer =>
           if(!customersSmsCompleted.contains(customer.id.get)){
             customersSmsCompleted += customer.id.get
             if (customer.balanceAmount > 0 && customer.mobileNo.isDefined) {

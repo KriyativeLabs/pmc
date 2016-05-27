@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.phonegap.helloworld" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>PayMyCable</name>
+<widget id="com.pmc.cable" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>Pay My Cable</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+	Pay My Cable app for TV cable network operators to ease their operations 
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author email="suryaprabhakark@gmail.com" href="http://paymycable.in">
+        Pay My Cable Team
     </author>
     <content src="login.html" />
     <preference name="permissions" value="none" />
