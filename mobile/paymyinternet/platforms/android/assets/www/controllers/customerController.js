@@ -102,7 +102,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
             DTColumnBuilder.newColumn('mobile').withTitle('Mobile No'),
             DTColumnBuilder.newColumn('uName').withTitle('User Name'),
-            //DTColumnBuilder.newColumn('boxSerialNo').withTitle('Box Serial No.').withClass('none'),
+            DTColumnBuilder.newColumn('Password').withTitle('Password').withClass('none'),
             DTColumnBuilder.newColumn('balance').withTitle('Balance').withClass('all'),
             DTColumnBuilder.newColumn(null).withTitle('Action').withClass('all').notSortable().renderWith(actionsHtml)
         ];

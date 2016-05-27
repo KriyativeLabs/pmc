@@ -8,10 +8,10 @@
     <allow-intent href="market:*" />
     <name>Pay My Internet</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        Pay My Internet app for Internet providers to ease their operations
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author email="suryaprabhakark@gmail.com" href="http://paymyinternet.in">
+        Pay My Internet Team
     </author>
     <content src="login.html" />
     <preference name="permissions" value="none" />
