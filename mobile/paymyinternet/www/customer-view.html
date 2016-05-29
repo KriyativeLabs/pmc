@@ -5,7 +5,6 @@
 
         <!--</header>-->
 
-
         <div class="scrollable wrapper">
             <div class="row">
                 <div class="col-xs-12">
@@ -37,18 +36,17 @@
                 </div>
             </div>
             <div class="well m-t">
-                <strong>Plans & CAF Details</strong>
+                <strong>Connections</strong>
                 <div ng-repeat="con in connections">
                 <div class="row">
                     <div class="col-xs-12">
-                        <p>User Name: {{con.setupBoxId}}<br/>
-                            Ip Address: {{con.cafId}}<br/>
+                        <p> User Name: {{con.setupBoxId}}<br/>
                             Password: {{con.boxSerialNo}}<br/>
+                            Ip Address: {{con.cafId}}<br/>
                             Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
                             Plan: <strong>{{connectionPlan(con.planId)}}</strong><br/>
                             Discounted: <strong> {{con.discount}} INR</strong>
                         </p>
-
                     </div>
                 </div>
 
