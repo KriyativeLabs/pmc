@@ -49,7 +49,8 @@ object Payments {
   private lazy val paymentsQuery = TableQuery[PaymentsTable]
   private lazy val customersQuery = TableQuery[CustomersTable]
   private lazy val agentsQuery = TableQuery[UsersTable]
-  val paymentSMSTemplate = Play.current.configuration.getString("sms.payment.template").getOrElse(throw new APIException("SMS Settings not found in conf"))
+  val paymentCableSMSTemplate = Play.current.configuration.getString("sms.cable.payment.template").getOrElse(throw new APIException("SMS Settings not found in conf"))
+  val paymentInternetSMSTemplate = Play.current.configuration.getString("sms.internet.payment.template").getOrElse(throw new APIException("SMS Settings not found in conf"))
 
   def insert(payment: Payment)(implicit loggedInUser:LoggedInUser): Either[String, Int] = {
     val customer = Customers.findById(payment.customerId).getOrElse(throw EntityNotFoundException(s"Customer not found with id:${payment.id}"))
@@ -66,7 +67,7 @@ object Payments {
       if(result._1 > 0 && result._2 == 1) {
         Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
         if (company.smsEnabled) {
-        val sms = paymentSMSTemplate.
+        val sms = (if(company.isCableNetwork) paymentCableSMSTemplate else paymentInternetSMSTemplate).
           replace("%%NAME%%", customer.customer.name).
           replace("%%RECEIPT%%", receiptNo).
           replace("%%PAMOUNT%%", payment.paidAmount.toString).

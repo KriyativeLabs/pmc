@@ -66,7 +66,11 @@ object Customers {
           Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
           val company = Companies.findById(loggedInUser.companyId).getOrElse(throw EntityNotFoundException(s"Company with id:${loggedInUser.companyId} not found"))
           if (company.smsEnabled) {
-            SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
+            if(company.isCableNetwork) {
+              SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
+            } else {
+              SmsGateway.sendSms(s"You have been registered for sms bill payments for Internet operator:${company.name}", customer.mobileNo)
+            }
           }
           Right(result)
         } catch {
