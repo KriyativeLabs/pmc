@@ -42,7 +42,7 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <p>User Name: {{con.setupBoxId}}<br/>
-                            CAF: {{con.cafId}}<br/>
+                            Ip Address: {{con.cafId}}<br/>
                             Password: {{con.boxSerialNo}}<br/>
                             Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
                             Plan: <strong>{{connectionPlan(con.planId)}}</strong><br/>
@@ -61,7 +61,7 @@
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                     <thead>
                     <tr>
-                        <th width="20%">Receipt No.</th>
+                        <th width="20%">Receipt No</th>
                         <th width="10%">Paid On</th>
                         <th width="15%">Amount</th>
                         <th width="20%">Remarks</th>
