@@ -6,7 +6,7 @@ import play.api.libs.json.Json
 import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
-
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 //import scala.concurrent.ExecutionContext.Implicits.global
@@ -126,7 +126,7 @@ object Customers {
     val con = customer.connections(0)
     val updateQuery = for {
       cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId, p.balanceAmount)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId, customer.balanceAmount)
-      conns <- connectionsQuery.filter(_.customerId === customer.id).map(c => (c.setupBoxId, c.boxSerialNo, c.cafId, c.discount, c.idProof, c.planId, c.status)).update(con.setupBoxId, con.boxSerialNo, con.cafId, con.discount, con.idProof, con.planId, con.status)
+      conns <- connectionsQuery.filter(_.customerId === customer.id).map(c => (c.setupBoxId, c.installationDate, c.boxSerialNo, c.cafId, c.discount, c.idProof, c.planId, c.status)).update(con.setupBoxId, con.installationDate, con.boxSerialNo, con.cafId, con.discount, con.idProof, con.planId, con.status)
     } yield cust
     try {
       Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])

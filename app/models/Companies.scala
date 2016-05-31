@@ -48,7 +48,6 @@ class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
 
   def isCableNetwork = column[Boolean]("is_cable_network")
 
-
   def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled, isCableNetwork) <>((Company.apply _).tupled, Company.unapply _)
 }
 
@@ -56,7 +55,6 @@ object Companies {
   private lazy val companyQuery = TableQuery[CompaniesTable]
   private lazy val customerQuery = TableQuery[CustomersTable]
   private lazy val paymentsQuery = TableQuery[PaymentsTable]
-
 
   def insert(company: Company): Either[String, Int] = {
     val resultQuery = companyQuery returning companyQuery.map(_.id) += company.copy(receiptNo = 1)

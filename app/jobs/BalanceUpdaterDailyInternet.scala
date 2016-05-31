@@ -14,7 +14,7 @@ class BalanceUpdaterDailyInternet extends Job {
         CompanyStats.generateCompanyStats(company.id.get)
       }
       Logger.info(s"Bill Generation started for company:${company.id}")
-      val now = DateTime.now()
+      val now = DateTime.now().plusDays(1)
       try {
         val plans = Plans.getAll(company.id).map(x => x.id -> x).toMap
         (if (company.lastBillGeneratedOn.getOrElse(DateTime.now()).monthOfYear() != now.monthOfYear() && Companies.startBilling(company.id.get)) {
@@ -27,7 +27,22 @@ class BalanceUpdaterDailyInternet extends Job {
           val p = customer._2.planId
             if (customer._2.status.toUpperCase == "ACTIVE") {
               val plan = plans.get(Some(p)).get
-              if ((Months.monthsBetween(customer._2.installationDate.withDayOfMonth(1), now.withDayOfMonth(1)).getMonths % plan.noOfMonths) == 0) {
+
+              val iDateCondition = if (now.getMonthOfYear == 2) {
+                if (List(31, 30, 29).contains(customer._2.installationDate.getDayOfMonth)) {
+                  28 == now.getDayOfMonth
+                } else {
+                  customer._2.installationDate.getDayOfMonth == now.getDayOfMonth
+                }
+              } else {
+                if (customer._2.installationDate.getDayOfMonth == 31) {
+                  30 == now.getDayOfMonth
+                } else {
+                  customer._2.installationDate.getDayOfMonth == now.getDayOfMonth
+                }
+              }
+
+              if(Months.monthsBetween(customer._2.installationDate, now).getMonths !=0 && (Months.monthsBetween(customer._2.installationDate, now).getMonths % 1) == 0 && iDateCondition) {
                 Logger.info("Updating Customer Id:" + customer._1.id + " with bill amount:" + (plan.amount - customer._2.discount))
                 if (Customers.updateAmount(customer._1.id.get, customer._2.discount - plan.amount)) {
                   Companies.updateCustomerSeqNo(company.id.get, customer._1.id.get)
