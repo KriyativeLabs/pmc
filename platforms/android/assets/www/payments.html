@@ -1,0 +1,75 @@
+<div>
+    <div class="row m-b-md">
+        <!-- <div class="col-sm-6">
+            <h3 class="m-b-xs text-black">Payments</h3>
+        </div> -->
+        <div class="col-sm-6 text-right text-left-xs">
+            <form class="m-b-none" action="">
+                <div class="input-group">
+                    <input type="text" placeholder="Search Payments.." ng-model="search" class="form-control">
+                        <span class="input-group-btn">
+                              <button type="button" class="btn btn-primary"><i class="i i-search2"></i></button>
+                            </span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row m-b-md">
+        <div class="col-sm-6">
+            <a class="btn btn-sm btn-primary" style="padding:4px 10px !important; bottom: 0;" ng-click="toggleadv()"><i class="i i-search2"></i> Advanced</a>
+
+            <div ng-hide="advHide"><br>Start Date:
+                <p class="input-group">
+                    <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" datepicker-options="dateOptions"
+                           ng-model="startDate" is-open="openedStart" ng-required="true"
+                           close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openStart()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+                </p>
+                End Date:
+                <p class="input-group">
+
+                    <input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" datepicker-options="dateOptions"
+                           ng-model="endDate" is-open="openedEnd" ng-required="true"
+                           close-text="Close"/>
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openEnd()"><i
+                        class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+                </p>
+
+                <a class="btn btn-sm btn-primary" style="padding:4px 10px !important; bottom: 0;" ng-click="advancedSearch()"><i class="i i-search2"></i> Search</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="table-responsive">
+            <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                <thead>
+                <!--<tr>-->
+                    <!--<th width="15%">Receipt No</th>-->
+                    <!--<th width="20%">Name</th>-->
+                    <!--<th width="15%">Paid On</th>-->
+                    <!--<th width="20%">Amount</th>-->
+                    <!--<th width="20%">Remarks</th>-->
+                    <!--<th width="10%">Agent</th>-->
+                <!--</tr>-->
+                </thead>
+                <tbody>
+                <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">
+                    <td>{{receipt.receiptNo}}</td>
+                    <td>{{receipt.customerDetails}}</td>
+                    <td>{{receipt.paidOn}}</td>
+                    <td>{{receipt.paidAmount}}</td>
+                    <td>{{receipt.remarks}}</td>
+                    <td>{{receipt.agentDetails}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
