@@ -17,6 +17,12 @@ object Payment {
   implicit val fmt = Json.format[Payment]
 }
 
+case class Credit(id: Option[Int], customerId: Int, amount: Int, creditedOn: DateTime, companyId: Int)
+
+object Credit {
+  implicit val fmt = Json.format[Credit]
+}
+
 case class PaymentCapsule(receiptNo:String, customerDetails:String, paidAmount: Int, paidOn: DateTime, remarks: Option[String], agentDetails:String)
 
 object PaymentCapsule {
@@ -43,6 +49,21 @@ class PaymentsTable(tag: Tag) extends Table[Payment](tag, "payments") {
   def companyId = column[Int]("company_id")
 
   def * = (id.?, receiptNo, customerId, paidAmount, discountedAmount, paidOn, remarks, agentId, companyId) <>((Payment.apply _).tupled, Payment.unapply _)
+}
+
+class CreditsTable(tag: Tag) extends Table[Credit](tag, "credits") {
+
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+
+  def customerId = column[Int]("customer_id")
+
+  def amount = column[Int]("amount")
+
+  def creditedOn = column[DateTime]("credited_on")
+
+  def companyId = column[Int]("company_id")
+
+  def * = (id.?, customerId, amount, creditedOn, companyId) <>((Credit.apply _).tupled, Credit.unapply _)
 }
 
 object Payments {

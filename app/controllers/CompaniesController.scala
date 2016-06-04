@@ -14,10 +14,10 @@ object CompaniesController extends Controller with CompanySerializer with Common
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     request.body.validate[Company].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       company => {
         Companies.insert(company) match {
-          case Left(e) =>  BadRequest(e)
+          case Left(e) =>  badRequest(e)
           case Right(id) => created (Some (company), s"Created Company with id:$id")
         }
       }
@@ -37,7 +37,7 @@ object CompaniesController extends Controller with CompanySerializer with Common
 
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     request.body.validate[Company].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       company => {
         if(!company.id.isDefined || (company.id.isDefined && id != company.id.get)) validationError(company,"Id provided in url and data are not equal")
         else {

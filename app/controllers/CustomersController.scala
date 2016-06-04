@@ -21,11 +21,11 @@ object CustomersController extends Controller with CustomerSerializer with Commo
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     println(request)
     request.body.validate[CustomerCreate].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       customer => {
         implicit val loggedInUser = request.user
         Customers.insert(customer) match {
-          case Left(e) => BadRequest(e)
+          case Left(e) => badRequest(e)
           case Right(id) => created(Some(customer), s"Successfully created new customer:${customer.name}")
         }
       }
@@ -73,7 +73,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
 
   def update(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[CustomerCreate].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       customer => {
         implicit val loggedInUser = request.user
         if (!customer.id.isDefined || (customer.id.isDefined && id != customer.id.get)) validationError(customer, "Id provided in url and data are not equal")

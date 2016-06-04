@@ -13,7 +13,7 @@ object SmsController extends Controller with SmsSerializer with CommonUtil with 
 
   def sendSms() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     request.body.validate[Sms].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       sms => {
         implicit val loggedInUser = request.user
         SmsGateway.send(sms) match {

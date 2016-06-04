@@ -66,7 +66,7 @@ trait ResponseHelper{// extends CommonUtil {
 
   def metaJson(implicit request: RequestHeader): JsonMeta = JsonMeta(request.host, request.method, request.path, request.uri)
 
-  def BadRequest(message: String)(implicit request: RequestHeader): Result = {
+  def badRequest(message: String)(implicit request: RequestHeader): Result = {
     val result = Response("BAD REQUEST", BAD_REQUEST, meta, message = message)
     val res = Results.BadRequest(result.toJson).as(MimeTypes.JSON)
     if (corsEnabled) res.withHeaders(headers: _*) else res

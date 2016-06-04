@@ -15,11 +15,11 @@ object PlansController extends Controller with PlanSerializer with CommonUtil wi
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Plan].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       plan => {
         val newPlan = if(request.user.userType == UserType.OWNER) plan.copy(companyId = request.user.companyId) else plan
         Plans.insert(newPlan) match {
-          case Left(e) =>  BadRequest(e)
+          case Left(e) =>  badRequest(e)
           case Right(id) => created (Some (newPlan), s"Created Plan with id:$id")
         }
       }
@@ -46,7 +46,7 @@ object PlansController extends Controller with PlanSerializer with CommonUtil wi
 
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Plan].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       plan => {
         if(!plan.id.isDefined || (plan.id.isDefined && id != plan.id.get)) validationError(plan,"Id provided in url and data are not equal")
         else {

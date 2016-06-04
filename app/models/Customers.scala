@@ -2,6 +2,7 @@ package models
 
 import controllers.CustomerCreate
 import helpers.enums.UserType.UserType
+import org.joda.time.DateTime
 import play.api.libs.json.Json
 import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
@@ -48,6 +49,7 @@ class CustomersTable(tag: Tag) extends Table[Customer](tag, "customers") {
 object Customers {
   private lazy val customerQuery = TableQuery[CustomersTable]
   private lazy val connectionsQuery = TableQuery[ConnectionsTable]
+  private lazy val creditsQuery = TableQuery[CreditsTable]
 
   def insert(customer: CustomerCreate)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
     val newCustomer = Customer(None, customer.name, customer.mobileNo, customer.emailId, customer.address, loggedInUser.companyId, customer.areaId, None, customer.balanceAmount)
@@ -66,7 +68,7 @@ object Customers {
           Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
           val company = Companies.findById(loggedInUser.companyId).getOrElse(throw EntityNotFoundException(s"Company with id:${loggedInUser.companyId} not found"))
           if (company.smsEnabled) {
-            if(company.isCableNetwork) {
+            if (company.isCableNetwork) {
               SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo)
             } else {
               SmsGateway.sendSms(s"You have been registered for sms bill payments for Internet operator:${company.name}", customer.mobileNo)
@@ -109,27 +111,27 @@ object Customers {
     val custQuery = customerQuery.filter(x => x.id === customerId)
     val custResult = DatabaseSession.run(custQuery.result.headOption).asInstanceOf[Option[Customer]]
     val customer = custResult.getOrElse(throw EntityNotFoundException(s"Customer not found with Id:$customerId"))
+    val now = DateTime.now()
+    val updateQuery = for {
+      cUp <- customerQuery.filter(x => x.id === customerId && x.balanceAmount === customer.balanceAmount).map(c => c.balanceAmount).update(customer.balanceAmount - paidAmount)
+      _ <- creditsQuery += Credit(None, customerId, paidAmount,now,customer.companyId)
+    } yield cUp
 
-    val updateQuery = customerQuery.filter(x => x.id === customerId && x.balanceAmount === customer.balanceAmount).
-      map(c => c.balanceAmount).
-      update(customer.balanceAmount - paidAmount)
-
-    if (DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1) {
+    if (DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int] == 1) {
       true
     } else {
       false
     }
   }
 
-
   def update(customer: CustomerCreate)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
-    val con = customer.connections(0)
     val updateQuery = for {
       cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId, p.balanceAmount)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId, customer.balanceAmount)
-      conns <- connectionsQuery.filter(_.customerId === customer.id).map(c => (c.setupBoxId, c.installationDate, c.boxSerialNo, c.cafId, c.discount, c.idProof, c.planId, c.status)).update(con.setupBoxId, con.installationDate, con.boxSerialNo, con.cafId, con.discount, con.idProof, con.planId, con.status)
+      _ <- connectionsQuery.filter(_.customerId === customer.id).delete
+      _ <- connectionsQuery ++= customer.connections.map(_.copy(customerId = customer.id))
     } yield cust
     try {
-      Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
+      Right(DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int])
     } catch {
       case e: Exception => Left(e.getMessage)
     }
@@ -138,11 +140,11 @@ object Customers {
   def getUnpaidCustomers(userType: UserType, userId: Int, sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get-1) * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
       } yield (cust, conn)
     } else {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0)  joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount > 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
       } yield (cust, conn)
     }
     processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]])
@@ -159,11 +161,11 @@ object Customers {
   def getPaidCustomers(userType: UserType, userId: Int, sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount === 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get-1) * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount === 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
       } yield (cust, conn)
     } else {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount === 0)  joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId && x.balanceAmount === 0) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
       } yield (cust, conn)
     }
     processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]])
@@ -199,7 +201,7 @@ object Customers {
   def getAlll(sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get-1) * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
       } yield (cust, conn)
     } else {
       for {

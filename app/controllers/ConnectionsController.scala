@@ -14,11 +14,11 @@ object ConnectionsController extends Controller with ConnectionSerializer with C
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Connection].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       connection => {
         val newConnection = if(request.user.userType == UserType.OWNER) connection.copy(companyId = Some(request.user.companyId)) else connection
         Connections.insert(newConnection) match {
-          case Left(e) =>  BadRequest(e)
+          case Left(e) =>  badRequest(e)
           case Right(id) => created (Some (newConnection), s"Created Connection with id:$id")
         }
       }
@@ -37,7 +37,7 @@ object ConnectionsController extends Controller with ConnectionSerializer with C
 
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Connection].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       connection => {
         if(!connection.id.isDefined || (connection.id.isDefined && id != connection.id.get)) validationError(connection,"Id provided in url and data are not equal")
         else {
