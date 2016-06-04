@@ -20,7 +20,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
 
   val logger = Logger(this.getClass)
 
-  val HEADER = "NAME,ADDRESS,STB NO,CAF/CAN NO,PLAN,COLLECTION/PAYMENT,STATUS,ACTIVATION/EXPIRY DATE"
+
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[CustomerCreate].fold(
       errors => badRequest(errors.mkString),
@@ -43,7 +43,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val active = request.getQueryString("active") match {
-      case Some(a) if a.toLowerCase == "true" => Some(true)
+      case Some(a) if a.toLowerCase == "true" =>  Some(true)
       case Some(a) if a.toLowerCase == "false" => Some(false)
       case _ => None
     }
@@ -54,16 +54,32 @@ object CustomersController extends Controller with CustomerSerializer with Commo
       case _ => None
     }
 
-    val customerList = (Customers.getAlll _).tupled(paginationAttributes)
+    val customerList = Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid, request.getQueryString("q"), paginationAttributes._1,
+      paginationAttributes._2, paginationAttributes._3, paginationAttributes._4)
+
     ok(Json.toJson(customerList), "List of customers")
   }
 
   def allCount() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
-    val count = Customers.getAllCount()
+    val active = request.getQueryString("active") match {
+      case Some(a) if a.toLowerCase == "true" =>  Some(true)
+      case Some(a) if a.toLowerCase == "false" => Some(false)
+      case _ => None
+    }
+
+    val isPaid = request.getQueryString("isPaid") match {
+      case Some(a) if a.toLowerCase == "true" => Some(true)
+      case Some(a) if a.toLowerCase == "false" => Some(false)
+      case _ => None
+    }
+
+    val count = Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid, request.getQueryString("q")).size
+
     ok(Json.obj("count" -> count), "List of customers count")
   }
 
+/*
   def unpaidCustomers() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val pageAttributes = paginationAttributes
@@ -83,6 +99,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
     val customerList = Customers.searchCustomers(search)
     ok(Json.toJson(customerList), "List of customers")
   }
+*/
 
   def update(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[CustomerCreate].fold(
@@ -102,6 +119,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
 
   def download() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     implicit val loggedInUser = request.user
+    val HEADER = "NAME,ADDRESS,STB NO,CAF/CAN NO,PLAN,COLLECTION/PAYMENT,STATUS,ACTIVATION/EXPIRY DATE"
     var fileName = "customer_"
     val active = request.getQueryString("active") match {
       case Some(a) if a.toLowerCase == "true" => fileName += "active_"; Some(true)
@@ -116,7 +134,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
     }
 
     fileName += "report.csv"
-    ok(HEADER +"\n"+ Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid).map({ c =>
+    ok(HEADER +"\n"+ Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid, request.getQueryString("q")).map({ c =>
       c.connections.map({ con =>
         s"${c.customer.name},${c.customer.address}, ${con.setupBoxId},${con.cafId}, ${c.customer.balanceAmount}, ${con.status.toUpperCase}, ${dateFormat(con.installationDate)}"
       }).mkString("\n")

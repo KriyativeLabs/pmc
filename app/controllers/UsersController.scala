@@ -17,7 +17,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
       errors => badRequest(errors.mkString),
       user => {
         val newUser = user.copy(companyId = request.user.companyId)
-        Users.insert(newUser) match {
+        Users.insert(newUser.copy(status = true)) match {
           case Left(e) =>  badRequest(e)
           case Right(id) => created (Some (newUser), s"Successfully Created New User:${newUser.name}")
         }
@@ -99,4 +99,16 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
     )
   }
 
+  def delete(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
+    implicit val loggedInUser = request.user
+    Users.findById(id) match {
+      case Some(u) if u.companyId == loggedInUser.companyId => {
+            Users.update(u.copy(status = false)) match {
+              case Left(e) => validationError(u, e)
+              case Right(r) => ok(Some(u), s"Deleted User with details" + u)
+            }
+      }
+      case _ => validationError("Not Authorized to delete users", "Not Authorized to delete users")
+    }
+  }
 }

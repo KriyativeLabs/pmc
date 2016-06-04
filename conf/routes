@@ -16,7 +16,6 @@ GET           /api/v1/company_stats                   controllers.DashboardContr
 GET           /api/v1/companies                       controllers.CompaniesController.all
 POST          /api/v1/companies                       controllers.CompaniesController.create
 PUT           /api/v1/companies/:id                   controllers.CompaniesController.update(id:Int)
-#DELETE      /companies/:id                   controllers.CompaniesController.create
 GET           /api/v1/companies/:id                   controllers.CompaniesController.find(id:Int)
 
 # Users
@@ -26,17 +25,18 @@ PUT           /api/v1/users/:id                       controllers.UsersControlle
 GET           /api/v1/users/:id                       controllers.UsersController.find(id:Int)
 GET           /api/v1/users/:id/payments              controllers.PaymentsController.findByAgentId(id:Int)
 GET           /api/v1/users/:id/payments/today        controllers.PaymentsController.findByAgentIdToday(id:Int)
+PUT          /api/v1/users/:id/delete                 controllers.UsersController.delete(id:Int)
 
 #Customers
-GET           /api/v1/customers/unpaid                controllers.CustomersController.unpaidCustomers
+#GET           /api/v1/customers/unpaid                controllers.CustomersController.unpaidCustomers
 GET           /api/v1/customers/download              controllers.CustomersController.download
-GET           /api/v1/customers/paid                  controllers.CustomersController.paidCustomers
+#GET           /api/v1/customers/paid                  controllers.CustomersController.paidCustomers
 GET           /api/v1/customers                       controllers.CustomersController.all
 GET           /api/v1/customers/count                 controllers.CustomersController.allCount
 POST          /api/v1/customers                       controllers.CustomersController.create
 PUT           /api/v1/customers/:id                   controllers.CustomersController.update(id:Int)
 GET           /api/v1/customers/:id                   controllers.CustomersController.find(id:Int)
-GET           /api/v1/customersearch                  controllers.CustomersController.searchCustomers(search:String ?= "")
+#GET           /api/v1/customersearch                  controllers.CustomersController.searchCustomers(search:String ?= "")
 GET           /api/v1/customers/:id/payments          controllers.PaymentsController.findByCustomerId(id:Int)
 
 #Areas

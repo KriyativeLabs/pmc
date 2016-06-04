@@ -14,7 +14,8 @@ trait UserSerializer {
       "email" -> user.email,
       "accountType" -> user.accountType,
       "address" -> user.address,
-      "password" -> user.password
+      "password" -> user.password,
+      "status" -> user.status
     )
   }
 
