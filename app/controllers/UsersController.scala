@@ -14,11 +14,11 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[User].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       user => {
         val newUser = user.copy(companyId = request.user.companyId)
-        Users.insert(newUser) match {
-          case Left(e) =>  BadRequest(e)
+        Users.insert(newUser.copy(status = true)) match {
+          case Left(e) =>  badRequest(e)
           case Right(id) => created (Some (newUser), s"Successfully Created New User:${newUser.name}")
         }
       }
@@ -27,7 +27,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
 
   def login() = Action(parse.json) { implicit request =>
     request.body.validate[LoginCase].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       login => {
         Users.login(login) match {
           case Left(l) =>  unAuthorized("Authentication failed!")
@@ -60,7 +60,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
 
   def updatePassword() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     request.body.validate[PasswordChange].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       passwordData => {
         val userId = request.user.userId
         Users.updatePassword(userId, passwordData.oldPassword, passwordData.newPassword) match {
@@ -86,7 +86,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     implicit val loggedInUser = request.user
     request.body.validate[User].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       user => {
         if(!user.id.isDefined || (user.id.isDefined && id != user.id.get)) validationError(user,"Id provided in url and data are not equal")
         else {
@@ -99,4 +99,16 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
     )
   }
 
+  def delete(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
+    implicit val loggedInUser = request.user
+    Users.findById(id) match {
+      case Some(u) if u.companyId == loggedInUser.companyId => {
+            Users.update(u.copy(status = false)) match {
+              case Left(e) => validationError(u, e)
+              case Right(r) => ok(Some(u), s"Deleted User with details" + u)
+            }
+      }
+      case _ => validationError("Not Authorized to delete users", "Not Authorized to delete users")
+    }
+  }
 }

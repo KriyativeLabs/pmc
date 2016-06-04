@@ -14,7 +14,7 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[Area].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       area => {
         val newArea = if(request.user.userType != UserType.ADMIN) area.copy(companyId = request.user.companyId) else area
         Areas.insert(newArea) match {
@@ -32,7 +32,6 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     val areaList = if(request.user.userType != UserType.ADMIN ) Areas.getAll(Some(request.user.companyId)) else Areas.getAll()
-    println(areaList)
     ok(Json.toJson(areaList), "List of areas")
   }
 
@@ -44,9 +43,8 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
   }
 
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
-    println(request.body)
     request.body.validate[Area].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       area => {
         if(!area.id.isDefined || (area.id.isDefined && id != area.id.get)) validationError(area,"Id provided in url and data are not equal")
         else {

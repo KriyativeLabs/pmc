@@ -16,12 +16,12 @@ object PaymentsController extends Controller with PaymentSerializer with Payment
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
     request.body.validate[Payment].fold(
-      errors => BadRequest(errors.mkString),
+      errors => badRequest(errors.mkString),
       payment => {
         implicit val loggedInUser = request.user
         val newPayment = payment.copy(companyId = request.user.companyId, agentId = request.user.userId)
         Payments.insert(newPayment) match {
-          case Left(e) => BadRequest(e)
+          case Left(e) => badRequest(e)
           case Right(id) => created(Some(newPayment), s"Payment of amount:${newPayment.paidAmount} Rs has been received!")
         }
       }

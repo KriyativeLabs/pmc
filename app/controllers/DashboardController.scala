@@ -15,7 +15,6 @@ object DashboardController extends Controller with DashboardSerializer with Comm
 
   def dashboardData = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     val result = Companies.dashboardData(request.user.companyId)
-    println(result)
     ok(Json.toJson(result),"DashboardData")
   }
 

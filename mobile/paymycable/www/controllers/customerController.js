@@ -19,6 +19,11 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             link = "/customers";
         }
 
+
+        var download = function(){
+
+        };
+
         var getCustomers = function () {
             apiService.GET(finalLink).then(function (result) {
                 console.log(result.data.data);

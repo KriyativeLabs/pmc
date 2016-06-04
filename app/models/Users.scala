@@ -6,7 +6,6 @@ import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
 
-
 case class LoginCase(loginId: String, password: String)
 
 object LoginCase {
@@ -20,7 +19,7 @@ object PasswordChange {
 }
 
 case class User(id: Option[Int], name: String, companyId: Int, loginId: String, password: String, contactNo: Long,
-                email: Option[String], accountType: String, address: String)
+                email: Option[String], accountType: String, address: String, status:Boolean)
 
 object User {
   implicit val fmt = Json.format[User]
@@ -47,7 +46,9 @@ class UsersTable(tag: Tag) extends Table[User](tag, "users") {
 
   def address = column[String]("address")
 
-  def * = (id.?, name, companyId, loginId, password, contactNo, email, accountType, address) <>((User.apply _).tupled, User.unapply _)
+  def status = column[Boolean]("status")
+
+  def * = (id.?, name, companyId, loginId, password, contactNo, email, accountType, address, status) <>((User.apply _).tupled, User.unapply _)
 }
 
 object Users {
@@ -65,7 +66,7 @@ object Users {
   }
 
   def login(login: LoginCase): Either[Boolean, User] = {
-    val filterQuery = userQuery.filter(l => l.loginId.toLowerCase === login.loginId.toLowerCase && l.password === Codecs.md5(login.password.getBytes))
+    val filterQuery = userQuery.filter(l => l.status && l.loginId.toLowerCase === login.loginId.toLowerCase && l.password === Codecs.md5(login.password.getBytes))
     DatabaseSession.run(filterQuery.result.headOption).asInstanceOf[Option[User]] match {
       case Some(x) => Right(x)
       case None => Left(false)
@@ -85,8 +86,8 @@ object Users {
   def update(user: User)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
     val userData = findById(user.id.get).getOrElse(throw new EntityNotFoundException(s"User not found with Id:${user.id}"))
     if (user.password == userData.password) {
-      val updateQuery = userQuery.filter(_.id === user.id).map(c => (c.name, c.contactNo, c.email, c.accountType, c.address))
-        .update(user.name, user.contactNo, user.email, user.accountType, user.address)
+      val updateQuery = userQuery.filter(_.id === user.id).map(c => (c.name, c.contactNo, c.email, c.accountType, c.address, c.status))
+        .update(user.name, user.contactNo, user.email, user.accountType, user.address, user.status)
       try {
         Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
       } catch {
@@ -109,7 +110,7 @@ object Users {
   }
 
   def getAll()(implicit loggedInUser: LoggedInUser): Vector[User] = {
-    val filterQuery = userQuery.filter(x => x.companyId === loggedInUser.companyId && !(x.id === loggedInUser.userId))
+    val filterQuery = userQuery.filter(x => x.status && x.companyId === loggedInUser.companyId && !(x.id === loggedInUser.userId))
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[User]]
   }
 }

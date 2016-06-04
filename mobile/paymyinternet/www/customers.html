@@ -154,7 +154,13 @@
                                                                         ng-click="add()">+
                                 </button></span></h4>
                                 <br>
-                                <uib-accordion close-others="true">
+ 				<style>
+   				.panel-group .panel {
+                                                overflow:inherit !important;
+                                }
+
+                                </style>
+                                <uib-accordion class="accord" close-others="true">
                                     <uib-accordion-group heading="{{con.title}}" ng-repeat="con in cons">
                                         <div>
                                             <uib-accordion-heading>

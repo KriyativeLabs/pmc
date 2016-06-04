@@ -1,5 +1,7 @@
 package helpers
 
+import java.io.{FileWriter, BufferedWriter, File}
+
 import org.json4s.{NoTypeHints, Extraction}
 import org.json4s.jackson.Serialization
 import play.api.Play
@@ -7,23 +9,37 @@ import play.api.http.Status._
 import play.api.libs.json.JsValue
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.mvc.Http.MimeTypes
+import play.mvc.Http.{HeaderNames, MimeTypes}
 
-trait ResponseHelper{// extends CommonUtil {
+trait ResponseHelper {
+  // extends CommonUtil {
 
   def headers = List(
     "Access-Control-Allow-Origin" -> "*",
     "Access-Control-Allow-Methods" -> "GET, POST, OPTIONS, DELETE, PUT",
     "Access-Control-Allow-Headers" -> "Content-Type, Authorization, X-Requested-With"
   )
+
   private implicit val formats = Serialization.formats(NoTypeHints)
   val corsEnabled = false //Play.current.configuration.getString("cors.enabled").getOrElse("false").toBoolean
 
   def ok(data: Option[Any], message: String)(implicit request: RequestHeader): Result = {
     val result = Response("OK", OK, meta, data = Some(Extraction.decompose(data)), message = message)
     val res = Ok(result.toJson).as(MimeTypes.JSON)
-    println(corsEnabled)
     if (corsEnabled) res.withHeaders(headers: _*) else res
+  }
+
+  def ok(data: String, fileName: String, message: String)(implicit request: RequestHeader): Result = {
+    val tempDir = System.getProperty("java.io.tmpdir")
+    val file: File = new File(s"$tempDir/$fileName")
+    val bufferedWriter: BufferedWriter = new BufferedWriter(new FileWriter(file))
+    bufferedWriter.write(data)
+    bufferedWriter.close()
+    Ok.sendFile(file).withHeaders(headers: _*).
+      withHeaders(("filename", fileName)).
+      withHeaders(HeaderNames.CONTENT_DISPOSITION -> ("attachment; filename=" + fileName)).
+      withHeaders("Access-Control-Expose-Headers" -> "filename").
+      withHeaders("Access-Control-Allow-Headers"-> "Content-Type, Authorization, filename")
   }
 
   def ok(data: JsValue, message: String)(implicit request: RequestHeader): Result = {
@@ -33,7 +49,7 @@ trait ResponseHelper{// extends CommonUtil {
   }
 
   def failed(message: String)(implicit request: RequestHeader): Result = {
-    val result = Response("FAILED", NOT_MODIFIED,meta, message = message)
+    val result = Response("FAILED", NOT_MODIFIED, meta, message = message)
     val res = Results.BadRequest(result.toJson).as(MimeTypes.JSON)
     if (corsEnabled) res.withHeaders(headers: _*) else res
   }
@@ -66,7 +82,7 @@ trait ResponseHelper{// extends CommonUtil {
 
   def metaJson(implicit request: RequestHeader): JsonMeta = JsonMeta(request.host, request.method, request.path, request.uri)
 
-  def BadRequest(message: String)(implicit request: RequestHeader): Result = {
+  def badRequest(message: String)(implicit request: RequestHeader): Result = {
     val result = Response("BAD REQUEST", BAD_REQUEST, meta, message = message)
     val res = Results.BadRequest(result.toJson).as(MimeTypes.JSON)
     if (corsEnabled) res.withHeaders(headers: _*) else res

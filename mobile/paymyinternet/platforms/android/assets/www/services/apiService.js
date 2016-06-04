@@ -1,5 +1,5 @@
 pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Notification', function ($http, cookieService, constantsService, Notification) {
-    var apiURL = 'http://paymyinternet.in:9000/api/v1';
+    var apiURL = 'http://paymyinternet.in/api/v1';
     var doRequest = function (path, method, data) {
         var authToken = cookieService.get(constantsService.TOKEN);
         if (authToken) {
