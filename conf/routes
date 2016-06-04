@@ -29,6 +29,7 @@ GET           /api/v1/users/:id/payments/today        controllers.PaymentsContro
 
 #Customers
 GET           /api/v1/customers/unpaid                controllers.CustomersController.unpaidCustomers
+GET           /api/v1/customers/download              controllers.CustomersController.download
 GET           /api/v1/customers/paid                  controllers.CustomersController.paidCustomers
 GET           /api/v1/customers                       controllers.CustomersController.all
 GET           /api/v1/customers/count                 controllers.CustomersController.allCount

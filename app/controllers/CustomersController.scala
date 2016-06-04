@@ -4,6 +4,7 @@ import helpers.enums.UserType
 import helpers.json.CustomerSerializer
 import helpers.{CommonUtil, ResponseHelper}
 import models.{Connection, Customers}
+import org.joda.time.DateTime
 import play.api._
 import play.api.libs.json._
 import play.api.mvc._
@@ -16,10 +17,11 @@ object CustomerCreate {
 }
 
 object CustomersController extends Controller with CustomerSerializer with CommonUtil with ResponseHelper {
+
   val logger = Logger(this.getClass)
 
+  val HEADER = "NAME,ADDRESS,STB NO,CAF/CAN NO,PLAN,COLLECTION/PAYMENT,STATUS,ACTIVATION/EXPIRY DATE"
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
-    println(request)
     request.body.validate[CustomerCreate].fold(
       errors => badRequest(errors.mkString),
       customer => {
@@ -40,8 +42,19 @@ object CustomersController extends Controller with CustomerSerializer with Commo
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
+    val active = request.getQueryString("active") match {
+      case Some(a) if a.toLowerCase == "true" => Some(true)
+      case Some(a) if a.toLowerCase == "false" => Some(false)
+      case _ => None
+    }
+
+    val isPaid = request.getQueryString("isPaid") match {
+      case Some(a) if a.toLowerCase == "true" => Some(true)
+      case Some(a) if a.toLowerCase == "false" => Some(false)
+      case _ => None
+    }
+
     val customerList = (Customers.getAlll _).tupled(paginationAttributes)
-    println(customerList)
     ok(Json.toJson(customerList), "List of customers")
   }
 
@@ -87,4 +100,37 @@ object CustomersController extends Controller with CustomerSerializer with Commo
     )
   }
 
+  def download() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
+    implicit val loggedInUser = request.user
+    var fileName = "customer_"
+    val active = request.getQueryString("active") match {
+      case Some(a) if a.toLowerCase == "true" => fileName += "active_"; Some(true)
+      case Some(a) if a.toLowerCase == "false" => fileName += "inactive_"; Some(false)
+      case _ => None
+    }
+
+    val isPaid = request.getQueryString("isPaid") match {
+      case Some(a) if a.toLowerCase == "true" => fileName += "paid_";Some(true)
+      case Some(a) if a.toLowerCase == "false" => fileName += "unpaid_";Some(false)
+      case _ => None
+    }
+
+    fileName += "report.csv"
+    ok(HEADER +"\n"+ Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid).map({ c =>
+      c.connections.map({ con =>
+        s"${c.customer.name},${c.customer.address}, ${con.setupBoxId},${con.cafId}, ${c.customer.balanceAmount}, ${con.status.toUpperCase}, ${dateFormat(con.installationDate)}"
+      }).mkString("\n")
+    }).mkString("\n"), fileName, fileName)
+  }
+
+  private def dateFormat(date: Option[DateTime]): String = {
+    date match {
+      case Some(d) => d.toString("YYYY-MM-dd")
+      case None => ""
+    }
+  }
+
+  private def dateFormat(date: DateTime): String = {
+    date.toString("YYYY-MM-dd")
+  }
 }

@@ -33,7 +33,6 @@ object PlansController extends Controller with PlanSerializer with CommonUtil wi
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     val planList = if(request.user.userType != UserType.ADMIN ) Plans.getAll(Some(request.user.companyId)) else Plans.getAll()
-    println(planList)
     ok(Json.toJson(planList), "List of plans")
   }
 

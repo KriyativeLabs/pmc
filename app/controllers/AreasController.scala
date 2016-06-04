@@ -32,7 +32,6 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     val areaList = if(request.user.userType != UserType.ADMIN ) Areas.getAll(Some(request.user.companyId)) else Areas.getAll()
-    println(areaList)
     ok(Json.toJson(areaList), "List of areas")
   }
 
@@ -44,7 +43,6 @@ object AreasController extends Controller with AreaSerializer with CommonUtil wi
   }
 
   def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
-    println(request.body)
     request.body.validate[Area].fold(
       errors => badRequest(errors.mkString),
       area => {

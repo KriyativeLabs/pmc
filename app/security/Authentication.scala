@@ -14,8 +14,7 @@ import scala.concurrent.Future
 import java.util.Base64
 import java.lang._
 
-
-case class LoggedInUser(userId:Int,companyId:Int,expiryDay:Int,userType:UserType)
+case class LoggedInUser(userId: Int, companyId: Int, expiryDay: Int, userType: UserType)
 
 class AuthenticatedRequest[A](val user: LoggedInUser, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -31,10 +30,10 @@ object Authentication {
   val encoder = Base64.getEncoder
   val decoder = Base64.getDecoder
 
-  def encryptAuthHeader(userId:Int,companyId:Int,timeOut:Int,userType:UserType):String={
-    val expiryDay = DateTime.now().getDayOfYear+timeOut
-    val tokenString:String = userId+"#"+companyId+"#"+expiryDay+"#"+userType.toString
-    new String(encoder.encode(Crypto.encryptAES(tokenString,key.get).getBytes))
+  def encryptAuthHeader(userId: Int, companyId: Int, timeOut: Int, userType: UserType): String = {
+    val expiryDay = DateTime.now().getDayOfYear + timeOut
+    val tokenString: String = userId + "#" + companyId + "#" + expiryDay + "#" + userType.toString
+    new String(encoder.encode(Crypto.encryptAES(tokenString, key.get).getBytes))
   }
 
   def decryptAuthHeader(authHeader: String): Either[String, LoggedInUser] = {
@@ -59,7 +58,7 @@ object Authentication {
   }
 }
 
-object IsAuthenticated extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest] with ResponseHelper{
+object IsAuthenticated extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest] with ResponseHelper {
 
   def refine[A](request: Request[A]): Future[Either[Result, AuthenticatedRequest[A]]] = Future.successful {
     try {
@@ -73,7 +72,6 @@ object IsAuthenticated extends ActionBuilder[AuthenticatedRequest] with ActionRe
       }
     } catch {
       case e: IllegalArgumentException => {
-        println("UnAuthorized")
         Left(unAuthorized(e.getMessage)(request))
       }
     }
@@ -81,16 +79,17 @@ object IsAuthenticated extends ActionBuilder[AuthenticatedRequest] with ActionRe
 
 }
 
-class PermissionCheckAction(permissionType: UserType) extends ActionFilter[AuthenticatedRequest] with ResponseHelper{
+class PermissionCheckAction(permissionType: UserType) extends ActionFilter[AuthenticatedRequest] with ResponseHelper {
 
   def filter[A](request: AuthenticatedRequest[A]) = Future.successful {
     request.user.userType match {
-      case UserType.AGENT => if(permissionType == UserType.AGENT) None else Some(unAuthorized("You are unauthorized for this action")(request))
-      case UserType.OWNER => if(permissionType == UserType.AGENT || permissionType == UserType.OWNER) None else Some(unAuthorized("You are unauthorized for this action")(request))
+      case UserType.AGENT => if (permissionType == UserType.AGENT) None else Some(unAuthorized("You are unauthorized for this action")(request))
+      case UserType.OWNER => if (permissionType == UserType.AGENT || permissionType == UserType.OWNER) None else Some(unAuthorized("You are unauthorized for this action")(request))
       case UserType.ADMIN => None
     }
   }
 }
+
 object PermissionCheckAction {
 
   def apply(permissionType: UserType): PermissionCheckAction = {
