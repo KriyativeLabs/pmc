@@ -8,7 +8,7 @@
     },
     "installed_plugins": {
         "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.pmc.cable"
+            "PACKAGE_NAME": "com.pmc.internet"
         }
     },
     "dependent_plugins": {}

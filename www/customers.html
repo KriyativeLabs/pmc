@@ -58,8 +58,8 @@
                     <th width="5%">H.No</th>
                     <th width="20%">Name</th>
                     <th width="15%">Mobile No.</th>
-                    <th width="20%">STB No.</th>
-                    <th width="20%">Box Serial No.</th>
+                    <th width="20%">UserName</th>
+                    <th width="20%">Password</th>
                     <th width="10%">Balance</th>
                     <th width="15%">Action</th>
                 </tr>
@@ -87,10 +87,6 @@
             </table>
         </div>
     </div>
-    <button id="btn-1" ng-click="download()" class="btn btn-primary pull-right">
-        <i class="fa fa-cloud-download text"></i>
-        <span class="text">Download Report</span>
-    </button>
 </div>
 
 <script type="text/ng-template" id="customerModal.html">
@@ -112,7 +108,7 @@
                                         <p>Name*</p>
                                         <input ng-model="name" class="form-control" maxlength="128" type="text"
                                                data-trigger="change"
-                                               data-required="true" placeholder="Customer Name">
+                                               data-required="true" placeholder="Customer Name" required>
                                     </div>
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Mobile Number</p>
@@ -154,17 +150,17 @@
                             </div>
                             <div>
                                 <br>
-                                <h4>2. Plans & CAF Details<span><button class="pull-right btn-success btn btn-sm"
+                                <h4>2. Connections <span><button class="pull-right btn-success btn btn-sm"
                                                                         ng-click="add()">+
                                 </button></span></h4>
                                 <br>
-				<style>
-                                .panel-group .panel {
+ 				<style>
+   				.panel-group .panel {
                                                 overflow:inherit !important;
                                 }
 
                                 </style>
-                                <uib-accordion close-others="true">
+                                <uib-accordion class="accord" close-others="true">
                                     <uib-accordion-group heading="{{con.title}}" ng-repeat="con in cons">
                                         <div>
                                             <uib-accordion-heading>
@@ -172,26 +168,24 @@
                                             </uib-accordion-heading>
                                             <div class="row">
                                                 <div class="col-sm-4" style="padding-right:20px;">
-                                                    <p>STB Number</p>
+                                                    <p>User Name</p>
                                                     <input ng-model="con.sbt_no" class="form-control" type="text"
                                                            data-trigger="change"
-                                                           data-required="false" placeholder="Set Top Box Number">
+                                                           data-required="false" placeholder="User Name">
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
-                                                    <p>CAF</p>
-                                                    <input ng-model="con.caf" class="form-control" type="text"
-                                                           data-trigger="change"
-                                                           data-required="false" placeholder="Customer Address Form">
-                                                </div>
-                                                <div class="col-sm-4" style="padding-right:20px;">
-                                                    <p>Box Series</p>
+                                                    <p>Password</p>
                                                     <input ng-model="con.box_series" class="form-control" type="text"
                                                            data-trigger="change" data-required="false"
-                                                           placeholder="BOX Series">
+                                                           placeholder="Password">
                                                 </div>
-
+                                                <div class="col-sm-4" style="padding-right:20px;">
+                                                    <p>Ip Address</p>
+                                                    <input ng-model="con.caf" class="form-control" type="text"
+                                                           data-trigger="change"
+                                                           data-required="false" placeholder="Ip Address">
+                                                </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Connection Status</p>
@@ -235,7 +229,6 @@
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Plan Starts On*</p>
-
                                                     <p class="input-group">
                                                         <input type="text" class="form-control"
                                                                uib-datepicker-popup datepicker-options="dateOptions"
@@ -261,14 +254,14 @@
                 </div>
             </div>
         </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
-            <button class="btn btn-primary" ng-click="customerFunc()"><i
-                    class="i i-user2"></i>{{title}} Customer
-            </button>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="customerFunc()"><i
+                class="i i-user2"></i>{{title}} Customer
+        </button>
 
-        </div>
+    </div>
     </div>
 </script>
 <script>

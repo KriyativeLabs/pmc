@@ -2,10 +2,9 @@
 <html lang="en" class="app" ng-app="pmcApp">
 
 <head>
-<!--<base href="/android_asset/www/index.html" />-->
-
+	<base href="/android_asset/www/index.html" />
     <meta charset="utf-8"/>
-    <title>Pay My Cable</title>
+    <title>Pay My Internet</title>
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css"/>
@@ -160,7 +159,7 @@
                      <small class="text-muted">10 minutes ago</small>
                    </span>
                          </a>-->
-                        <a class="media list-group-item" ng-repeat="notification in notifications">
+                        <a href="#" class="media list-group-item" ng-repeat="notification in notifications">
                                     <span class="media-body block m-b-none">
                     {{notification.notification}}<br>
                     <small class="text-muted">at {{notification.gotOn | date:'HH:mm'}} Today</small>
@@ -168,7 +167,8 @@
                         </a>
                     </div>
                     <div class="panel-footer text-sm">
-                        <a data-toggle="class:show animated fadeInRight">Notifications Today!</a>
+                        <a href="#" class="pull-right"><!--<i class="fa fa-cog"></i>--></a>
+                        <a href="#notes" data-toggle="class:show animated fadeInRight">Notifications Today!</a>
                     </div>
                 </section>
             </section>

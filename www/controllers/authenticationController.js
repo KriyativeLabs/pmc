@@ -11,7 +11,7 @@ pmcApp.controller('authenticationController', ['$scope','$window', 'cookieServic
            // $scope.$apply();
         }
         $scope.login = function(){
-            apiService.POST("/login?account_type=cable",'{"loginId":"'+$scope.loginid+'","password":"'+$scope.password+'"}').then(function(response){
+            apiService.POST("/login?account_type=internet",'{"loginId":"'+$scope.loginid+'","password":"'+$scope.password+'"}').then(function(response){
                 apiService.NOTIF_SUCCESS(response.data.message);
                 cookieService.set(constantsService.TOKEN,response.data.data.token);
                 cookieService.set(constantsService.USERNAME, response.data.data.name);

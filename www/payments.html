@@ -49,14 +49,7 @@
         <div class="table-responsive">
             <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                 <thead>
-                <!--<tr>-->
-                    <!--<th width="15%">Receipt No</th>-->
-                    <!--<th width="20%">Name</th>-->
-                    <!--<th width="15%">Paid On</th>-->
-                    <!--<th width="20%">Amount</th>-->
-                    <!--<th width="20%">Remarks</th>-->
-                    <!--<th width="10%">Agent</th>-->
-                <!--</tr>-->
+
                 </thead>
                 <tbody>
                 <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">

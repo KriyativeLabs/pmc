@@ -19,11 +19,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             link = "/customers";
         }
 
-
-        var download = function(){
-
-        };
-
         var getCustomers = function () {
             apiService.GET(finalLink).then(function (result) {
                 console.log(result.data.data);
@@ -106,8 +101,8 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             DTColumnBuilder.newColumn('hNo').withTitle('H.No'),
             DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
             DTColumnBuilder.newColumn('mobile').withTitle('Mobile No'),
-            DTColumnBuilder.newColumn('sbt').withTitle('STB No.'),
-            DTColumnBuilder.newColumn('boxSerialNo').withTitle('Box Serial No.').withClass('none'),
+            DTColumnBuilder.newColumn('uName').withTitle('User Name'),
+            DTColumnBuilder.newColumn('Password').withTitle('Password').withClass('none'),
             DTColumnBuilder.newColumn('balance').withTitle('Balance').withClass('all'),
             DTColumnBuilder.newColumn(null).withTitle('Action').withClass('all').notSortable().renderWith(actionsHtml)
         ];

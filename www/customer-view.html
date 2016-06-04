@@ -5,7 +5,6 @@
 
         <!--</header>-->
 
-
         <div class="scrollable wrapper">
             <div class="row">
                 <div class="col-xs-12">
@@ -37,19 +36,17 @@
                 </div>
             </div>
             <div class="well m-t">
-                <strong>Plans & CAF Details</strong>
+                <strong>Connections</strong>
                 <div ng-repeat="con in connections">
                 <div class="row">
                     <div class="col-xs-12">
-
-                        <p>STB Number: {{con.setupBoxId}}<br/>
-                            CAF: {{con.cafId}}<br/>
-                            Box Series: {{con.boxSerialNo}}<br/>
+                        <p> User Name: {{con.setupBoxId}}<br/>
+                            Password: {{con.boxSerialNo}}<br/>
+                            Ip Address: {{con.cafId}}<br/>
                             Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
                             Plan: <strong>{{connectionPlan(con.planId)}}</strong><br/>
                             Discounted: <strong> {{con.discount}} INR</strong>
                         </p>
-
                     </div>
                 </div>
 
@@ -61,6 +58,13 @@
                 <div class="table-responsive" ng-show="displayPayments">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                     <thead>
+                    <tr>
+                        <th width="20%">Receipt No</th>
+                        <th width="10%">Paid On</th>
+                        <th width="15%">Amount</th>
+                        <th width="20%">Remarks</th>
+                        <th width="15%">Agent</th>
+                    </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="receipt in payments">
