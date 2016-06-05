@@ -1,8 +1,5 @@
 <div>
     <div class="row m-b-md">
-        <!-- <div class="col-sm-6">
-            <h3 class="m-b-xs text-black">Payments</h3>
-        </div> -->
         <div class="col-sm-6 text-right text-left-xs">
             <form class="m-b-none" action="">
                 <div class="input-group">
@@ -52,7 +49,7 @@
 
                 </thead>
                 <tbody>
-                <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">
+                <tr ng-repeat="receipt in receipts | filter:search">
                     <td>{{receipt.receiptNo}}</td>
                     <td>{{receipt.customerDetails}}</td>
                     <td>{{receipt.paidOn}}</td>
