@@ -10,13 +10,24 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         var pageNo = 1;
         $scope.from = 1;
         $scope.to = 20;
-        var link = "/customers";
+
+        var setTo = function(number){
+            if($scope.to > number) {
+                $scope.to = number;
+            }
+        };
+
+        var link = "/customers?isPaid=all";
+        var countLink = "/customers/count?isPaid=all";
         if (query == "paid") {
-            link = "/customers/paid";
+            link = "/customers?isPaid=true";
+            countLink = "/customers/count?isPaid=true";
         } else if (query == "unpaid") {
-            link = "/customers/unpaid";
+            link = "/customers?isPaid=false";
+            countLink = "/customers/count?isPaid=false";
         } else {
-            link = "/customers";
+            link = "/customers?isPaid=all";
+            countLink = "/customers/count?isPaid=all";
         }
 
 
@@ -25,6 +36,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
         var getCustomers = function () {
+            $scope.getCustomersCount();
             apiService.GET(finalLink).then(function (result) {
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
@@ -38,8 +50,9 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
         $scope.getCustomersCount = function () {
-            apiService.GET("/customers/count").then(function (result) {
+            apiService.GET(countLink).then(function (result) {
                 $scope.customersCount = result.data.data.count;
+                setTo($scope.customersCount);
                 $scope.noOfPages = $scope.customersCount/pageSize;
                 if($scope.customersCount % pageSize > 0) {
                     $scope.noOfPages = $scope.noOfPages +1;

@@ -57,7 +57,7 @@
 <section class="vbox">
 <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
     <div class="navbar-header text-center aside-md dk">
-        <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="#nav">
+        <a class="btn btn-link visible-xs" style="z-index: 1" data-toggle="class:nav-off-screen" data-target="#nav">
             <i class="fa fa-bars"></i>
         </a>
         <a class="navbar-brand">
@@ -65,7 +65,7 @@
         </a>
 
         <a class="btn btn-link visible-xs">
-            <img src="assets/images/pay-logo.png" style="width:15%;float:right;margin-top:-5px !important;">
+            <img src="assets/images/pay-logo.png" style="width:20%;float:right;margin-top:-5px !important;">
         </a>
     </div>
     <ul class="nav navbar-nav hidden-xs">
@@ -151,15 +151,6 @@
                         <strong>You have <span class="count">{{notifCount}}</span> notifications</strong>
                     </div>
                     <div class="list-group list-group-alt">
-                        <!-- <a href="#" class="media list-group-item">
-                                     <span class="pull-left thumb-sm">
-                     <img src="assets/images/a0.png" alt="..." class="img-circle">
-                   </span>
-                                     <span class="media-body block m-b-none">
-                     Use awesome animate.css<br>
-                     <small class="text-muted">10 minutes ago</small>
-                   </span>
-                         </a>-->
                         <a class="media list-group-item" ng-repeat="notification in notifications">
                                     <span class="media-body block m-b-none">
                     {{notification.notification}}<br>
@@ -193,7 +184,7 @@
                 </li>-->
                 <li class="divider"></li>
                 <li>
-                    <a style="cursor:pointer" ng-click="logout()">Not {{username}}? Logout</a>
+                    <a style="cursor:pointer" ng-click="logout()">Logout!</a>
                 </li>
             </ul>
         </li>
@@ -277,7 +268,7 @@
                                 <li>
                                     <a style="cursor:pointer" ng-click="logout()">
                                         <i class="i i-logout icon"></i>
-                                        <span class="font-bold">Not {{username}}? Logout</span>
+                                        <span class="font-bold">Logout!</span>
                                     </a>
                                 </li>
 

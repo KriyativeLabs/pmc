@@ -2,6 +2,7 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
     function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
 
         $scope.sNo = 1;
+        $scope.isLoading=false;
         $scope.getPlans = function () {
             apiService.GET("/plans").then(function (response) {
                 $scope.plans = response.data.data;
@@ -119,6 +120,7 @@ var PlanCreateCtrl = function ($scope, $uibModalInstance, $location, apiService)
     };
 
     $scope.planFunc = function () {
+        $scope.isLoading=true;
         var createObj = {};
         createObj.name = $scope.name;
         createObj.amount = $scope.amount;
@@ -127,8 +129,10 @@ var PlanCreateCtrl = function ($scope, $uibModalInstance, $location, apiService)
 
         apiService.POST("/plans", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
+            $scope.isLoading=false;
             $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
+            $scope.isLoading=false;
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
@@ -140,6 +144,7 @@ var PlanCreateCtrl = function ($scope, $uibModalInstance, $location, apiService)
 
 var PlanUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService, planId) {
     $scope.title = "Update";
+    $scope.isLoading=true;
     $scope.ok = function () {
         $uibModalInstance.close($scope.dt);
     };
@@ -151,8 +156,10 @@ var PlanUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService,
         $scope.name = response.data.data.name;
         $scope.amount = response.data.data.amount;
         $scope.duration = response.data.data.noOfMonths;
+        $scope.isLoading=false;
     }, function (errorResponse) {
         apiService.NOTIF_ERROR(errorResponse.data.message);
+        $scope.isLoading=false;
         if (errorResponse.status != 200) {
             if (errorResponse.status == 304)
                 alert(errorResponse);
@@ -161,6 +168,7 @@ var PlanUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService,
 
 
     $scope.planFunc = function () {
+        $scope.isLoading=true;
         var createObj = {};
         createObj.id = parseInt(planId);
         createObj.name = $scope.name;
@@ -170,8 +178,10 @@ var PlanUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService,
 
         apiService.PUT("/plans/" + planId, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
+            $scope.isLoading=false;
             $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
+            $scope.isLoading=false;
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
