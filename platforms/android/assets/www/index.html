@@ -11,21 +11,12 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
-    <!--<link rel="stylesheet" href="assets/js/calendar/bootstrap_calendar.css" type="text/css"/>-->
-    <!--<link rel="stylesheet" href="assets/js/datatables/datatables.css" type="text/css"/>-->
-    <!--<link rel="stylesheet" href="assets/js/chosen/chosen.css" type="text/css"/>
-    <link rel="stylesheet" href="assets/js/datepicker/datepicker.css" type="text/css"/>-->
     <link rel="stylesheet" href="vendor/angular-chart.css">
     <link rel="stylesheet" href="vendor/angular-csp.css">
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
     <link rel="stylesheet" href="vendor/dataTables.responsive.css">
     
     <style>
-        /*
-        .modal-dialog {
-            width: 60%;
-        }*/
-
         .form-control {
             transition: all 0.15s ease-out 0s;
         }
@@ -341,26 +332,10 @@
 <script src="controllers/agentController.js"></script>
 <script src="controllers/agentViewController.js"></script>
 <script src="directives/inputMaxLengthNumber.js"></script>
-
+<script src="vendor/angular-file-saver.bundle.min.js"></script>
 <script src="vendor/angular-chart.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
     
-<!--<script type="text/javascript">
-var app = {
-    initialize: function() {
-        this.bindEvents();
-    },
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, true);
-    },
-
-    onDeviceReady: function() {
-        angular.element(document).ready(function() {
-            angular.bootstrap(document);
-        });
-    },
-};
-</script>-->
 <script type="text/javascript">
         app.initialize();
 </script>
@@ -440,8 +415,9 @@ var app = {
                         </form>
                         <div class="col-md-12 text-right">
                             <button type="button" class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</button>
-                            <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary"><i
-                                    class="fa fa-check"></i>Pay
+                            <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary" ng-disabled="isPLoading"><span ng-hide="isPLoading"><i
+                                    class="fa fa-check"></i>Pay</span><span ng-show="isPLoading"><i class="fa fa-spinner fa-spin"></i>
+                            <span class="sr-only">Loading...</span></span>
                             </button>
                         </div>
                     </div>
