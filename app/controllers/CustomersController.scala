@@ -137,7 +137,7 @@ object CustomersController extends Controller with CustomerSerializer with Commo
       case _ => None
     }
 
-    val plans = Plans.getAll(Some(loggedInUser.companyId)).map(p => p.id.get -> s"${p.name}(${p.amount}})").toMap
+    val plans = Plans.getAll(Some(loggedInUser.companyId)).map(p => p.id.get -> s"${p.name}(${p.amount})").toMap
 
     fileName += "report.csv"
     ok(HEADER +"\n"+ Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid, request.getQueryString("q")).map({ c =>
