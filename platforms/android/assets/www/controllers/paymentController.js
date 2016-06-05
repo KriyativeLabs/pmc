@@ -56,7 +56,7 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
             .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
             //.withPaginationType('full_numbers')
             .withDisplayLength(-1)
-            .withOption('order', [1, 'asc'])
+            .withOption('order', [2, 'desc'])
             .withOption('language', {
                 paginate: {
                     next: "",

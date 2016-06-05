@@ -1,4 +1,4 @@
-var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables', 'chart.js','ui-notification', 'ngAnimate']);
+var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables', 'chart.js','ui-notification', 'ngAnimate', 'ngFileSaver','toggle-switch']);
 
 pmcApp.config(['$routeProvider','$compileProvider', function ($routeProvider,$compileProvider) {
     $routeProvider.when("/login", {
