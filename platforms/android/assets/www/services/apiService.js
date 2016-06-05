@@ -27,6 +27,19 @@ pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Not
         }
     };
 
+    var download = function (path, method) {
+        $http.defaults.headers.common.Accept= 'application/json, text/plain */*';
+        $http.defaults.headers.contentType = 'application/json, text/csv */*';
+        var authToken = cookieService.get(constantsService.TOKEN);
+        if (authToken) {
+            $http.defaults.headers.common.Authorization = authToken;
+        }
+        return $http({
+            method: method,
+            url: apiURL + path
+        });
+    };
+
     var errorTime = function (msg) {
         Notification.error({message: msg, delay: 10000, positionY: 'top', positionX: 'center'});
     };
@@ -47,6 +60,9 @@ pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Not
         },
         DELETE: function (path) {
             return doRequest(path, "DELETE", "");
+        },
+        DOWNLOAD: function (path) {
+            return download(path, "GET", "");
         },
         NOTIF_SUCCESS: function (msg) {
             return successTime(msg);

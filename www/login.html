@@ -2,7 +2,7 @@
 <html lang="en" class="app">
 <head>
     <meta charset="utf-8"/>
-    <title>PayMycable</title>
+    <title>Pay My Internet</title>
     <meta name="description"
           content="app, web app, responsive, admin dashboard, admin, flat, flat ui, ui kit, off screen nav"/>
     <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; connect-src http://52.32.136.52:9000">-->
@@ -39,8 +39,8 @@
     <div class="wrapper">
         <div id="content" class="m-t-xl m-b-lg wrapper-md animated fadeInUp" style="background:#fff;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);border-radius: 10px;">
             <div class="container aside-xl" ng-controller="authenticationController">
-                <a class="text-center block" href="index.html"> <img style="width:200px" src="assets/images/logo1.png"
-                                                                     class="m-r-sm" alt="paymycable"></a>
+                <a class="text-center block"> <img style="width:200px" src="assets/images/logo1.png"
+                                                                     class="m-r-sm" alt="Pay My Internet"></a>
                 <hr style="border-color:#aaa;">
                 <div class="m-b-lg">
                     <p class="text-center">
@@ -134,12 +134,14 @@
 <script src="vendor/ui-bootstrap-tpls.js"></script>
 <script type="text/javascript" src="vendor/Chart.min.js"></script>
 <script src="vendor/angular-ui-notification.min.js"></script>
+<script src="vendor/angular-toggle-switch.min.js"></script>
 <script src="vendor/angular-chart.js"></script>
 <script src="app.js"></script>
 <script src="services/apiService.js"></script>
 <script src="services/constantsService.js"></script>
 <script src="services/cookieService.js"></script>
 <script src="controllers/authenticationController.js"></script>
+<script src="vendor/angular-file-saver.bundle.min.js"></script>
 <script type="text/javascript">
     $(document).bind("mobileinit", function () {
         $.support.cors = true;

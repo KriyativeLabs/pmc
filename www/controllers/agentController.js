@@ -130,6 +130,7 @@ var AgentCreateCtrl = function ($scope, $uibModalInstance, $location, apiService
         createObj.loginId = $scope.loginId;
         createObj.accountType = "AGENT";
         createObj.companyId = -1;
+        createObj.status = true;
 
         apiService.POST("/users", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
@@ -187,6 +188,7 @@ var AgentUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService
         createObj.loginId = $scope.loginId;
         createObj.accountType = $scope.accountType;
         createObj.companyId = -1;
+        createObj.status = true;
 
         apiService.PUT("/users/" + agentId, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);

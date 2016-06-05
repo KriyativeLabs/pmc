@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="app" ng-app="pmcApp">
+<html lang="en" class="app" ng-app="pmcApp" xmlns="http://www.w3.org/1999/html">
 
 <head>
-	<base href="/android_asset/www/index.html" />
+	<!--<base href="/android_asset/www/index.html" />-->
     <meta charset="utf-8"/>
     <title>Pay My Internet</title>
     <meta name="description" content=""/>
@@ -10,21 +10,13 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
-    <!--<link rel="stylesheet" href="assets/js/calendar/bootstrap_calendar.css" type="text/css"/>-->
-    <!--<link rel="stylesheet" href="assets/js/datatables/datatables.css" type="text/css"/>-->
-    <!--<link rel="stylesheet" href="assets/js/chosen/chosen.css" type="text/css"/>
-    <link rel="stylesheet" href="assets/js/datepicker/datepicker.css" type="text/css"/>-->
     <link rel="stylesheet" href="vendor/angular-chart.css">
     <link rel="stylesheet" href="vendor/angular-csp.css">
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
     <link rel="stylesheet" href="vendor/dataTables.responsive.css">
+    <link rel="stylesheet" href="https://rawgithub.com/JumpLink/angular-toggle-switch/master/style/bootstrap3/angular-toggle-switch-bootstrap-3.css" type="text/css" media="screen">
     
     <style>
-        /*
-        .modal-dialog {
-            width: 60%;
-        }*/
-
         .form-control {
             transition: all 0.15s ease-out 0s;
         }
@@ -56,15 +48,14 @@
 <section class="vbox">
 <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
     <div class="navbar-header text-center aside-md dk">
-        <a class="btn btn-link visible-xs" data-toggle="class:nav-off-screen" data-target="#nav">
+        <a class="btn btn-link visible-xs" style="z-index: 1" data-toggle="class:nav-off-screen" data-target="#nav">
             <i class="fa fa-bars"></i>
         </a>
         <a class="navbar-brand">
             <i ng-class="titleClass"></i> {{title}}
         </a>
-
         <a class="btn btn-link visible-xs">
-            <img src="assets/images/pay-logo.png" style="width:15%;float:right;margin-top:-5px !important;">
+            <img src="assets/images/pay-logo.png" style="width:20%;float:right;margin-top:7px !important;">
         </a>
     </div>
     <ul class="nav navbar-nav hidden-xs">
@@ -333,6 +324,7 @@
 <script src="vendor/ui-bootstrap-tpls.js"></script>
 <script type="text/javascript" src="vendor/Chart.min.js"></script>
 <script src="vendor/angular-ui-notification.min.js"></script>
+<script src="vendor/angular-toggle-switch.min.js"></script>
 <script src="app.js"></script>
 <script src="interceptors/httpInterceptor.js"></script>
 <script src="services/apiService.js"></script>
@@ -350,26 +342,11 @@
 <script src="controllers/agentController.js"></script>
 <script src="controllers/agentViewController.js"></script>
 <script src="directives/inputMaxLengthNumber.js"></script>
-
+<script src="vendor/angular-file-saver.bundle.min.js"></script>
 <script src="vendor/angular-chart.js"></script>
 <script type="text/javascript" src="js/index.js"></script>
-    
-<!--<script type="text/javascript">
-var app = {
-    initialize: function() {
-        this.bindEvents();
-    },
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, true);
-    },
 
-    onDeviceReady: function() {
-        angular.element(document).ready(function() {
-            angular.bootstrap(document);
-        });
-    },
-};
-</script>-->
+
 <script type="text/javascript">
         app.initialize();
 </script>
@@ -449,9 +426,11 @@ var app = {
                         </form>
                         <div class="col-md-12 text-right">
                             <button type="button" class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</button>
-                            <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary"><i
-                                    class="fa fa-check"></i>Pay
+                            <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary" ng-disabled="isPLoading"><span ng-hide="isPLoading"><i
+                                    class="fa fa-check"></i>Pay</span><span ng-show="isPLoading"><i class="fa fa-spinner fa-spin"></i>
+<span class="sr-only">Loading...</span></span>
                             </button>
+
                         </div>
                     </div>
                 </section>

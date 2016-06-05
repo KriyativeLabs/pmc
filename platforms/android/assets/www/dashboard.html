@@ -1,9 +1,8 @@
-
 <div class="hbox stretch">
     <div>
         <div class="vbox">
             <div class="scrollable padder">
-               <div class="row m-b-sm">
+                <div class="row m-b-sm">
                     <div class="col-sm-6">
                         <h5 class="m-b-xs text-black">Hello, {{username}}!</h5>
                     </div>
@@ -43,7 +42,8 @@
                                 <i class="fa fa-inr text-white"></i>
                               </span>
                               <span class="clear">
-                                <span class="h3 block m-t-xs text-danger">{{balanceAmount}}<span class="fa fa-inr text-sm"></span></span>
+                                <span class="h3 block m-t-xs text-danger">{{balanceAmount}}&nbsp;<span
+                                        class="fa fa-inr text-sm"></span></span>
                                 <small class="text-muted text-u-c">Balance Amount</small>
                               </span>
                                     </a>
@@ -55,7 +55,8 @@
                                 <i class="fa fa-inr text-white"></i>
                               </span>
                               <span class="clear">
-                                <span class="h3 block m-t-xs text-primary">{{amountCollected}}<span class="fa fa-inr text-sm"></span></span>
+                                <span class="h3 block m-t-xs text-primary">{{amountCollected}}&nbsp;<span
+                                        class="fa fa-inr text-sm"></span></span>
                                 <small class="text-muted text-u-c">Amount Collected</small>
                               </span>
                                     </a>
@@ -84,7 +85,9 @@
                                 Connection
                             </header>
                             <div class="panel-body text-center bg-light lter" id="b-c">
-                                <div class="easypiechart inline m-b m-t" data-percent="60" data-line-width="4" data-bar-Color="#23aa8c" data-track-Color="#c5d1da" data-color="#2a3844" data-scale-Color="false" data-size="120" data-line-cap='butt' data-animate="2000">
+                                <div class="easypiechart inline m-b m-t" data-percent="60" data-line-width="4"
+                                     data-bar-Color="#23aa8c" data-track-Color="#c5d1da" data-color="#2a3844"
+                                     data-scale-Color="false" data-size="120" data-line-cap='butt' data-animate="2000">
                                     <div>
                                         <span class="h2 m-l-sm step"></span>%
                                         <div class="text text-xs">completed</div>
@@ -101,7 +104,8 @@
                                 Monthly Statistics
                             </header>
                             <canvas id="bar" class="chart chart-bar"
-                                    chart-data="bardata" chart-series="barseries" chart-legend="true" chart-labels="barlabels" chart-colours="barcolors">
+                                    chart-data="bardata" chart-series="barseries" chart-legend="true"
+                                    chart-labels="barlabels" chart-colours="barcolors">
                             </canvas>
                         </div>
                     </div>
@@ -112,7 +116,8 @@
                             </header>
                             <div class="panel-body flot-legend">
                                 <canvas id="doughnut" style="height:240px" class="chart chart-doughnut"
-                                        chart-data="doughnutdata" chart-legend="true" chart-labels="doughnutlabels" chart-colours="doughnutcolors">
+                                        chart-data="doughnutdata" chart-legend="true" chart-labels="doughnutlabels"
+                                        chart-colours="doughnutcolors">
                                 </canvas>
                             </div>
                         </div>

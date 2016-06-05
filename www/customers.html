@@ -1,8 +1,5 @@
 <div data-ng-init="loadNext(-2)">
     <div class="row">
-        <!--<div class="col-sm-6">
-            <h3 class="m-b-xs text-black">Customers</h3>
-        </div>-->
         <div class="col-sm-12 text-right text-left-xs">
             <form class="m-b-none" action="">
                 <div class="input-group">
@@ -17,21 +14,17 @@
         </div>
     </div>
     <section class="row">
-        <!--<div class="col-sm-6">-->
-        <!--<button ng-hide="{{isAgent}}" class="btn btn-sm btn-primary" ng-click="open()"><i class="i i-plus2"></i>Add</button>-->
-        <!--</div>-->
-        <!-- </section>
-         <section class="row m-b-md">-->
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <table width="100%">
                 <tr>
                     <td align="left">
                         <button ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0"
-                                class="btn btn-sm btn-primary" ng-click="open()"><i class="i i-plus2"></i>Add
+                                class="btn btn-sm btn-primary" ng-click="open()">
+                            <i class="i i-plus2"></i>Add
                         </button>
                     </td>
-                    <td align="right" style="float:right !important; bottom: 0">
-                        <ul class="pagination pagination-sm">
+                    <td class="pull-right" style="bottom: 0">
+                        <ul class="pagination pagination-sm" style="margin-bottom: 5px">
                             <li><a ng-click="loadNext(-2)"><i class="fa fa-fast-backward"></i></a></li>
                             <li><a ng-click="loadNext(-1)"><i class="fa fa-step-backward"></i></a></li>
                             <li><a ng-click="loadNext(1)"><i class="fa fa-step-forward"></i></a></li>
@@ -39,9 +32,14 @@
                         </ul>
                     </td>
                 </tr>
+                <tr>
+                    <td></td>
+                    <td class="pull-right" style="margin-bottom: 2px">
+                        <toggle-switch ng-model="switchStatus"  knob-label="Active" class="switch-mini">
+                        </toggle-switch>
+                    </td>
+                </tr>
             </table>
-            <!--<button class="btn btn-s-md btn-primary" ng-click="loadNext(-1)"><i class="i i-arrow-left"></i>Previous</button>&nbsp;<button class="btn btn-s-md btn-primary" ng-click="loadNext(1)">Next<i class="i i-arrow-right"></i></button>-->
-            <!--<p class="m-xs bg-white">Showing {{from}} to {{to}} of {{customersCount}}</p>-->
         </div>
     </section>
     <div class="panel panel-default">
@@ -87,6 +85,10 @@
             </table>
         </div>
     </div>
+    <button id="btn-1" ng-click="download()" class="btn btn-primary pull-right hidden-xs hidden-sm">
+        <i class="fa fa-cloud-download text"></i>
+        <span class="text">Download Report</span>
+    </button>
 </div>
 
 <script type="text/ng-template" id="customerModal.html">
@@ -151,13 +153,13 @@
                             <div>
                                 <br>
                                 <h4>2. Connections <span><button class="pull-right btn-success btn btn-sm"
-                                                                        ng-click="add()">+
+                                                                 ng-click="add()">+
                                 </button></span></h4>
                                 <br>
- 				<style>
-   				.panel-group .panel {
-                                                overflow:inherit !important;
-                                }
+                                <style>
+                                    .panel-group .panel {
+                                        overflow: inherit !important;
+                                    }
 
                                 </style>
                                 <uib-accordion class="accord" close-others="true">
@@ -229,6 +231,7 @@
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Plan Starts On*</p>
+
                                                     <p class="input-group">
                                                         <input type="text" class="form-control"
                                                                uib-datepicker-popup datepicker-options="dateOptions"
@@ -257,8 +260,9 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
-        <button class="btn btn-primary" ng-click="customerFunc()"><i
-                class="i i-user2"></i>{{title}} Customer
+        <button class="btn btn-primary" ng-click="customerFunc()" ng-disabled="isLoading"><span ng-hide="isLoading"><i
+                class="i i-user2"></i>{{title}} Customer</span><span ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
+<span class="sr-only">Loading...</span></span>
         </button>
 
     </div>

@@ -1,25 +1,48 @@
-pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder', 'FileSaver', 'Blob',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
 
         //########################################Customers Page########################################
         var query = $location.search().query;
         if (!query) {
             query = "all";
         }
-         var pageSize = 20;
+        $scope.isLoading = false;
+        var pageSize = 20;
         var pageNo = 1;
         $scope.from = 1;
         $scope.to = 20;
-        var link = "/customers";
+
+        var isPaid = "all";
         if (query == "paid") {
-            link = "/customers/paid";
+            isPaid = "true";
         } else if (query == "unpaid") {
-            link = "/customers/unpaid";
-        } else {
-            link = "/customers";
+            isPaid = "false";
         }
 
-        var getCustomers = function () {
+        var q = "";
+
+        var link = "/customers?isPaid=all";
+        var countLink = "/customers/count?isPaid=all";
+        if (query == "paid") {
+            link = "/customers?isPaid=true";
+            countLink = "/customers/count?isPaid=true";
+        } else if (query == "unpaid") {
+            link = "/customers?isPaid=false";
+            countLink = "/customers/count?isPaid=false";
+        } else {
+            link = "/customers?isPaid=all";
+            countLink = "/customers/count?isPaid=all";
+        }
+
+        var setTo = function (number) {
+            if ($scope.to > number) {
+                $scope.to = number;
+            }
+        };
+
+        $scope.getCustomers = function () {
+            //alert($scope.switchStatus);
+            $scope.getCustomersCount();
             apiService.GET(finalLink).then(function (result) {
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
@@ -33,11 +56,12 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
         $scope.getCustomersCount = function () {
-            apiService.GET("/customers/count").then(function (result) {
+            apiService.GET(countLink).then(function (result) {
                 $scope.customersCount = result.data.data.count;
-                $scope.noOfPages = $scope.customersCount/pageSize;
-                if($scope.customersCount % pageSize > 0) {
-                    $scope.noOfPages = $scope.noOfPages +1;
+                setTo($scope.customersCount);
+                $scope.noOfPages = $scope.customersCount / pageSize;
+                if ($scope.customersCount % pageSize > 0) {
+                    $scope.noOfPages = $scope.noOfPages + 1;
                 }
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
@@ -46,35 +70,50 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 }
             });
         };
-
         $scope.getCustomersCount();
 
-        $scope.loadNext = function(buttonId){
-            if(buttonId == -2 ){
-                finalLink = link+"?pageNo=1&pageSize="+ pageSize;
-            } else if(buttonId == -1){
-                if(pageNo-1 > 0){
-                    pageNo = pageNo-1;
+        $scope.download = function () {
+            var dLink = "/customers/download?isPaid="+isPaid +"&q="+q;
+            apiService.DOWNLOAD(dLink).then(function (result) {
+
+                var data = new Blob([result.data] , {type: result.headers('Content-Type')});
+                FileSaver.saveAs(data, result.headers("filename"));
+                console.log(result);
+            }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+            });
+        };
+
+
+        $scope.loadNext = function (buttonId) {
+            if (buttonId == -2) {
+                finalLink = link + "&pageNo=1&pageSize=" + pageSize;
+            } else if (buttonId == -1) {
+                if (pageNo - 1 > 0) {
+                    pageNo = pageNo - 1;
                 } else {
                     pageNo = 1;
                 }
-                finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
-            } else if(buttonId == 1){
-                if(pageNo+1 <= $scope.noOfPages){
-                    pageNo = pageNo+1;
+                finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
+            } else if (buttonId == 1) {
+                if (pageNo + 1 <= $scope.noOfPages) {
+                    pageNo = pageNo + 1;
                 } else {
                     pageNo = $scope.noOfPages;
                 }
-                finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
+                finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
             } else {
                 pageNo = $scope.noOfPages;
-                finalLink = link+"?pageNo="+pageNo+"&pageSize="+pageSize;
+                finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
             }
 
             $scope.from = (pageSize * pageNo) - pageSize + 1;
             $scope.to = pageSize * pageNo;
 
-            getCustomers()
+            $scope.getCustomers();
         };
 
         $scope.dtOptions = DTOptionsBuilder.newOptions()
@@ -108,12 +147,12 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         ];
 
         function actionsHtml(data, type, full, meta) {
-            return '<button ng-disabled="'+(data.balanceAmount == 0)+'" class="btn btn-success btn-sm"' +
-                                'style="padding:1px 11px !important;" ng-click="openReceipt('+data.id+')">Pay'+
-                        '</button> &nbsp;'+
-                        '<button class="btn btn-primary btn-sm" ng-hide="'+$scope.isAgent+'" ng-click="openUpdate('+data.id+')"'+
-                                'style="padding:1px 10px !important;">Edit'+
-                        '</button>';
+            return '<button ng-disabled="' + (data.balanceAmount == 0) + '" class="btn btn-success btn-sm"' +
+                'style="padding:1px 11px !important;" ng-click="openReceipt(' + data.id + ')">Pay' +
+                '</button> &nbsp;' +
+                '<button class="btn btn-primary btn-sm" ng-hide="' + $scope.isAgent + '" ng-click="openUpdate(' + data.id + ')"' +
+                'style="padding:1px 10px !important;">Edit' +
+                '</button>';
         }
 
         $scope.stbString = function (cons, isSbt) {
@@ -122,11 +161,11 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 if (result != "") {
                     result = result + ",";
                 }
-                    if (isSbt) {
-                        result = result + value.setupBoxId;
-                    } else {
-                        result = result + value.boxSerialNo;
-                    }
+                if (isSbt) {
+                    result = result + value.setupBoxId;
+                } else {
+                    result = result + value.boxSerialNo;
+                }
             });
             return result;
         };
@@ -137,7 +176,8 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         }
 
         $scope.changeData = function (search) {
-            commonService.getResultFromLink("/customersearch?search=" + search).then(function (result) {
+            q = search;
+            commonService.getResultFromLink("/customers?q=" + search).then(function (result) {
                 $scope.customers = result.data.data;
                 $scope.customersBackUp = result.data.data;
             });
@@ -216,6 +256,7 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     $scope.getPlans();
 
     $scope.customerFunc = function () {
+        $scope.isLoading = true;
         var createObj = {};
         createObj.name = $scope.name;
         createObj.mobileNo = $scope.mobile_no;
@@ -243,9 +284,11 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
 
         apiService.POST("/customers", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
+            $scope.isLoading = false;
             $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
+            $scope.isLoading = false;
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
