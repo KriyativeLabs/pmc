@@ -2,6 +2,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
     function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
 
         //########################################Customers Page########################################
+        var first= true;
         $scope.switchStatus= true;
         var query = $location.search().query;
         if (!query) {
@@ -21,7 +22,11 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         }
 
         $scope.$watch('switchStatus', function(){
-            $scope.getCustomers();
+            if(first){
+                first=false;
+            } else {
+                $scope.getCustomers();
+            }
         });
 
         var q = "";
