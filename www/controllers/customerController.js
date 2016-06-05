@@ -2,6 +2,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
     function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
 
         //########################################Customers Page########################################
+        $scope.switchStatus= true;
         var query = $location.search().query;
         if (!query) {
             query = "all";
@@ -18,6 +19,10 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         } else if (query == "unpaid") {
             isPaid = "false";
         }
+
+        $scope.$watch('switchStatus', function(){
+            $scope.getCustomers();
+        });
 
         var q = "";
 
@@ -41,9 +46,14 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
         $scope.getCustomers = function () {
-            //alert($scope.switchStatus);
+            var li = finalLink;
+            if($scope.switchStatus){
+                li = li+"&active=true";
+            } else {
+                li = li+"&active=false";
+            }
             $scope.getCustomersCount();
-            apiService.GET(finalLink).then(function (result) {
+            apiService.GET(li).then(function (result) {
                 console.log(result.data.data);
                 $scope.customers = result.data.data;
                 $scope.customersBackUp = result.data.data;
@@ -109,6 +119,8 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 pageNo = $scope.noOfPages;
                 finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
             }
+
+
 
             $scope.from = (pageSize * pageNo) - pageSize + 1;
             $scope.to = pageSize * pageNo;
