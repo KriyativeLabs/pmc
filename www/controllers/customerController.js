@@ -337,7 +337,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
 
     $scope.cons = [];
     $scope.conCount = 0;
-
+    $scope.isLoading = true;
     $scope.add = function () {
         $scope.cons.push({
             title: 'Connection - ' + ($scope.conCount + 1),
@@ -352,10 +352,13 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     };
 
     $scope.getAreas = function () {
+        $scope.isLoading = true;
         apiService.GET("/areas").then(function (result) {
+            $scope.isLoading = false;
             $scope.areas = result.data.data;
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
+            $scope.isLoading = false;
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
@@ -365,10 +368,13 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     $scope.getAreas();
 
     $scope.getPlans = function () {
+        $scope.isLoading = true;
         apiService.GET("/plans").then(function (result) {
             $scope.plans = result.data.data
+            $scope.isLoading = false;
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
+            $scope.isLoading = false;
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
@@ -405,10 +411,12 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
                 id_proof: value.idProof,
                 dt: new Date(value.installationDate)
             });
+            $scope.isLoading = false;
         });
 
     }, function (errorResponse) {
         apiService.NOTIF_ERROR(errorResponse.data.message);
+        $scope.isLoading = false;
         if (errorResponse.status != 200) {
             console.log(errorResponse);
         }
@@ -421,6 +429,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     };
 
     $scope.customerFunc = function () {
+        $scope.isLoading = true;
         var createObj = {};
         createObj.id = $scope.id;
         createObj.name = $scope.name;
