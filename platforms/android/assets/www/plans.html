@@ -17,12 +17,14 @@
         </div>
         <section class="row m-b-md">
             <div class="col-sm-6">
-                <a class="btn btn-sm btn-primary" ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0;" ng-click="open()"><i class="i i-plus2"></i>Add</a>
+                <a class="btn btn-sm btn-primary" ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0;"
+                   ng-click="open()"><i class="i i-plus2"></i>Add</a>
             </div>
         </section>
         <div class="panel panel-default">
             <div class="table-responsive">
-                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
+                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns"
+                       class="table table-striped m-b-none">
                     <thead>
                     <tr>
                         <th width="10%">S.No</th>
@@ -40,7 +42,7 @@
                         <td>{{plan.name}}</td>
                         <td>{{plan.amount}}</td>
                         <td>{{plan.noOfMonths}}</td>
-                        <td  ng-hide="isAgent">
+                        <td ng-hide="isAgent">
                             <!--<button ng-click="openUpdate(plan.id,plan.name,plan.amount, plan.noOfMonths)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
                             <button ng-click="delete(plan.id,plan.name)" class="btn btn-danger btn-sm"
                                     style="padding:1px 10px !important;">Delete
@@ -74,17 +76,20 @@
                                 <label>Plan Amount</label>
                                 <input ng-model="amount" class="form-control" type="number" placeholder="Plan Amount">
                             </div>
-                               <!-- </div>-->
-                           <!-- <div class="row">-->
+                            <!-- </div>-->
+                            <!-- <div class="row">-->
                             <div class="form-group">
                                 <label>Plan Duration</label>
                                 <input ng-model="duration" class="form-control" type="number"
                                        placeholder="Plan Duration">
                             </div>
-                           <!-- </div>-->
-                                <div class="row pull-right">
-                             <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
-                            <button class="btn btn-sm btn-primary" ng-click="planFunc()"><i class="fa fa-check"></i>{{title}}</button>
+                            <!-- </div>-->
+                            <div class="row pull-right">
+                                <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
+                                <button class="btn btn-sm btn-primary" ng-click="planFunc()" ng-disabled="isLoading">
+                                    <span ng-hide="isLoading"><i class="fa fa-check"></i>{{title}}</span> <span
+                                        ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
+                                 <span class="sr-only">Loading...</span></span></button>
                             </div>
 
                         </form>

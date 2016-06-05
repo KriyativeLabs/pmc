@@ -1,6 +1,9 @@
 pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
     function ($scope, $compile, $filter, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
         $scope.sNo = 1;
+
+        $scope.isLoading = false;
+
         $scope.getAreas = function () {
             apiService.GET("/areas").then(function (response) {
                 $scope.areas = response.data.data;
@@ -116,6 +119,7 @@ var AreaCreateCtrl = function ($scope, $uibModalInstance, $location, apiService)
     };
 
     $scope.areaFunc = function () {
+        $scope.isLoading = true;
         var createObj = {};
         createObj.code = $scope.code;
         createObj.name = $scope.name;
@@ -124,8 +128,10 @@ var AreaCreateCtrl = function ($scope, $uibModalInstance, $location, apiService)
         createObj.idSequence = 0;
         apiService.POST("/areas", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
+            $scope.isLoading = false;
             $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
+            $scope.isLoading = false;
             apiService.NOTIF_ERROR(errorResponse.data.message);
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
@@ -138,7 +144,7 @@ var AreaCreateCtrl = function ($scope, $uibModalInstance, $location, apiService)
 
 var AreaUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService, areaId) {
     $scope.title = "Update";
-
+    $scope.isLoading = true;
     $scope.ok = function () {
         $uibModalInstance.close($scope.dt);
     };
@@ -149,17 +155,18 @@ var AreaUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService,
     apiService.GET("/areas/" + areaId).then(function (response) {
         $scope.code = response.data.data.code;
         $scope.name = response.data.data.name;
+        $scope.isLoading = false;
     }, function (errorResponse) {
         apiService.NOTIF_ERROR(errorResponse.data.message);
+        $scope.isLoading = false;
         if (errorResponse.status != 200) {
             if (errorResponse.status == 304)
                 apiService.NOTIF_ERROR(errorResponse.data.message);
         }
     });
 
-
-
     $scope.areaFunc = function () {
+        $scope.isLoading = true;
         var createObj = {};
         createObj.id = parseInt(areaId);
         createObj.code = $scope.code;
@@ -170,9 +177,11 @@ var AreaUpdateCtrl = function ($scope, $uibModalInstance, $location, apiService,
 
         apiService.PUT("/areas/" + areaId, createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
+            $scope.isLoading = false;
             $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
+            $scope.isLoading = false;
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
