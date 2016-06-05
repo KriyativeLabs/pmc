@@ -129,7 +129,7 @@ object Customers {
     val updateQuery = for {
       cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId, p.balanceAmount, p.updatedBy)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId, customer.balanceAmount, Some(loggedInUser.userId))
       _ <- connectionsQuery.filter(_.customerId === customer.id).delete
-      _ <- connectionsQuery ++= customer.connections.map(_.copy(customerId = customer.id))
+      _ <- connectionsQuery ++= customer.connections.map(_.copy(customerId = customer.id, companyId = Some(loggedInUser.companyId)))
     } yield cust
     try {
       Right(DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int])
