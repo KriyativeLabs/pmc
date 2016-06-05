@@ -25,13 +25,20 @@
                                 class="btn btn-sm btn-primary" ng-click="open()"><i class="i i-plus2"></i>Add
                         </button>
                     </td>
-                    <td class="pull-right"  style="bottom: 0">
+                    <td class="pull-right" style="bottom: 0">
                         <ul class="pagination pagination-sm" style="margin-bottom: 5px">
                             <li><a ng-click="loadNext(-2)"><i class="fa fa-fast-backward"></i></a></li>
                             <li><a ng-click="loadNext(-1)"><i class="fa fa-step-backward"></i></a></li>
                             <li><a ng-click="loadNext(1)"><i class="fa fa-step-forward"></i></a></li>
                             <li><a ng-click="loadNext(2)"><i class="fa fa-fast-forward"></i></a></li>
                         </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="pull-right" style="margin-bottom: 2px">
+                        <toggle-switch ng-model="switchStatus" knob-label="Active" class="switch-mini">
+                        </toggle-switch>
                     </td>
                 </tr>
             </table>
@@ -151,10 +158,10 @@
                                                                         ng-click="add()">+
                                 </button></span></h4>
                                 <br>
-				<style>
-                                .panel-group .panel {
-                                                overflow:inherit !important;
-                                }
+                                <style>
+                                    .panel-group .panel {
+                                        overflow: inherit !important;
+                                    }
 
                                 </style>
                                 <uib-accordion close-others="true">
@@ -254,15 +261,16 @@
                 </div>
             </div>
         </div>
-        </div>
-        <div class="modal-footer">
-         <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
         <button class="btn btn-primary" ng-click="customerFunc()" ng-disabled="isLoading"><span ng-hide="isLoading"><i
-                class="i i-user2"></i>&nbsp;{{title}}</span><span ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
+                class="i i-user2"></i>&nbsp;{{title}}</span><span ng-show="isLoading"><i
+                class="fa fa-spinner fa-spin"></i>
 <span class="sr-only">Loading...</span></span>
-            </button>
+        </button>
 
-        </div>
+    </div>
     </div>
 </script>
 <script>
