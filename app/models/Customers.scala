@@ -243,11 +243,18 @@ object Customers {
       case Some(false) => customerQuery.filter(_.balanceAmount > 0)
       case None => customerQuery
     }
+
+    val conQuery = active match {
+      case Some(true) => connectionsQuery.filter(_.status.toLowerCase === "active")
+      case Some(false) => connectionsQuery.filter(_.status.toLowerCase =!= "active")
+      case None => connectionsQuery
+    }
+
     var conResult: Vector[CustomerCapsule] = Vector()
     filteredQuery = search match {
-      case Some(s) if s.length > 0  => {
+      case Some(s) if s.length > 0 => {
         val filterQueryForConn = for {
-          (conn, cust) <- connectionsQuery.filter(y => (y.boxSerialNo.toLowerCase like s"%${s.toLowerCase}%") || (y.cafId.toLowerCase like s"%${s.toLowerCase}%") || (y.setupBoxId.toLowerCase like s"%${s.toLowerCase}%")) join customerQuery.filter(x => x.companyId === companyId) on (_.customerId === _.id)
+          (conn, cust) <- conQuery.filter(y => (y.boxSerialNo.toLowerCase like s"%${s.toLowerCase}%") || (y.cafId.toLowerCase like s"%${s.toLowerCase}%") || (y.setupBoxId.toLowerCase like s"%${s.toLowerCase}%")) join filteredQuery.filter(x => x.companyId === companyId) on (_.customerId === _.id)
         } yield (cust, conn)
         conResult = processResult_1(DatabaseSession.run(filterQueryForConn.result).asInstanceOf[Vector[(Customer, Connection)]])
 
@@ -261,23 +268,31 @@ object Customers {
       case _ => filteredQuery
     }
 
-    val conQuery = active match {
-      case Some(true) => connectionsQuery.filter(_.status.toLowerCase === "active")
-      case Some(false) => connectionsQuery.filter(_.status.toLowerCase =!= "active")
-      case None => connectionsQuery
-    }
-
-    val pageQuery = if (pageSize.isDefined && pageNo.isDefined) {
-      for {
-        (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
-      } yield (cust, conn)
+    if (active.isDefined) {
+      val pageQuery = if (pageSize.isDefined && pageNo.isDefined) {
+        for {
+          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) join conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
+        } yield (cust, conn)
+      } else {
+        for {
+          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) join conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
+        } yield (cust, conn)
+      }
+      processResult_1(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(Customer, Connection)]]) ++ conResult
     } else {
-      for {
-        (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
-      } yield (cust, conn)
+      val pageQuery = if (pageSize.isDefined && pageNo.isDefined) {
+        for {
+          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
+        } yield (cust, conn)
+      } else {
+        for {
+          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
+        } yield (cust, conn)
+      }
+      processResult(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]]) ++ conResult
     }
 
-    processResult(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]]) ++ conResult
+
   }
 
 
