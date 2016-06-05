@@ -2,8 +2,8 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
     function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
 
         //########################################Customers Page########################################
-        var first= true;
-        $scope.switchStatus= true;
+        var first = true;
+        $scope.switchStatus = true;
         var query = $location.search().query;
         if (!query) {
             query = "all";
@@ -21,16 +21,15 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             isPaid = "false";
         }
 
-        $scope.$watch('switchStatus', function(){
-            if(first){
-                first=false;
+        $scope.$watch('switchStatus', function () {
+            if (first) {
+                first = false;
             } else {
                 $scope.getCustomers();
             }
         });
 
         var q = "";
-
         var link = "/customers?isPaid=all";
         var countLink = "/customers/count?isPaid=all";
         if (query == "paid") {
@@ -52,10 +51,10 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
         $scope.getCustomers = function () {
             var li = finalLink;
-            if($scope.switchStatus){
-                li = li+"&active=true";
+            if ($scope.switchStatus) {
+                li = li + "&active=true";
             } else {
-                li = li+"&active=false";
+                li = li + "&active=false";
             }
             $scope.getCustomersCount();
             apiService.GET(li).then(function (result) {
@@ -88,10 +87,10 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.getCustomersCount();
 
         $scope.download = function () {
-            var dLink = "/customers/download?isPaid="+isPaid +"&q="+q;
+            var dLink = "/customers/download?isPaid=" + isPaid + "&q=" + q;
             apiService.DOWNLOAD(dLink).then(function (result) {
 
-                var data = new Blob([result.data] , {type: result.headers('Content-Type')});
+                var data = new Blob([result.data], {type: result.headers('Content-Type')});
                 FileSaver.saveAs(data, result.headers("filename"));
                 console.log(result);
             }, function (errorResponse) {
@@ -124,8 +123,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 pageNo = $scope.noOfPages;
                 finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
             }
-
-
 
             $scope.from = (pageSize * pageNo) - pageSize + 1;
             $scope.to = pageSize * pageNo;
