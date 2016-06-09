@@ -55,7 +55,10 @@
                                    class="form-control no-border">
                         </div>
                     </div>
-                    <button type="button" ng-click="login()" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                    <button class="btn btn-lg btn-primary btn-block" ng-click="login()"
+                            ng-disabled="isLoading"><span ng-hide="isLoading">Sign In</span>
+                        <span ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
+                                 <span class="sr-only">Loading...</span></span></button>
                   <!--  <div class="text-center m-t m-b"><a href="#">
                         <small style="color:#aaa;">Forgot password?</small>
                     </a></div>-->
