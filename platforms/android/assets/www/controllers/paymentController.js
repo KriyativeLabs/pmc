@@ -4,12 +4,22 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
         $scope.getReceipts = function () {
             apiService.GET("/payments").then(function (response) {
                 $scope.receipts = response.data.data;
+                $scope.setTotal();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
             });
+        };
+        $scope.total = 0;
+
+        $scope.setTotal = function(){
+            $scope.total = 0;
+            for(var i = 0; i < $scope.receipts.length; i++){
+                var receipt = $scope.receipts[i];
+                $scope.total += receipt.paidAmount;
+            }
         };
 
         $scope.getReceipts();
@@ -41,6 +51,7 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
             var enddate = commonService.getDateString($scope.endDate);
             apiService.GET("/payments/advanced?startdate="+startdate+"&enddate="+enddate).then(function (response) {
                 $scope.receipts = response.data.data;
+                $scope.setTotal();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {

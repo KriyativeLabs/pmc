@@ -1,6 +1,8 @@
 pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
     function ($scope, $location, $uibModal, $log, apiService, cookieService, constantsService) {
 
+        $scope.isPLoading = false;
+
         $scope.titleClass = "i i-chart icon";
         $scope.title = "Dashboard";
         $scope.isActive = function (viewLocation) {
@@ -117,6 +119,7 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
 
     var customerData = {};
     if (customerId != 0) {
+        $scope.isPLoading = true;
         apiService.GET("/customers/" + customerId).then(function (response) {
             customerData = response.data.data;
             $scope.id = customerData.customer.id;
@@ -124,9 +127,10 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
             $scope.houseNo = customerData.customer.houseNo;
             $scope.pending_amount = customerData.customer.balanceAmount;
             $scope.amount = customerData.customer.balanceAmount;
-
+            $scope.isPLoading = false;
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
+            $scope.isPLoading = false;
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }
@@ -143,6 +147,7 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
     };
 
     $scope.recordPayment = function () {
+        $scope.isPLoading = true;
         var createObj = {};
         createObj.customerId = $scope.id;
         createObj.paidAmount = $scope.amount;
@@ -155,9 +160,11 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
 
         apiService.POST("/payments", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
+            $scope.isPLoading = false;
             $uibModalInstance.close($scope.dt);
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
+            $scope.isPLoading = false;
             if (errorResponse.status != 200) {
                 console.log(errorResponse);
             }

@@ -63,11 +63,21 @@
                     <td>{{receipt.receiptNo}}</td>
                     <td>{{receipt.customerDetails}}</td>
                     <td>{{receipt.paidOn}}</td>
-                    <td>{{receipt.paidAmount}}</td>
+                    <td>{{receipt.paidAmount}}&nbsp;<span class="fa fa-inr text-sm"></span></td>
                     <td>{{receipt.remarks}}</td>
                     <td>{{receipt.agentDetails}}</td>
                 </tr>
                 </tbody>
+                <tfoot>
+                <tr class="success">
+                    <td></td>
+                    <td>Total:</td>
+                    <td></td>
+                    <td>{{total}}&nbsp;<span class="fa fa-inr text-sm"></span></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tfoot>
             </table>
         </div>
     </div>
