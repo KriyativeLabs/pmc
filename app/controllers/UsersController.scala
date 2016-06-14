@@ -99,7 +99,7 @@ object UsersController extends Controller with UserSerializer with CommonUtil wi
     )
   }
 
-  def delete(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
+  def delete(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
     implicit val loggedInUser = request.user
     Users.findById(id) match {
       case Some(u) if u.companyId == loggedInUser.companyId => {

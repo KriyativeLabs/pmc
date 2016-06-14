@@ -22,7 +22,7 @@ class BalanceUpdaterDailyInternet extends Job {
         } else if (company.billStatus != Some(true)) {
           Customers.getAll(company.id.get, company.customerSeqNo.getOrElse(0))
         } else {
-          List()
+          Customers.getAll(company.id.get)
         }).foreach({ customer =>
           val p = customer._2.planId
             if (customer._2.status.toUpperCase == "ACTIVE") {

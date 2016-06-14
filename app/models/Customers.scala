@@ -86,8 +86,8 @@ object Customers {
     }
   }
 
-  def tempInsert(customer: CustomerCreate): Either[String, Int] = {
-    val newCustomer = Customer(None, customer.name, customer.mobileNo, customer.emailId, customer.address, 1, customer.areaId, None, customer.balanceAmount, None, None)
+  def tempInsert(customer: CustomerCreate, companyId: Int): Either[String, Int] = {
+    val newCustomer = Customer(None, customer.name, customer.mobileNo, customer.emailId, customer.address, companyId, customer.areaId, None, customer.balanceAmount, None, None)
     val houseNo = Areas.getIdSequence(newCustomer.areaId, newCustomer.companyId)
     houseNo match {
       case Left(e) => {
@@ -97,7 +97,7 @@ object Customers {
         try {
           val resultQuery = for {
             id <- customerQuery returning customerQuery.map(_.id) += newCustomer.copy(houseNo = Some(s))
-            conns <- connectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(1)))
+            conns <- connectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(companyId)))
           } yield id
           val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
           Right(result)
@@ -260,7 +260,11 @@ object Customers {
 
         if (s.forall(_.isDigit)) {
           val num = s.toLong
-          filteredQuery.filter(x => x.balanceAmount >= num.toInt || x.mobileNo === num)
+          if (num.toInt > 0) {
+            filteredQuery.filter(x => x.balanceAmount >= num.toInt || x.mobileNo === num)
+          } else {
+            filteredQuery.filter(x => x.mobileNo === num)
+          }
         } else {
           filteredQuery.filter(x => (x.emailId.toLowerCase like s"%${s.toLowerCase}%") || (x.name.toLowerCase like s"%${s.toLowerCase}%") || (x.houseNo.toLowerCase like s"%${s.toLowerCase}%"))
         }

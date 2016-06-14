@@ -3,6 +3,7 @@ package security
 import helpers.ResponseHelper
 import helpers.enums.UserType
 import helpers.enums.UserType.UserType
+import models.Users
 import org.joda.time.DateTime
 import play.api.mvc._
 import play.api.{Logger, Play}
@@ -15,6 +16,8 @@ import java.util.Base64
 import java.lang._
 
 case class LoggedInUser(userId: Int, companyId: Int, expiryDay: Int, userType: UserType)
+
+
 
 class AuthenticatedRequest[A](val user: LoggedInUser, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -51,11 +54,18 @@ object Authentication {
       if (intList(2) < DateTime.now().getDayOfYear) {
         throw SessionExpiryException("Session Expired!")
       }
-      Right(LoggedInUser(intList(0), intList(1), intList(2), UserType.withName(splitStr(3))))
+
+      implicit val loggedInUser = dummyUser.copy(companyId = intList(1))
+      Users.findById(intList(0)) match {
+        case Some(u) if u.status => Right(LoggedInUser(intList(0), intList(1), intList(2), UserType.withName(splitStr(3))))
+        case _ =>  throw AuthenticationException("User is disabled by the admin! Please contact administrator")
+      }
     } catch {
       case e: Exception => Left(e.getMessage)
     }
   }
+
+  private def dummyUser:LoggedInUser = LoggedInUser(-1, -1,1,UserType.AGENT)
 }
 
 object IsAuthenticated extends ActionBuilder[AuthenticatedRequest] with ActionRefiner[Request, AuthenticatedRequest] with ResponseHelper {

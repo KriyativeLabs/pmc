@@ -25,7 +25,7 @@ PUT           /api/v1/users/:id                       controllers.UsersControlle
 GET           /api/v1/users/:id                       controllers.UsersController.find(id:Int)
 GET           /api/v1/users/:id/payments              controllers.PaymentsController.findByAgentId(id:Int)
 GET           /api/v1/users/:id/payments/today        controllers.PaymentsController.findByAgentIdToday(id:Int)
-PUT          /api/v1/users/:id/delete                 controllers.UsersController.delete(id:Int)
+DELETE        /api/v1/users/:id                       controllers.UsersController.delete(id:Int)
 
 #Customers
 #GET           /api/v1/customers/unpaid                controllers.CustomersController.unpaidCustomers
