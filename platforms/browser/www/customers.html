@@ -70,7 +70,7 @@
                     <td>{{customerCap.customer.houseNo}}</td>
                     <td><u><a ng-href="#/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u>
                     </td>
-                    <td>{{customerCap.customer.mobileNo}}</td>
+		    <td><span class="hidden-xs hidden-sm">{{customerCap.customer.mobileNo}}</span><a class="hidden-lg hidden-md" ng-href="tel:{{customerCap.customer.mobileNo}}" style="text-decoration: underline !important;">{{customerCap.customer.mobileNo}}</a></td>
                     <td>{{stbString(customerCap.connections, true)}}</td>
                     <td>{{stbString(customerCap.connections, false)}}</td>
                     <td>{{customerCap.customer.balanceAmount}}</td>

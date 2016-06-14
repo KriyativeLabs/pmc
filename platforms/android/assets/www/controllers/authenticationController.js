@@ -19,8 +19,8 @@ pmcApp.controller('authenticationController', ['$scope','$window', 'cookieServic
                 $window.location.href = "index.html";
             },function(errorResponse){
                 $scope.isLoading = false;
-		        console.log(errorResponse)
-                if(errorRespose.status !=200){
+		console.log(errorResponse);
+                if(errorResponse.status !=200){
                     $scope.isError = true;
                     $scope.error = "Login failed due to incorrect login and password!";
                     apiService.NOTIF_ERROR($scope.error);
