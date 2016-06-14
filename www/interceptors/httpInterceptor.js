@@ -1,5 +1,5 @@
 pmcApp.config(function setUpConfig($httpProvider){
-    var interceptorHttp = function ($q, $location,$window,cookieService, Notification) {
+    var interceptorHttp = function ($q, $location,$window,cookieService) {
         return {
             request: function (config) {
                 var splitUrl = config.url.split("/");
