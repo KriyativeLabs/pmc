@@ -27,11 +27,12 @@ object SmsGateway {
     Right("Sent")
   }
 
-  def sendSms(message: String, contactNo: Option[Long]): Either[String, String] = {
+  def sendSms(message: String, contactNo: Option[Long], company:Company): Either[String, String] = {
     if (contactNo.isDefined) {
       try {
         val url = smsUrl.replace("%%CONTACTS%%", contactNo.get.toString).replace("%%MSG%%", message)
         val response = WS.clientUrl(url).get()
+        Companies.updateSMSCount(company.id.get, 1)
         logger.info(url)
         //Await.result(response,Duration.Inf)
         Right("Sent")
@@ -39,7 +40,7 @@ object SmsGateway {
         case e: Throwable => e.printStackTrace(); Left("Error" + e.getMessage)
       }
     } else {
-      Right("Not Sent")
+      Left("Not Sent")
     }
   }
 }

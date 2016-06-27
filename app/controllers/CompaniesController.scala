@@ -1,15 +1,19 @@
 package controllers
 
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.CompanySerializer
 import helpers.{CommonUtil, ResponseHelper}
 import models.{Companies, Company}
 import play.api.Logger
+import play.api.i18n.MessagesApi
 import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc.Controller
 import security.{IsAuthenticated, PermissionCheckAction}
 
-object CompaniesController extends Controller with CompanySerializer with CommonUtil with ResponseHelper {
+class CompaniesController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient)  extends Controller with CompanySerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>

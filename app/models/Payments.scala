@@ -93,7 +93,7 @@ object Payments {
           replace("%%RECEIPT%%", receiptNo).
           replace("%%PAMOUNT%%", payment.paidAmount.toString).
           replace("%%BALANCE%%", (customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
-        SmsGateway.sendSms(sms, customer.customer.mobileNo)
+        SmsGateway.sendSms(sms, customer.customer.mobileNo, company)
         }
         //Await.result(future, Duration(5, SECONDS))
         Right(result._1)

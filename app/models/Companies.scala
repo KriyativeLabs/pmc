@@ -121,4 +121,10 @@ object Companies {
     val updateQuery = companyQuery.filter(_.id === companyId).map(_.customerSeqNo).update(Some(customerId))
     DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
   }
+
+  def updateSMSCount(companyId: Int, count: Int = 1): Boolean = {
+    val query = sqlu"update companies set sms_count = sms_count + #$count where id = #$companyId"
+    DatabaseSession.run(query).asInstanceOf[Int] == 1
+  }
+
 }

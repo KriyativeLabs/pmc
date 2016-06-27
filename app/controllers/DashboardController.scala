@@ -1,16 +1,20 @@
 package controllers
 
 
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.DashboardSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{CompanyStats, Notifications, Companies, Company}
+import models.{Companies, CompanyStats, Notifications}
 import play.api._
-import play.api.mvc._
+import play.api.i18n.MessagesApi
 import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
+import play.api.mvc._
 import security.{IsAuthenticated, PermissionCheckAction}
 
-object DashboardController extends Controller with DashboardSerializer with CommonUtil with ResponseHelper {
+class DashboardController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with DashboardSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def dashboardData = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>

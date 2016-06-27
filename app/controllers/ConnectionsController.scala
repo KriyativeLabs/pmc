@@ -1,15 +1,19 @@
 package controllers
 
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.ConnectionSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Connections, Connection}
-import play.api.libs.json._
-import security.{IsAuthenticated, PermissionCheckAction}
+import models.{Connection, Connections}
 import play.api._
+import play.api.i18n.MessagesApi
+import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc._
+import security.{IsAuthenticated, PermissionCheckAction}
 
-object ConnectionsController extends Controller with ConnectionSerializer with CommonUtil with ResponseHelper {
+class ConnectionsController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with ConnectionSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>

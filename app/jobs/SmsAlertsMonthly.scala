@@ -13,7 +13,7 @@ class SmsAlertsMonthly extends Job {
           Customers.getAll(company.id.get).foreach({ customer =>
             if (customer._1.balanceAmount > 0 && customer._1.mobileNo.isDefined) {
               val message = s"Dear Customer, You cable connection pending balance is:${customer._1.balanceAmount}. Please pay to our agent to avoid disconnection."
-              SmsGateway.sendSms(message, customer._1.mobileNo)
+              SmsGateway.sendSms(message, customer._1.mobileNo, company)
             }
           })
         } catch {

@@ -1,15 +1,19 @@
 package controllers
 
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.AreaSerializer
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Areas, Area}
-import play.api.libs.json._
-import security.{IsAuthenticated, PermissionCheckAction}
+import models.{Area, Areas}
 import play.api._
+import play.api.i18n.MessagesApi
+import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc._
+import security.{IsAuthenticated, PermissionCheckAction}
 
-object AreasController extends Controller with AreaSerializer with CommonUtil with ResponseHelper {
+class AreasController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with AreaSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
