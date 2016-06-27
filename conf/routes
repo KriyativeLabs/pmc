@@ -28,16 +28,18 @@ GET           /api/v1/users/:id/payments/today        controllers.PaymentsContro
 DELETE        /api/v1/users/:id                       controllers.UsersController.delete(id:Int)
 
 #Customers
-#GET           /api/v1/customers/unpaid                controllers.CustomersController.unpaidCustomers
+#GET           /api/v1/customers/unpaid               controllers.CustomersController.unpaidCustomers
 GET           /api/v1/customers/download              controllers.CustomersController.download
-#GET           /api/v1/customers/paid                  controllers.CustomersController.paidCustomers
+#GET           /api/v1/customers/paid                 controllers.CustomersController.paidCustomers
 GET           /api/v1/customers                       controllers.CustomersController.all
 GET           /api/v1/customers/count                 controllers.CustomersController.allCount
+GET           /api/v1/customers/:id/balance_reminder  controllers.CustomersController.balanceReminder(id:Int)
 POST          /api/v1/customers                       controllers.CustomersController.create
 PUT           /api/v1/customers/:id                   controllers.CustomersController.update(id:Int)
 GET           /api/v1/customers/:id                   controllers.CustomersController.find(id:Int)
-#GET           /api/v1/customersearch                  controllers.CustomersController.searchCustomers(search:String ?= "")
+#GET           /api/v1/customersearch                 controllers.CustomersController.searchCustomers(search:String ?= "")
 GET           /api/v1/customers/:id/payments          controllers.PaymentsController.findByCustomerId(id:Int)
+
 
 #Areas
 GET           /api/v1/areas                           controllers.AreasController.all

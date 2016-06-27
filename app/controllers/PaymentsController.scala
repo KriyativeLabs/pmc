@@ -1,17 +1,20 @@
 package controllers
 
-import controllers.CustomersController._
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.{PaymentCapsuleSerializer, PaymentSerializer}
 import helpers.{CommonUtil, ResponseHelper}
-import models.{Customers, Payments, Payment}
-import play.api.libs.json._
-import security.{IsAuthenticated, PermissionCheckAction}
+import models.{Payment, Payments}
 import play.api._
+import play.api.i18n.MessagesApi
+import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc._
+import security.{IsAuthenticated, PermissionCheckAction}
 import utils.CommonUtils
 
-object PaymentsController extends Controller with PaymentSerializer with PaymentCapsuleSerializer with CommonUtil with ResponseHelper {
+class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with PaymentSerializer with PaymentCapsuleSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>

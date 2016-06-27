@@ -1,16 +1,21 @@
 package controllers
 
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.UserSerializer
-import helpers.{CommonUtil, ResponseHelper}
+import helpers.{EmailService, CommonUtil, ResponseHelper}
 import models._
-import play.api.libs.json._
-import security.{Authentication, IsAuthenticated, PermissionCheckAction}
 import play.api._
+import play.api.i18n.MessagesApi
+import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc._
+import security.{Authentication, IsAuthenticated, PermissionCheckAction}
 
-object UsersController extends Controller with UserSerializer with CommonUtil with ResponseHelper {
+class UsersController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with UserSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
+  val email = new EmailService()
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
     request.body.validate[User].fold(

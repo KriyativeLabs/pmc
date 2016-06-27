@@ -1,27 +1,14 @@
-import java.io.{FileWriter, BufferedWriter, File}
-import java.nio.charset.CodingErrorAction
+import models.Customers
 
-import controllers.CustomerCreate
-import controllers.CustomersController._
-import models.{Customers, Connection}
-import org.joda.time.DateTime
-
-/**
- * Created by suryap on 27/10/15.
- */
-import scala.io.Source
-import scala.io.Codec
 object Testing {
 
   def main(args:Array[String]) = {
 
-    println(Customers.getAllWithFilters(7, None, None, Some("7829728448"), None,None,None,None).length)
-
+    //println(Customers.getAllWithFilters(7, None, None, Some("7829728448"), None,None,None,None).length)
 
     /*
     val file = new File("/tmp/rejectedfiles")
     val bw = new BufferedWriter(new FileWriter(file))
-
 
     val decoder = Codec.UTF8.decoder.onMalformedInput(CodingErrorAction.IGNORE)
     var i = 0

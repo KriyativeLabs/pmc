@@ -2,11 +2,15 @@ name := "paymycable"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
+routesGenerator := InjectedRoutesGenerator
+
 scalaVersion := "2.11.6"
 
 crossPaths := false
 
-ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
+ivyScala := ivyScala.value map {
+  _.copy(overrideScalaVersion = true)
+}
 
 libraryDependencies ++= Seq(
   ws,
@@ -20,5 +24,6 @@ libraryDependencies ++= Seq(
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
   "org.json4s" %% "json4s-ext" % "3.2.11",
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
-  "org.quartz-scheduler" % "quartz" % "2.2.2"
+  "org.quartz-scheduler" % "quartz" % "2.2.2",
+  "com.typesafe.play" %% "play-mailer" % "4.0.0"
 )

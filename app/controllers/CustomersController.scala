@@ -1,12 +1,16 @@
 package controllers
 
+import javax.inject.Inject
+
 import helpers.enums.UserType
 import helpers.json.CustomerSerializer
 import helpers.{CommonUtil, ResponseHelper}
 import models._
 import org.joda.time.DateTime
 import play.api._
+import play.api.i18n.MessagesApi
 import play.api.libs.json._
+import play.api.libs.mailer.MailerClient
 import play.api.mvc._
 import security.{IsAuthenticated, PermissionCheckAction}
 
@@ -16,7 +20,7 @@ object CustomerCreate {
   implicit val fmt = Json.format[CustomerCreate]
 }
 
-object CustomersController extends Controller with CustomerSerializer with CommonUtil with ResponseHelper {
+class CustomersController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with CustomerSerializer with CommonUtil with ResponseHelper {
 
   val logger = Logger(this.getClass)
 
@@ -115,6 +119,21 @@ object CustomersController extends Controller with CustomerSerializer with Commo
         }
       }
     )
+  }
+
+  def balanceReminder(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
+    implicit val loggedInUser = request.user
+    Customers.findById(id) match {
+      case Some(customer) => {
+        val company = Companies.findById(customer.customer.companyId).get
+        val message = s"Dear Customer, You cable connection pending balance is:${customer.customer.balanceAmount}. Please pay to our agent to avoid disconnection."
+        SmsGateway.sendSms(message, customer.customer.mobileNo, company)
+        ok(Some("Successfully sent balance reminder"),"Successfully sent balance reminder")
+      }
+      case None => {
+      badRequest("Cannot find Customer")
+      }
+    }
   }
 
   def download() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
