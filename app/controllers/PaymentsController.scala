@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import helpers.enums.UserType
-import helpers.json.{PaymentCapsuleSerializer, PaymentSerializer}
+import helpers.json.PaymentSerializer
 import helpers.{CommonUtil, ResponseHelper}
 import models.{Payment, Payments}
 import play.api._
@@ -14,7 +14,7 @@ import play.api.mvc._
 import security.{IsAuthenticated, PermissionCheckAction}
 import utils.CommonUtils
 
-class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with PaymentSerializer with PaymentCapsuleSerializer with CommonUtil with ResponseHelper {
+class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with PaymentSerializer with CommonUtil with ResponseHelper {
   val logger = Logger(this.getClass)
 
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT))(parse.json) { implicit request =>
@@ -49,6 +49,11 @@ class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implic
     ok(Json.toJson(paymentList), "List Payment details")
   }
 
+  def customerCredits(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
+    implicit val loggedInUser = request.user
+    val credits = Payments.findCreditsByCustomerId(id)
+    ok(Json.toJson(credits), "Customer Credits")
+  }
   def findByAgentId(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
     val paymentList = Payments.findByAgentId(id.toInt)

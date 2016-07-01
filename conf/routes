@@ -3,68 +3,69 @@
 # ~~~~
 
 # login
-POST          /api/v1/login                           controllers.UsersController.login
-POST          /api/v1/users/changepassword            controllers.UsersController.updatePassword
-GET           /api/v1/dashboarddata                   controllers.DashboardController.dashboardData
-GET           /api/v1/notifications                   controllers.DashboardController.notifications
-POST          /api/v1/sms                             controllers.SmsController.sendSms
+POST          /api/v1/login                                 controllers.UsersController.login
+POST          /api/v1/users/changepassword                  controllers.UsersController.updatePassword
+GET           /api/v1/dashboarddata                         controllers.DashboardController.dashboardData
+GET           /api/v1/notifications                         controllers.DashboardController.notifications
+POST          /api/v1/sms                                   controllers.SmsController.sendSms
 
-GET           /api/v1/agent_stats                     controllers.DashboardController.agentStatistics
-GET           /api/v1/company_stats                   controllers.DashboardController.monthlyStatistics
+GET           /api/v1/agent_stats                           controllers.DashboardController.agentStatistics
+GET           /api/v1/company_stats                         controllers.DashboardController.monthlyStatistics
 
 # Companies
-GET           /api/v1/companies                       controllers.CompaniesController.all
-POST          /api/v1/companies                       controllers.CompaniesController.create
-PUT           /api/v1/companies/:id                   controllers.CompaniesController.update(id:Int)
-GET           /api/v1/companies/:id                   controllers.CompaniesController.find(id:Int)
+GET           /api/v1/companies                             controllers.CompaniesController.all
+POST          /api/v1/companies                             controllers.CompaniesController.create
+PUT           /api/v1/companies/:id                         controllers.CompaniesController.update(id:Int)
+GET           /api/v1/companies/:id                         controllers.CompaniesController.find(id:Int)
 
 # Users
-GET           /api/v1/users                           controllers.UsersController.all
-POST          /api/v1/users                           controllers.UsersController.create
-PUT           /api/v1/users/:id                       controllers.UsersController.update(id:Int)
-GET           /api/v1/users/:id                       controllers.UsersController.find(id:Int)
-GET           /api/v1/users/:id/payments              controllers.PaymentsController.findByAgentId(id:Int)
-GET           /api/v1/users/:id/payments/today        controllers.PaymentsController.findByAgentIdToday(id:Int)
-DELETE        /api/v1/users/:id                       controllers.UsersController.delete(id:Int)
+GET           /api/v1/users                                 controllers.UsersController.all
+POST          /api/v1/users                                 controllers.UsersController.create
+PUT           /api/v1/users/:id                             controllers.UsersController.update(id:Int)
+GET           /api/v1/users/:id                             controllers.UsersController.find(id:Int)
+GET           /api/v1/users/:id/payments                    controllers.PaymentsController.findByAgentId(id:Int)
+GET           /api/v1/users/:id/payments/today              controllers.PaymentsController.findByAgentIdToday(id:Int)
+DELETE        /api/v1/users/:id                             controllers.UsersController.delete(id:Int)
 
 #Customers
 #GET           /api/v1/customers/unpaid               controllers.CustomersController.unpaidCustomers
-GET           /api/v1/customers/download              controllers.CustomersController.download
+GET           /api/v1/customers/download                    controllers.CustomersController.download
 #GET           /api/v1/customers/paid                 controllers.CustomersController.paidCustomers
-GET           /api/v1/customers                       controllers.CustomersController.all
-GET           /api/v1/customers/count                 controllers.CustomersController.allCount
-GET           /api/v1/customers/:id/balance_reminder  controllers.CustomersController.balanceReminder(id:Int)
-POST          /api/v1/customers                       controllers.CustomersController.create
-PUT           /api/v1/customers/:id                   controllers.CustomersController.update(id:Int)
-GET           /api/v1/customers/:id                   controllers.CustomersController.find(id:Int)
+GET           /api/v1/customers                             controllers.CustomersController.all
+GET           /api/v1/customers/count                       controllers.CustomersController.allCount
+GET           /api/v1/customers/:id/balance_reminder        controllers.CustomersController.balanceReminder(id:Int)
+POST          /api/v1/customers                             controllers.CustomersController.create
+PUT           /api/v1/customers/:id                         controllers.CustomersController.update(id:Int)
+GET           /api/v1/customers/:id                         controllers.CustomersController.find(id:Int)
 #GET           /api/v1/customersearch                 controllers.CustomersController.searchCustomers(search:String ?= "")
-GET           /api/v1/customers/:id/payments          controllers.PaymentsController.findByCustomerId(id:Int)
+GET           /api/v1/customers/:id/payments                controllers.PaymentsController.findByCustomerId(id:Int)
 
 
 #Areas
-GET           /api/v1/areas                           controllers.AreasController.all
-POST          /api/v1/areas                           controllers.AreasController.create
-PUT           /api/v1/areas/:id                       controllers.AreasController.update(id:Int)
-DELETE        /api/v1/areas/:id                       controllers.AreasController.delete(id:Int)
-GET           /api/v1/areas/:id                       controllers.AreasController.find(id:Int)
+GET           /api/v1/areas                                 controllers.AreasController.all
+POST          /api/v1/areas                                 controllers.AreasController.create
+PUT           /api/v1/areas/:id                             controllers.AreasController.update(id:Int)
+DELETE        /api/v1/areas/:id                             controllers.AreasController.delete(id:Int)
+GET           /api/v1/areas/:id                             controllers.AreasController.find(id:Int)
 
 #Plans
-GET           /api/v1/plans                           controllers.PlansController.all
-POST          /api/v1/plans                           controllers.PlansController.create
-PUT           /api/v1/plans/:id                       controllers.PlansController.update(id:Int)
-DELETE        /api/v1/plans/:id                       controllers.PlansController.delete(id:Int)
-GET           /api/v1/plans/:id                       controllers.PlansController.find(id:Int)
+GET           /api/v1/plans                                 controllers.PlansController.all
+POST          /api/v1/plans                                 controllers.PlansController.create
+PUT           /api/v1/plans/:id                             controllers.PlansController.update(id:Int)
+DELETE        /api/v1/plans/:id                             controllers.PlansController.delete(id:Int)
+GET           /api/v1/plans/:id                             controllers.PlansController.find(id:Int)
 
 #Payments
-GET           /api/v1/payments                        controllers.PaymentsController.all
-GET           /api/v1/payments/advanced               controllers.PaymentsController.search()
-POST          /api/v1/payments                        controllers.PaymentsController.create
+GET           /api/v1/payments                              controllers.PaymentsController.all
+GET           /api/v1/payments/advanced                     controllers.PaymentsController.search()
+POST          /api/v1/payments                              controllers.PaymentsController.create
 #PUT         /api/v1/plans/:id                controllers.PaymentsController.update(id:Int)
-GET           /api/v1/payments/:id                    controllers.PaymentsController.find(id:Int)
+GET           /api/v1/payments/:id                          controllers.PaymentsController.find(id:Int)
+GET           /api/v1/credits/:id                           controllers.PaymentsController.customerCredits(id:Int)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                           controllers.Assets.at(path="/public/app/assets/", file)
-GET           /app/*file                              controllers.Assets.at(path="/public/app/", file)
-GET           /login                                  controllers.Assets.at(path="/public/app/views", file="login.html")
+GET           /assets/*file                                 controllers.Assets.at(path="/public/app/assets/", file)
+GET           /app/*file                                    controllers.Assets.at(path="/public/app/", file)
+GET           /login                                        controllers.Assets.at(path="/public/app/views", file="login.html")
 
 

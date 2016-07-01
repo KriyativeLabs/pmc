@@ -1,6 +1,6 @@
 package helpers.json
 
-import models.{PaymentCapsule, Payment}
+import models.{Credit, PaymentCapsule, Payment}
 import org.joda.time.DateTime
 import play.api.libs.json._
 
@@ -23,9 +23,7 @@ trait PaymentSerializer {
       JsArray(paymentList.map(payment => paymentWriter.writes(payment)).toList)
     }
   }
-}
 
-trait PaymentCapsuleSerializer {
   implicit val paymentCapsuleWriter = new Writes[PaymentCapsule] {
     def writes(payment: PaymentCapsule) = Json.obj(
       "receiptNo" -> payment.receiptNo,
@@ -42,4 +40,16 @@ trait PaymentCapsuleSerializer {
       JsArray(paymentList.map(payment => paymentCapsuleWriter.writes(payment)).toList)
     }
   }
+
+  implicit val creditWriter:Writes[Credit] = Json.writes[Credit]
+
+  implicit val creditListWriter:Writes[Vector[Credit]] = new Writes[Vector[Credit]] {
+    override def writes(o: Vector[Credit]): JsValue ={
+      JsArray(o.map(credit => creditWriter.writes(credit)))
+    }
+  }
+
+
+  Json.writes[Credit]
+
 }
