@@ -28,7 +28,7 @@ object SmsGateway {
   }
 
   def sendSms(message: String, contactNo: Option[Long], company:Company): Either[String, String] = {
-    if (contactNo.isDefined) {
+    if (contactNo.isDefined && company.smsEnabled) {
       try {
         val url = smsUrl.replace("%%CONTACTS%%", contactNo.get.toString).replace("%%MSG%%", message)
         val response = WS.clientUrl(url).get()
