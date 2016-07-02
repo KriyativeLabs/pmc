@@ -18,7 +18,7 @@ object Global extends GlobalSettings {
 
     val balanceTrigger = newTrigger()
       .withIdentity("balanceTrigger", "balanceGroup")
-      .withSchedule(cronSchedule("0 0 1 1 * ?")) // Runs on every month 2nd around 1`O Clock
+      .withSchedule(cronSchedule("0 0 3 1 * ?")) // Runs on every month 2nd around 1`O Clock
       .build()
 
     scheduler.scheduleJob(balanceJob, balanceTrigger)
@@ -28,7 +28,7 @@ object Global extends GlobalSettings {
 
     val internetBalanceTrigger = newTrigger()
       .withIdentity("iBalanceTrigger", "iBalanceGroup")
-      .withSchedule(cronSchedule("0 0 11 * * ?")) // Runs on every month 2nd around 1`O Clock
+      .withSchedule(cronSchedule("0 16 11 * * ?")) // Runs on every month 2nd around 1`O Clock
       .build()
 
     scheduler.scheduleJob(internetBalanceJob, internetBalanceTrigger)
