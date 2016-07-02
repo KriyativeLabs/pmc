@@ -28,16 +28,16 @@ GET           /api/v1/users/:id/payments/today              controllers.Payments
 DELETE        /api/v1/users/:id                             controllers.UsersController.delete(id:Int)
 
 #Customers
-#GET           /api/v1/customers/unpaid               controllers.CustomersController.unpaidCustomers
+#GET           /api/v1/customers/unpaid                     controllers.CustomersController.unpaidCustomers
 GET           /api/v1/customers/download                    controllers.CustomersController.download
-#GET           /api/v1/customers/paid                 controllers.CustomersController.paidCustomers
+#GET           /api/v1/customers/paid                       controllers.CustomersController.paidCustomers
 GET           /api/v1/customers                             controllers.CustomersController.all
 GET           /api/v1/customers/count                       controllers.CustomersController.allCount
 GET           /api/v1/customers/:id/balance_reminder        controllers.CustomersController.balanceReminder(id:Int)
 POST          /api/v1/customers                             controllers.CustomersController.create
 PUT           /api/v1/customers/:id                         controllers.CustomersController.update(id:Int)
 GET           /api/v1/customers/:id                         controllers.CustomersController.find(id:Int)
-#GET           /api/v1/customersearch                 controllers.CustomersController.searchCustomers(search:String ?= "")
+#GET           /api/v1/customersearch                       controllers.CustomersController.searchCustomers(search:String ?= "")
 GET           /api/v1/customers/:id/payments                controllers.PaymentsController.findByCustomerId(id:Int)
 
 
@@ -59,7 +59,7 @@ GET           /api/v1/plans/:id                             controllers.PlansCon
 GET           /api/v1/payments                              controllers.PaymentsController.all
 GET           /api/v1/payments/advanced                     controllers.PaymentsController.search()
 POST          /api/v1/payments                              controllers.PaymentsController.create
-#PUT         /api/v1/plans/:id                controllers.PaymentsController.update(id:Int)
+#PUT          /api/v1/plans/:id                              controllers.PaymentsController.update(id:Int)
 GET           /api/v1/payments/:id                          controllers.PaymentsController.find(id:Int)
 GET           /api/v1/credits/:id                           controllers.PaymentsController.customerCredits(id:Int)
 

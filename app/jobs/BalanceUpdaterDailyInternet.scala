@@ -44,7 +44,7 @@ class BalanceUpdaterDailyInternet extends Job {
 
               if(Months.monthsBetween(customer._2.installationDate, now).getMonths !=0 && (Months.monthsBetween(customer._2.installationDate, now).getMonths % 1) == 0 && iDateCondition) {
                 Logger.info("Updating Customer Id:" + customer._1.id + " with bill amount:" + (plan.amount - customer._2.discount))
-                if (Customers.updateAmount(customer._1.id.get, customer._2.discount - plan.amount)) {
+                if (Customers.updateAmount(customer._1.id.get, customer._2.id.get, customer._2.discount - plan.amount)) {
                   Companies.updateCustomerSeqNo(company.id.get, customer._1.id.get)
                   customers += customer._1.id.get
                 }

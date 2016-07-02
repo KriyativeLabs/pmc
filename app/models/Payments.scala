@@ -17,7 +17,7 @@ object Payment {
   implicit val fmt = Json.format[Payment]
 }
 
-case class Credit(id: Option[Int], customerId: Int, amount: Int, creditedOn: DateTime, companyId: Int)
+case class Credit(id: Option[Int], customerId: Int, connectionId:Option[Int], amount: Int, creditedOn: DateTime, companyId: Int)
 
 object Credit {
   implicit val fmt = Json.format[Credit]
@@ -57,13 +57,15 @@ class CreditsTable(tag: Tag) extends Table[Credit](tag, "credits") {
 
   def customerId = column[Int]("customer_id")
 
+  def connectionId = column[Option[Int]]("connection_id")
+
   def amount = column[Int]("amount")
 
   def creditedOn = column[DateTime]("credited_on")
 
   def companyId = column[Int]("company_id")
 
-  def * = (id.?, customerId, amount, creditedOn, companyId) <>((Credit.apply _).tupled, Credit.unapply _)
+  def * = (id.?, customerId, connectionId, amount, creditedOn, companyId) <>((Credit.apply _).tupled, Credit.unapply _)
 }
 
 object Payments {

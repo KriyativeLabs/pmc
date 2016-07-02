@@ -3,6 +3,7 @@ package models
 import controllers.CustomerCreate
 import helpers.enums.UserType.UserType
 import org.joda.time.DateTime
+import play.api.Logger
 import play.api.libs.json.Json
 import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
@@ -51,6 +52,9 @@ class CustomersTable(tag: Tag) extends Table[Customer](tag, "customers") {
 }
 
 object Customers {
+
+  val logger = Logger(this.getClass)
+
   private lazy val customerQuery = TableQuery[CustomersTable]
   private lazy val connectionsQuery = TableQuery[ConnectionsTable]
   private lazy val creditsQuery = TableQuery[CreditsTable]
@@ -106,20 +110,26 @@ object Customers {
     }
   }
 
-  def updateAmount(customerId: Int, paidAmount: Int): Boolean = {
+  def updateAmount(customerId: Int, connectionId:Int, paidAmount: Int): Boolean = {
     val custQuery = customerQuery.filter(x => x.id === customerId)
     val custResult = DatabaseSession.run(custQuery.result.headOption).asInstanceOf[Option[Customer]]
     val customer = custResult.getOrElse(throw EntityNotFoundException(s"Customer not found with Id:$customerId"))
     val now = DateTime.now().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfDay(0)
     val updateQuery = for {
       cUp <- customerQuery.filter(x => x.id === customerId && x.balanceAmount === customer.balanceAmount).map(c => c.balanceAmount).update(customer.balanceAmount - paidAmount)
-      _ <- creditsQuery += Credit(None, customerId, paidAmount, now, customer.companyId)
+      _ <- creditsQuery += Credit(None, customerId, Some(connectionId), paidAmount, now, customer.companyId)
     } yield cUp
-
-    if (DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int] == 1) {
-      true
-    } else {
-      false
+    try {
+      if (DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int] == 1) {
+        true
+      } else {
+        false
+      }
+    } catch {
+      case e:Throwable => {
+          logger.error(s"Already Update connection($connectionId) for billing of customer $customerId")
+          false
+      }
     }
   }
 
@@ -220,7 +230,7 @@ object Customers {
 
   def getAll(companyId: Int): Vector[(Customer, Connection)] = {
     val filterQuery = for {
-      (cust, conn) <- customerQuery.filter(x => x.companyId === companyId).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)
+      (cust, conn) <- (customerQuery.filter(x => x.companyId === companyId).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)).sortBy(_._1.id.asc)
     } yield (cust, conn)
 
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Connection)]]
@@ -228,7 +238,7 @@ object Customers {
 
   def getAll(companyId: Int, customerIdSeq: Int): Vector[(Customer, Connection)] = {
     val filterQuery = for {
-      (cust, conn) <- customerQuery.filter(x => x.companyId === companyId && x.id > customerIdSeq).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)
+      (cust, conn) <- (customerQuery.filter(x => x.companyId === companyId && x.id > customerIdSeq).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)).sortBy(_._1.id)
     } yield (cust, conn)
 
     DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Connection)]]
