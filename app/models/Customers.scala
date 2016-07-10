@@ -162,11 +162,11 @@ object Customers {
   */
 
   private def processResult(result: Vector[(Customer, Option[Connection])]): Vector[CustomerCapsule] = {
-    result.groupBy(_._1).map(c => CustomerCapsule(c._1, c._2.flatMap(_._2).toList)).toVector
+    result.groupBy(_._1).map(c => CustomerCapsule(c._1, c._2.flatMap(_._2).toList)).toVector.sortBy(_.customer.balanceAmount).reverse
   }
 
   private def processResult_1(result: Vector[(Customer, Connection)]): Vector[CustomerCapsule] = {
-    result.groupBy(_._1).map(c => CustomerCapsule(c._1, c._2.map(_._2).toList)).toVector
+    result.groupBy(_._1).map(c => CustomerCapsule(c._1, c._2.map(_._2).toList)).toVector.sortBy(_.customer.balanceAmount).reverse
   }
 
   /*def getPaidCustomers(userType: UserType, userId: Int, sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
