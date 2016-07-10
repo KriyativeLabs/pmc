@@ -18,8 +18,9 @@ pmcApp.config(function setUpConfig($httpProvider){
             responseError: function (rejection) {
                 if(rejection.status == 0){
 		    //alert(rejection.config.url);
-                    Notification.error({message: "Unable to reach our servers. Please check your internet connection!", delay: 10000});
-                    //alert("Unable to reach our servers. Please check your internet connection!");
+                    //apiService.NOTIF_ERROR("Unable to reach our servers. Please check your internet connection!");
+                    //Notification.error({message: "Unable to reach our servers. Please check your internet connection!", delay: 10000});
+                    alert("Unable to reach our servers. Please check your internet connection!");
                     window.stop();
                 }
                 if (rejection.status == 403 || rejection.status == 401) {
