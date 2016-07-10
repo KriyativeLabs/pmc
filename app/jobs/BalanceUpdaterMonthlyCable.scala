@@ -20,7 +20,8 @@ class BalanceUpdaterMonthlyCable extends Job {
         (if (company.lastBillGeneratedOn.getOrElse(DateTime.now()).monthOfYear() != now.monthOfYear() && Companies.startBilling(company.id.get)) {
           Customers.getAll(company.id.get)
         } else if (company.billStatus != Some(true)) {
-          Customers.getAll(company.id.get, company.customerSeqNo.getOrElse(0))
+          //Customers.getAll(company.id.get, company.customerSeqNo.getOrElse(0))
+          Customers.getAll(company.id.get)
         } else {
           List()
         }).foreach({ customer =>
