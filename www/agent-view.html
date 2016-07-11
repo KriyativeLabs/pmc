@@ -3,14 +3,11 @@
         <div class="scrollable wrapper">
             <div class="row">
                 <div class="col-xs-12">
-                    <h3 class="text-primary" style="margin-top:-8px;margin-bottom:-8px;">Agent Details</h3>
-                    <hr>
-                    <h5 style="margin-top:-8px;margin-bottom:-8px;"><b>{{agent.name}}</b></h5>
+                    <h5 style="margin-bottom:-8px;"><b>{{agent.name}}</b></h5>
                     <hr/>
-
                     <p><b>Login ID:</b> {{agent.loginId}}</p>
 
-                    <p><b>Mobile Number:</b> {{agent.contactNo}}</p>
+                    <p><b>Mobile No:</b> {{agent.contactNo}}</p>
 
                     <p><b>Email ID:</b> {{agent.email}}</p>
 
@@ -24,6 +21,7 @@
                 <h5><strong>Today's Collections:</strong></h5>
                     <h5><strong>(Amount Collected:{{getTotal()}})</strong></h5>
                 <hr>
+                
                 <div class="table-responsive" ng-show="todayDisplay">
                 <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns_1"
                        class="table table-striped m-b-none">

@@ -36,6 +36,15 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
 
         $scope.getReceipts();
 
+        
+        $scope.isInvalid = function(remark){
+            if(remark == "No Problems" | remark == ""){
+                return true;
+            } else {
+                return false;
+            }
+        };
+        
         $scope.loadNext = function(){
             if (!$scope.loading && !$scope.disableScroll) {
                 pageNo = pageNo + 1;

@@ -26,6 +26,9 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             } else if ($location.path().match('/plans')) {
                 $scope.titleClass = "i i-tag2 icon";
                 $scope.title = "Plans";
+            } else if ($location.path().match('/agents/')) {
+                $scope.titleClass = "fa fa-user";
+                $scope.title = "Agent Details";
             } else if ($location.path().match('/agents')) {
                 $scope.titleClass = "fa fa-user";
                 $scope.title = "Agents";

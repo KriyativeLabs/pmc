@@ -14,7 +14,6 @@
             </form>
         </div>
     </div>
-
     <div class="row m-b-md">
         <div class="col-sm-6">
             <a class="btn btn-sm btn-primary font-bold" style="padding:4px 10px !important; bottom: 0;" ng-click="toggleadv()"><i ng-show="advHide" class="fa fa-angle-double-right"></i> <i ng-hide="advHide" class="fa fa-angle-double-down"></i> Advanced</a>
@@ -50,7 +49,7 @@
             <li class="list-group-item" ng-repeat="receipt in receipts | filter:search">
                 <div class="media">
                     <div class="media-body">
-                        <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}}
+                        <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalid(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}"></i>
                             <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
                         </div>
                         <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
