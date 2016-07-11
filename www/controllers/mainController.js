@@ -71,6 +71,14 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
 
         $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
 
+        $scope.isInvalidRemark = function (remark) {
+            if (remark == "No Problems" | remark == "") {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
 
         //############################################Modal###########################################
         $scope.openReceipt = function (customerId) {
@@ -170,7 +178,7 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
-    
+
     $scope.recordPayment = function () {
         if ($scope.pending_amount < $scope.amount - $scope.discount) {
             $scope.isError = true;

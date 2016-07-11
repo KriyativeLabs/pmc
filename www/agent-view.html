@@ -9,7 +9,7 @@
 
                     <p><b>Mobile No:</b> {{agent.contactNo}}</p>
 
-                    <p><b>Email ID:</b> {{agent.email}}</p>
+                    <p><b>Email:</b> {{agent.email}}</p>
 
                     <p><b>Address:</b> {{agent.address}}
                     </p>
@@ -17,66 +17,54 @@
                     <p><b>Account Type:</b> {{agent.accountType}}</p>
                 </div>
             </div>
-            <div class="well m-t">
-                <h5><strong>Today's Collections:</strong></h5>
-                    <h5><strong>(Amount Collected:{{getTotal()}})</strong></h5>
-                <hr>
-                
-                <div class="table-responsive" ng-show="todayDisplay">
-                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns_1"
-                       class="table table-striped m-b-none">
-                    <thead>
-                    <!--<tr>-->
-                        <!--<th width="20%">Receipt No.</th>-->
-                        <!--<th width="20%">Customer Name</th>-->
-                        <!--<th width="10%">Paid On</th>-->
-                        <!--<th width="15%">Amount</th>-->
-                        <!--<th width="20%">Remarks</th>-->
-                    <!--</tr>-->
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="receipt in paymentstoday">
-                        <td>{{receipt.receiptNo}}</td>
-                        <td>{{receipt.customerDetails}}</td>
-                        <!--<td>{{receipt.paidOn}}</td>-->
-                        <td>{{receipt.paidAmount}}</td>
-                        <td>{{receipt.remarks}}</td>
-
-
-                    </tr>
-                    </tbody>
-                </table>
+            <div>
+                <h5><strong>Today's Collections({{getTotal()}}&nbsp;<i class="fa fa-rupee"></i>):</strong></h5>
+                <div ng-show="todayDisplay">
+                    <ul class="list-group alt" >
+                        <li class="list-group-item" ng-repeat="receipt in paymentstoday">
+                            <div class="media">
+                                <div class="media-body">
+                                    <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalidRemark(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}"></i>
+                                        <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
+                                    </div>
+                                    <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
+                                        <div class="pull-right">
+                                            <div>
+                                                <small class="font-bold text-danger">{{receipt.receiptNo}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                     </div>
                 <div ng-hide="todayDisplay">
                     No Today's Collections!
                 </div>
             </div>
-
-            <div class="well m-t">
-                <h5><strong>Old Collection Details</strong></h5>
-                <hr>
-                <div class="table-responsive" ng-show="oldDisplay">
-                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns"
-                       class="table table-striped m-b-none">
-                    <thead>
-                    <!--<tr>-->
-                        <!--<th width="20%">Receipt No.</th>-->
-                        <!--<th width="20%">Customer Name</th>-->
-                        <!--<th width="10%">Paid On</th>-->
-                        <!--<th width="15%">Amount</th>-->
-                        <!--<th width="20%">Remarks</th>-->
-                    <!--</tr>-->
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="receipt in payments">
-                        <td>{{receipt.receiptNo}}</td>
-                        <td>{{receipt.customerDetails}}</td>
-                        <td>{{receipt.paidOn}}</td>
-                        <td>{{receipt.paidAmount}}</td>
-                        <td>{{receipt.remarks}}</td>
-                    </tr>
-                    </tbody>
-                </table>
+            <hr>
+            <div>
+                <h5><strong>Old Collections</strong></h5>
+                <div ng-show="oldDisplay">
+                    <ul class="list-group alt" >
+                        <li class="list-group-item" ng-repeat="receipt in payments">
+                            <div class="media">
+                                <div class="media-body">
+                                    <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalidRemark(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}" style="z-index:999"></i>
+                                        <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
+                                    </div>
+                                    <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
+                                        <div class="pull-right">
+                                            <div>
+                                                <small class="font-bold text-danger">{{receipt.receiptNo}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                     </div>
                 <div ng-hide="oldDisplay">
                     No Recent Payments!

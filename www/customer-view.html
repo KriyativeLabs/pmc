@@ -11,7 +11,8 @@
                                         <h5><b>{{customer.name}}</b></h5></td>
                                     <td>
                                         <button ng-hide="{{isAgent}}" ng-disabled="isLoading" class="btn btn-primary btn-xs font-bold pull-right" ng-click="balanceAlert()">
-                                            <span ng-hide="isLoading">Balance Reminder</span><span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i><span class="sr-only">Loading...</span></span></button>
+                                            <span ng-hide="isLoading">Balance Reminder</span><span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i><span class="sr-only">Loading...</span></span>
+                                        </button>
                                     </td>
                                 </tr>
                             </table>
@@ -60,23 +61,27 @@
                 </div>
             </div>
 
-            <div class="well m-t" style="padding: 6px !important">
-                <h5><strong>Recent Payment Details</strong></h5>
-                <hr>
-                <div class="table-responsive" ng-show="displayPayments">
-                    <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                        <thead>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="receipt in payments">
-                                <td>{{receipt.receiptNo}}</td>
-                                <td>{{receipt.paidOn}}</td>
-                                <td>{{receipt.paidAmount}}</td>
-                                <td>{{receipt.remarks}}</td>
-                                <td>{{receipt.agentDetails}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="" style="padding: 0px !important">
+                <h5><strong>Recent Payments</strong></h5>
+                <div ng-show="displayPayments">
+                    <ul class="list-group alt" >
+                        <li class="list-group-item" ng-repeat="receipt in payments">
+                            <div class="media">
+                                <div class="media-body">
+                                    <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalidRemark(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}" style="z-index:999"></i>
+                                        <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
+                                    </div>
+                                    <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
+                                        <div class="pull-right">
+                                            <div>
+                                                <small class="font-bold text-danger">{{receipt.receiptNo}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
                 <div ng-hide="displayPayments">
                     No Recent Payments!
