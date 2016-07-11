@@ -10,7 +10,7 @@
                                     <td>
                                         <h5><b>{{customer.name}}</b></h5></td>
                                     <td>
-                                        <button ng-hide="{{isAgent}}" ng-disabled="isLoading" class="btn btn-primary btn-xs font-bold pull-right" ng-click="balanceAlert()">
+                                        <button ng-hide="hideRemider" ng-disabled="isLoading" class="btn btn-primary btn-xs font-bold pull-right" ng-click="balanceAlert()">
                                             <span ng-hide="isLoading">Balance Reminder</span><span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i><span class="sr-only">Loading...</span></span>
                                         </button>
                                     </td>
@@ -29,7 +29,7 @@
 
                     <!--<p><b>Id Proof:</b> {{connection.idProof}}</p>-->
 
-                    <p><b>Pending Balance:</b> {{customer.balanceAmount}} INR</p>
+                    <p><b>Pending Balance:</b> {{customer.balanceAmount}} <i class="fa fa-rupee"></i></p>
 
                     <!--<p>Area : </p>-->
 

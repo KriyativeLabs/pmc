@@ -13,6 +13,7 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
                     apiService.GET("/plans").then(function (result) {
                         $scope.plans = result.data.data;
                         $scope.customer = custRes.customer;
+                        $scope.hideRemider = ($scope.isAgent || $scope.customer.balanceAmount == 0);
                         $scope.connections = custRes.connections;
                     }, function (errorResponse) {
                         apiService.NOTIF_ERROR(errorResponse.data.message);
