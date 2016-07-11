@@ -39,7 +39,7 @@ class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implic
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
-    val paymentList = Payments.getAll()
+    val paymentList = Payments.getAll(paginationAttributes._3.getOrElse(1), paginationAttributes._4.getOrElse(20))
     ok(Json.toJson(paymentList), "List of payments")
   }
 
