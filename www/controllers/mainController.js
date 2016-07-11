@@ -1,28 +1,33 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $location, $uibModal, $log, apiService, cookieService, constantsService) {
+pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
+    function ($scope, $location, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
 
         $scope.isPLoading = false;
 
-        $scope.titleClass = "i i-chart icon";
+        $scope.progressbar = ngProgressFactory.createInstance();
+        
+        $scope.titleClass = "fa fa-pie-chart";
         $scope.title = "Dashboard";
         $scope.isActive = function (viewLocation) {
             if ($location.path().match('/dashboard')) {
-                $scope.titleClass = "i i-chart icon";
+                $scope.titleClass = "fa fa-pie-chart";
                 $scope.title = "Dashboard";
+            } else if ($location.path().match('/customers/')) {
+                $scope.titleClass = "fa fa-user";
+                $scope.title = "Customer Details";
             } else if ($location.path().match('/customers')) {
-                $scope.titleClass = "i i-users2 icon";
+                $scope.titleClass = "fa fa-users";
                 $scope.title = "Customers";
-            } else if ($location.path().match('/payments')) {
+            }  else if ($location.path().match('/payments')) {
                 $scope.titleClass = "i i-stack2 icon";
                 $scope.title = "Payments";
             } else if ($location.path().match('/areas')) {
-                $scope.titleClass = "i i-pin icon";
+                $scope.titleClass = "fa fa-map-marker";
                 $scope.title = "Areas";
             } else if ($location.path().match('/plans')) {
                 $scope.titleClass = "i i-tag2 icon";
                 $scope.title = "Plans";
             } else if ($location.path().match('/agents')) {
-                $scope.titleClass = "i i-user2 icon";
+                $scope.titleClass = "fa fa-user";
                 $scope.title = "Agents";
             }
 
@@ -31,6 +36,10 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
 
         $scope.logout = function () {
             cookieService.destroy();
+        };
+
+        $scope.truncateName = function(name){
+
         };
 
         $scope.getNotifications = function () {
@@ -109,6 +118,19 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
+
+        $scope.openLoader = function () {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'loading.html'
+            });
+
+            modalInstance.result.then(function (selected) {
+                $scope.selected = selected;
+            }, function () {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+
 //###########################################End##############################################
     }]);
 

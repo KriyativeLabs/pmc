@@ -8,8 +8,7 @@
                 <div class="input-group">
                     <input type="search" placeholder="Type to Search.." ng-model="search" class="form-control">
                     <span class="input-group-btn">
-                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i
-                                      class="i i-search2"></i>
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2"></i>
                               </button>
                      </span>
                 </div>
@@ -17,25 +16,13 @@
         </div>
     </div>
     <section class="row">
-        <div class="col-sm-12">
-            <table width="100%">
+        <div class="col-sm-12" style="padding-top: 5px;padding-bottom: 5px;">
+            <table width="100%" >
                 <tr>
                     <td align="left">
-                        <button ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0"
-                                class="btn btn-sm btn-primary" ng-click="open()"><i class="i i-plus2"></i>Add
+                        <button ng-hide="{{isAgent}}" class="btn btn-sm btn-primary font-bold" ng-click="open()"><i class="fa fa-user-plus"></i> Add
                         </button>
                     </td>
-                    <td class="pull-right" style="bottom: 0">
-                        <ul class="pagination pagination-sm" style="margin-bottom: 5px">
-                            <li><a ng-click="loadNext(-2)"><i class="fa fa-fast-backward"></i></a></li>
-                            <li><a ng-click="loadNext(-1)"><i class="fa fa-step-backward"></i></a></li>
-                            <li><a ng-click="loadNext(1)"><i class="fa fa-step-forward"></i></a></li>
-                            <li><a ng-click="loadNext(2)"><i class="fa fa-fast-forward"></i></a></li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
                     <td class="pull-right" style="margin-bottom: 2px">
                         <toggle-switch ng-model="switchStatus" knob-label="Active" class="switch-mini">
                         </toggle-switch>
@@ -45,47 +32,18 @@
         </div>
     </section>
     <div class="panel panel-default">
-        <div class="table-responsive">
-            <div class="col-sm-12 m-xs">
-                <div aria-live="polite" role="status" id="DataTables_Table_4_info" class="dataTables_info">Showing
-                    {{from}} to {{to}} of {{customersCount}}
+        <ul class="list-group alt" infinite-scroll="loadNext()">
+            <li class="list-group-item" ng-repeat="customerCap in customers">
+                <div class="media">
+                    <div class="media-body">
+                        <div><a ng-href="#/customers/{{customerCap.customer.id}}" style="text-decoration: underline">{{customerCap.customer.name | limitTo: 100 }}{{customerCap.customer.name.length > 100 ? '...' : ''}}</a><div class="pull-right">{{customerCap.customer.balanceAmount}} <i class="fa fa-rupee"></i></div></div>
+                        <div><small class="text-muted">{{stbString(customerCap.connections, true) | limitTo: 100 }}{{stbString(customerCap.connections, true).length > 100 ? '...' : ''}}</small><div class="pull-right">
+                            <div><a ng-hide="isInvalidPhoneNo(customerCap.customer.mobileNo)" ng-href="tel:{{customerCap.customer.mobileNo}}"><button class="btn btn-success btn-xs"><i class="fa fa-phone"></i></button></a> <button ng-hide="{{isAgent}}" class="btn btn-danger btn-xs" ng-click="openUpdate(customerCap.customer.id)" ><i class="fa fa-pencil"></i></button> <button class="btn btn-primary btn-xs pull-t font-bold" ng-click="openReceipt(customerCap.customer.id)" >Pay</button></div>
+                        </div></div>
+                    </div>
                 </div>
-            </div>
-            <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                <thead>
-                <tr>
-                    <th width="5%">Id</th>
-                    <th width="5%">H.No</th>
-                    <th width="20%">Name</th>
-                    <th width="15%">Mobile No.</th>
-                    <th width="20%">STB No.</th>
-                    <th width="20%">Box Serial No.</th>
-                    <th width="10%">Balance</th>
-                    <th width="15%">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="customerCap in customers | orderBy:'name'">
-                    <td>{{customerCap.customer.id}}</td>
-                    <td>{{customerCap.customer.houseNo}}</td>
-                    <td><u><a ng-href="#/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u>
-                    </td>
-		    <td><span class="hidden-xs hidden-sm">{{customerCap.customer.mobileNo}}</span><a class="hidden-lg hidden-md" ng-href="tel:{{customerCap.customer.mobileNo}}" style="text-decoration: underline !important;">{{customerCap.customer.mobileNo}}</a></td>
-                    <td>{{stbString(customerCap.connections, true)}}</td>
-                    <td>{{stbString(customerCap.connections, false)}}</td>
-                    <td>{{customerCap.customer.balanceAmount}}</td>
-                    <td class="all">
-                        <!--    <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm"
-                                    style="padding:1px 10px !important;" ng-click="openReceipt(customerCap.customer.id)">Pay
-                            </button>
-                            <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
-                                    style="padding:1px 10px !important;">Edit
-                            </button>-->
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+            </li>
+        </ul>
     </div>
     <button id="btn-1" ng-click="download()" class="btn btn-primary pull-right hidden-xs hidden-sm">
         <i class="fa fa-cloud-download text"></i>
@@ -95,18 +53,16 @@
 
 <script type="text/ng-template" id="customerModal.html">
     <div>
-        <div class="modal-header">
+        <div class="modal-header text-center" style="padding: 0px;padding-left: 10px">
             <h3>{{title}} Customer</h3>
         </div>
-        <div class="modal-body" style="height:80%;">
+        <div class="modal-body" style="height:80%; padding:10px">
             <div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div>{{createErrorMsg}}</div>
                         <div>
                             <div>
-                                <h4>1. Customer Data</h4>
-
                                 <div class="row">
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Name*</p>
@@ -154,8 +110,8 @@
                             </div>
                             <div>
                                 <br>
-                                <h4>2. Plans & CAF Details<span><button class="pull-right btn-success btn btn-sm"
-                                                                        ng-click="add()">+
+                                <h4>Plans & CAF Details<span><button class="pull-right btn-success btn btn-xs"
+                                                                            ng-click="add()"><i class="fa fa-plus"></i>
                                 </button></span></h4>
                                 <br>
                                 <style>
@@ -250,7 +206,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <button class="pull-right" ng-click="remove($index)">x</button>
+                                            <i class="pull-right fa fa-trash-o text-danger" ng-click="remove($index)"></i>
                                         </div>
                                     </uib-accordion-group>
                                 </uib-accordion>
@@ -266,7 +222,7 @@
         <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
         <button class="btn btn-primary" ng-click="customerFunc()" ng-disabled="isLoading"><span ng-hide="isLoading"><i
                 class="i i-user2"></i>&nbsp;{{title}}</span><span ng-show="isLoading"><i
-                class="fa fa-spinner fa-spin"></i>
+                class="fa fa-circle-o-notch fa-spin"></i>
 <span class="sr-only">Loading...</span></span>
         </button>
 

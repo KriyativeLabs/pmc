@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="vendor/angular-csp.css">
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
     <link rel="stylesheet" href="vendor/dataTables.responsive.css">
+    <link rel="stylesheet" href="vendor/ngProgress.css">
+
     <link rel="stylesheet" href="https://rawgithub.com/JumpLink/angular-toggle-switch/master/style/bootstrap3/angular-toggle-switch-bootstrap-3.css" type="text/css" media="screen">
 
     <style>
@@ -317,6 +319,8 @@
 <script type="text/javascript" src="vendor/Chart.min.js"></script>
 <script src="vendor/angular-ui-notification.min.js"></script>
 <script src="vendor/angular-toggle-switch.min.js"></script>
+<script type="text/javascript" src="vendor/ng-infinite-scroll.min.js"></script>
+<script type="text/javascript" src="vendor/ngprogress.min.js"></script>
 <script src="app.js"></script>
 <script src="interceptors/httpInterceptor.js"></script>
 <script src="services/apiService.js"></script>
@@ -418,7 +422,7 @@
                         <div class="col-md-12 text-right">
                             <button type="button" class="btn btn-sm btn-danger" ng-click="cancel()">Cancel</button>
                             <button ng-click="recordPayment()" type="button" class="btn btn-sm btn-primary" ng-disabled="isPLoading"><span ng-hide="isPLoading"><i
-                                    class="fa fa-check"></i>Pay</span><span ng-show="isPLoading"><i class="fa fa-spinner fa-spin"></i>
+                                    class="fa fa-check"></i>Pay</span><span ng-show="isPLoading"><i class="fa fa-circle-o-notch fa-spin"></i>
                             <span class="sr-only">Loading...</span></span>
                             </button>
                         </div>
@@ -515,6 +519,14 @@
                     </div>
                 </section>
             </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="loading.html">
+    <div>
+        <div class="m-b-md">
+            <h3 class="m-b-none text-center">Change Password</h3>
         </div>
     </div>
 </script>

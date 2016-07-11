@@ -3,10 +3,13 @@ pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location
 
         $scope.sNo = 1;
         $scope.isLoading=false;
+        $scope.progressbar.start();
         $scope.getPlans = function () {
             apiService.GET("/plans").then(function (response) {
                 $scope.plans = response.data.data;
+                $scope.progressbar.complete();
             }, function (errorResponse) {
+                $scope.progressbar.complete();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }

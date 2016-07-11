@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
+    <link rel="stylesheet" href="vendor/ngProgress.css">
     <style>
         html, body {
             height: 100%;
@@ -57,7 +58,7 @@
                     </div>
                     <button class="btn btn-lg btn-primary btn-block" ng-click="login()"
                             ng-disabled="isLoading"><span ng-hide="isLoading">Sign In</span>
-                        <span ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
+                        <span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i>
                                  <span class="sr-only">Loading...</span></span></button>
                   <!--  <div class="text-center m-t m-b"><a href="#">
                         <small style="color:#aaa;">Forgot password?</small>
@@ -139,6 +140,8 @@
 <script src="vendor/angular-ui-notification.min.js"></script>
 <script src="vendor/angular-toggle-switch.min.js"></script>
 <script src="vendor/angular-chart.js"></script>
+<script type="text/javascript" src="vendor/ng-infinite-scroll.min.js"></script>
+<script type="text/javascript" src="vendor/ngprogress.min.js"></script>
 <script src="app.js"></script>
 <script src="services/apiService.js"></script>
 <script src="services/constantsService.js"></script>

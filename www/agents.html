@@ -27,27 +27,29 @@
         <div class="table-responsive">
             <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                 <thead>
+<!--
                 <tr>
                     <th width="5%">Sl.No</th>
                     <th ng-hide="true" width="5%">Id</th>
-                    <th width="15%">Name</th>
+                    <th width="25%">Name</th>
                     <th width="15%">Mobile No</th>
                     <th width="15%">Email</th>
-                    <th width="20%">LoginId</th>
+                    <th width="10%">LoginId</th>
                     <th width="15%">Account Type</th>
-                    <th width="25%">Action</th>
+                    <th width="5%" class="col-xs-2">Action</th>
                 </tr>
+-->
                 </thead>
                 <tbody>
                 <tr ng-repeat="agent in agents | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
                     <td>#{{$index + 1}}</td>
                     <td>{{agent.id}}</td>
                     <td><u><a ng-href="#/agents/{{agent.id}}">{{agent.name}}</a></u></td>
-                    <td>{{agent.contactNo}}</td>
+                    <td width="10px">{{agent.contactNo}}</td>
                     <td>{{agent.email}}</td>
                     <td>{{agent.loginId}}</td>
                     <td>{{agent.accountType}}</td>
-                    <td>
+                    <td width="10px">
                         <!--<button ng-click="openUpdate(agent.id,agent.name,agent.contactNo, agent.email,agent.loginId, agent.accountType)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
                         <button ng-click="deleteArea(agent.id,agent.name)" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>
                         -->
@@ -98,7 +100,7 @@
                                 <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
                                 <button class="btn btn-sm btn-primary" ng-click="createOrUpdate()"
                                         ng-disabled="isLoading"><span ng-hide="isLoading"><i class="fa fa-check"></i>{{title}}</span> <span
-                                        ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
+                                        ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i>
                                  <span class="sr-only">Loading...</span></span></button>
 
                             </div>

@@ -3,12 +3,15 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
 
         $scope.isLoading = false;
         $scope.sNo = 1;
+        $scope.progressbar.start();
         $scope.getAgents = function () {
             apiService.GET("/users").then(function (response) {
                 $scope.agents = response.data.data;
                 $scope.agentsBackup = response.data.data;
+                $scope.progressbar.complete();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
+                $scope.progressbar.complete();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
@@ -59,8 +62,8 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
 
 
         function actionsHtml(data, type, full, meta) {
-            return '<button ng-click="openUpdate(' + data.id + ')" class="btn btn-primary btn-sm" style="padding:1px 17.5px !important;">Edit</button>' +
-                '<button ng-click="deleteAgent(' + data.id + ')" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>';
+            return '<button ng-click="openUpdate(' + data.id + ')" class="btn btn-primary btn-sm pull-right" style="padding:1px 17.5px !important;">Edit</button><br>' +
+                '<button ng-click="deleteAgent(' + data.id + ')" class="btn btn-danger btn-sm pull-right" style="padding:1px 10px !important;">Delete</button>';
         }
 
         function createdRow(row, data, dataIndex) {

@@ -3,11 +3,22 @@
         <div class="scrollable wrapper">
             <div class="row">
                 <div class="col-xs-12">
-                    <h3 class="text-primary" style="margin-top:-8px;margin-bottom:-8px;">Customer Details</h3>
-                    <hr>
-
-                    <h5 style="margin-top:-8px;margin-bottom:-8px;"><b>{{customer.name}}</b></h5>
-                    <hr/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table width="100%">
+                                <tr>
+                                    <td>
+                                        <h5><b>{{customer.name}}</b></h5></td>
+                                    <td>
+                                        
+                                        <button ng-disabled="isLoading" class="btn btn-primary btn-xs font-bold pull-right" ng-click="balanceAlert()">
+                                            <span ng-hide="isLoading">Balance Reminder</span><span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i><span class="sr-only">Loading...</span></span></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <hr style="margin-top:5px">
                     <p><b>Customer Serial Number:</b> {{customer.houseNo}}</p>
 
                     <p><b>Mobile Number:</b> {{customer.mobileNo}}</p>
@@ -37,13 +48,12 @@
                     <div class="row">
                         <div class="col-xs-12">
 
-                            <p>STB Number: {{con.setupBoxId}}<br/>
-                                CAF: {{con.cafId}}<br/>
-                                Box Series: {{con.boxSerialNo}}<br/>
-                                Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span
-                                        ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span><br>
-                                Plan: <strong>{{connectionPlan(con.planId)}}</strong><br/>
-                                Discounted: <strong> {{con.discount}} INR</strong>
+                            <p>STB Number: {{con.setupBoxId}}
+                                <br/> CAF: {{con.cafId}}
+                                <br/> Box Series: {{con.boxSerialNo}}
+                                <br/> Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span>
+                                <br> Plan: <strong>{{connectionPlan(con.planId)}}</strong>
+                                <br/> Discounted: <strong> {{con.discount}} INR</strong>
                             </p>
 
                         </div>
@@ -55,18 +65,17 @@
                 <h5><strong>Recent Payment Details</strong></h5>
                 <hr>
                 <div class="table-responsive" ng-show="displayPayments">
-                    <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns"
-                           class="table table-striped m-b-none">
+                    <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
                         <thead>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="receipt in payments">
-                            <td>{{receipt.receiptNo}}</td>
-                            <td>{{receipt.paidOn}}</td>
-                            <td>{{receipt.paidAmount}}</td>
-                            <td>{{receipt.remarks}}</td>
-                            <td>{{receipt.agentDetails}}</td>
-                        </tr>
+                            <tr ng-repeat="receipt in payments">
+                                <td>{{receipt.receiptNo}}</td>
+                                <td>{{receipt.paidOn}}</td>
+                                <td>{{receipt.paidAmount}}</td>
+                                <td>{{receipt.remarks}}</td>
+                                <td>{{receipt.agentDetails}}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

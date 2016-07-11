@@ -1,11 +1,13 @@
 pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$timeout', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
     function ($scope, $location,$uibModal,$timeout, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
-
+        $scope.progressbar.start();
         $scope.getReceipts = function () {
             apiService.GET("/payments").then(function (response) {
                 $scope.receipts = response.data.data;
                 $scope.setTotal();
+                $scope.progressbar.complete();
             }, function (errorResponse) {
+                $scope.progressbar.complete();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
@@ -47,12 +49,15 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
         };
 
         $scope.advancedSearch = function(){
+            $scope.progressbar.start();
             var startdate = commonService.getDateString($scope.startDate);
             var enddate = commonService.getDateString($scope.endDate);
             apiService.GET("/payments/advanced?startdate="+startdate+"&enddate="+enddate).then(function (response) {
                 $scope.receipts = response.data.data;
                 $scope.setTotal();
+                $scope.progressbar.complete();
             }, function (errorResponse) {
+                $scope.progressbar.complete();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

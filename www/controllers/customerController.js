@@ -1,5 +1,7 @@
-pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder', 'FileSaver', 'Blob',
-    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
+pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService',
+    'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder', 'FileSaver', 'Blob',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService,
+              DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
 
         //########################################Customers Page########################################
         var first = true;
@@ -11,8 +13,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.isLoading = false;
         var pageSize = 20;
         var pageNo = 1;
-        $scope.from = 1;
-        $scope.to = 20;
 
         var isPaid = "all";
         if (query == "paid") {
@@ -20,12 +20,17 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         } else if (query == "unpaid") {
             isPaid = "false";
         }
+        $scope.customers = [];
+        $scope.loading = false;
+        $scope.disableScroll = false;
 
         $scope.$watch('switchStatus', function () {
             if (first) {
                 first = false;
             } else {
-                $scope.getCustomers();
+                $scope.customers = [];
+                pageNo = 1;
+                $scope.loadNext();
             }
         });
 
@@ -42,13 +47,17 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             link = "/customers?isPaid=all";
             countLink = "/customers/count?isPaid=all";
         }
-
-        var setTo = function (number) {
-            if ($scope.to > number) {
-                $scope.to = number;
+        
+        $scope.isInvalidPhoneNo = function(mobileNo){
+            if((mobileNo + '').length != 10){
+                return true;    
             }
-        };
-
+            if(!angular.isNumber(mobileNo)){
+                return true;
+            }
+            return false;
+        }
+        
         $scope.getCustomers = function () {
             var li = finalLink;
             if ($scope.switchStatus) {
@@ -57,12 +66,16 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 li = li + "&active=false";
             }
             $scope.getCustomersCount();
+            $scope.progressbar.start();
             apiService.GET(li).then(function (result) {
                 console.log(result.data.data);
-                $scope.customers = result.data.data;
-                $scope.customersBackUp = result.data.data;
+                $scope.customers = $scope.customers.concat(result.data.data);
+                $scope.loading = false;
+                $scope.progressbar.complete();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
+                $scope.loading = false;
+                $scope.progressbar.complete();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
@@ -72,7 +85,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.getCustomersCount = function () {
             apiService.GET(countLink).then(function (result) {
                 $scope.customersCount = result.data.data.count;
-                setTo($scope.customersCount);
                 $scope.noOfPages = $scope.customersCount / pageSize;
                 if ($scope.customersCount % pageSize > 0) {
                     $scope.noOfPages = $scope.noOfPages + 1;
@@ -89,7 +101,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.download = function () {
             var dLink = "/customers/download?isPaid=" + isPaid + "&q=" + q;
             apiService.DOWNLOAD(dLink).then(function (result) {
-
                 var data = new Blob([result.data], {type: result.headers('Content-Type')});
                 FileSaver.saveAs(data, result.headers("filename"));
                 console.log(result);
@@ -101,73 +112,17 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             });
         };
 
-
-        $scope.loadNext = function (buttonId) {
-            if (buttonId == -2) {
-                finalLink = link + "&pageNo=1&pageSize=" + pageSize;
-            } else if (buttonId == -1) {
-                if (pageNo - 1 > 0) {
-                    pageNo = pageNo - 1;
-                } else {
-                    pageNo = 1;
-                }
-                finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
-            } else if (buttonId == 1) {
-                if (pageNo + 1 <= $scope.noOfPages) {
-                    pageNo = pageNo + 1;
-                } else {
-                    pageNo = $scope.noOfPages;
-                }
-                finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
-            } else {
-                pageNo = $scope.noOfPages;
-                finalLink = link + "&pageNo=" + pageNo + "&pageSize=" + pageSize;
+        $scope.loadNext = function () {
+            console.log($scope.loading);
+            console.log($scope.disableScroll);
+            if (!$scope.loading && !$scope.disableScroll) {
+                console.log("Loading");
+                $scope.loading = true;
+                finalLink = link + "&pageNo=" + pageNo + "&pageSize=20";
+                $scope.getCustomers();
+                pageNo = pageNo + 1;
             }
-
-            $scope.from = (pageSize * pageNo) - pageSize + 1;
-            $scope.to = pageSize * pageNo;
-
-            $scope.getCustomers();
         };
-
-        $scope.dtOptions = DTOptionsBuilder.newOptions()
-            //.withColumnFilter()
-            //.withDOM('<"input-group"f>pitrl')
-            // Active Responsive plugin
-            .withOption('createdRow', createdRow)
-            .withOption('responsive', true)
-            .withDOM('tr')
-            .withPaginationType('full_numbers')
-            .withDisplayLength(40)
-            .withOption('order', [6, 'desc'])
-            .withOption('language', {
-                paginate: {
-                    next: "",
-                    previous: ""
-                },
-                search: "Search: ",
-                lengthMenu: "_MENU_ records per page"
-            });
-
-        $scope.dtColumns = [
-            DTColumnBuilder.newColumn('id').withTitle('Id').withClass('none'),
-            DTColumnBuilder.newColumn('hNo').withTitle('H.No'),
-            DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
-            DTColumnBuilder.newColumn('mobile').withTitle('Mobile No'),
-            DTColumnBuilder.newColumn('sbt').withTitle('STB No.'),
-            DTColumnBuilder.newColumn('boxSerialNo').withTitle('Box Serial No.').withClass('none'),
-            DTColumnBuilder.newColumn('balance').withTitle('Balance').withClass('all'),
-            DTColumnBuilder.newColumn(null).withTitle('Action').withClass('all').notSortable().renderWith(actionsHtml)
-        ];
-
-        function actionsHtml(data, type, full, meta) {
-            return '<button ng-disabled="' + (data.balanceAmount == 0) + '" class="btn btn-success btn-sm"' +
-                'style="padding:1px 11px !important;" ng-click="openReceipt(' + data.id + ')">Pay' +
-                '</button> &nbsp;' +
-                '<button class="btn btn-primary btn-sm" ng-hide="' + $scope.isAgent + '" ng-click="openUpdate(' + data.id + ')"' +
-                'style="padding:1px 10px !important;">Edit' +
-                '</button>';
-        }
 
         $scope.stbString = function (cons, isSbt) {
             var result = "";
@@ -184,17 +139,19 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             return result;
         };
 
-
-        function createdRow(row, data, dataIndex) {
-            $compile(angular.element(row).contents())($scope);
-        }
-
         $scope.changeData = function (search) {
             q = search;
-            commonService.getResultFromLink("/customers?q=" + search).then(function (result) {
-                $scope.customers = result.data.data;
-                $scope.customersBackUp = result.data.data;
-            });
+            pageNo = 1;
+            if (search) {
+                $scope.disableScroll = true;
+                commonService.getResultFromLink("/customers?q=" + search).then(function (result) {
+                    $scope.customers = result.data.data;
+                });
+            } else {
+                $scope.customers = [];
+                $scope.disableScroll = false;
+                $scope.loadNext();
+            }
         };
         //#############################################################################################
         $scope.open = function () {
@@ -319,14 +276,14 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     $scope.cons = [];
     $scope.conCount = 1;
     $scope.cons.push({
-        title: 'Connection - ' + ($scope.conCount),
+        title: 'Connection#' + ($scope.conCount),
         dt: new Date(),
         opened: false
     });
 
     $scope.add = function () {
         $scope.cons.push({
-            title: 'Connection - ' + ($scope.conCount + 1),
+            title: 'Connection#' + ($scope.conCount + 1),
             dt: new Date(),
             opened: false
         });
@@ -354,7 +311,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     $scope.isLoading = true;
     $scope.add = function () {
         $scope.cons.push({
-            title: 'Connection - ' + ($scope.conCount + 1),
+            title: 'Connection#' + ($scope.conCount + 1),
             dt: new Date(),
             opened: false
         });
@@ -413,7 +370,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
         angular.forEach(connections, function (value, key) {
             $scope.conCount = $scope.conCount + 1;
             $scope.cons.push({
-                title: 'Connection - ' + ($scope.conCount),
+                title: 'Connection#' + ($scope.conCount),
                 opened: false,
                 sbt_no: value.setupBoxId,
                 caf: value.cafId,

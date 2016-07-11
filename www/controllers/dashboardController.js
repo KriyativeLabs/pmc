@@ -4,6 +4,7 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
         var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         //$scope.titleHtml = "<i class='i i-chart icon'></i> Dashboard";
         $scope.title = "Dashboard";
+        $scope.progressbar.start();
         $scope.doughnutlabels = [];
         $scope.doughnutdata = [];
         $scope.doughnutcolors = [
@@ -86,7 +87,7 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
 
         $scope.getDashboardData();
 
-/*        var agentStats = function () {
+        /*var agentStats = function () {
 
         };
         agentStats();
@@ -108,7 +109,9 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
                     $scope.bardata[0].push(0);
                     $scope.bardata[1].push(0);
                 }
+                $scope.progressbar.complete();
             }, function (errorResponse) {
+                $scope.progressbar.complete();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

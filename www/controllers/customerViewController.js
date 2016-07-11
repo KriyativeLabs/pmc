@@ -1,6 +1,7 @@
 pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '$uibModal', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
     function ($scope, $filter, $location, $uibModal, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
 
+        $scope.isLoading = false;
         $scope.displayPayments = true;
         var custId = $location.path().split(/[\s/]+/).pop();
         if (angular.isNumber(parseInt(custId))) {
@@ -41,6 +42,23 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
                 });
             };
             getCustomerData();
+        }
+        
+        $scope.balanceAlert = function(){
+            $scope.progressbar.start();
+            $scope.isLoading = true;
+             apiService.GET("/customers/"+custId+"/balance_reminder").then(function (result) {
+                        $scope.progressbar.complete();
+                        apiService.NOTIF_SUCCESS("Balance Reminder Sent Successfully");
+                        $scope.isLoading = false;
+                    }, function (errorResponse) {
+                        $scope.progressbar.complete();
+                        $scope.isLoading = false;
+                        apiService.NOTIF_ERROR(errorResponse.data.message);
+                        if (errorResponse.status != 200) {
+                            console.log(errorResponse);
+                        }
+                    });
         }
 
         $scope.connectionPlan = function(planId){

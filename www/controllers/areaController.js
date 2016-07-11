@@ -3,13 +3,15 @@ pmcApp.controller('areaController', ['$scope','$compile', '$filter', '$location'
         $scope.sNo = 1;
 
         $scope.isLoading = false;
-
+        $scope.progressbar.start();
         $scope.getAreas = function () {
             apiService.GET("/areas").then(function (response) {
                 $scope.areas = response.data.data;
                 $scope.areasBackup = response.data.data;
+                $scope.progressbar.complete();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
+                $scope.progressbar.complete();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
