@@ -10,7 +10,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         if (!query) {
             query = "all";
         }
-        $scope.isLoading = false;
         var pageSize = 20;
         var pageNo = 1;
 
@@ -113,7 +112,6 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
 
         $scope.loadNext = function () {
-            console.log($scope.loading);
             console.log($scope.disableScroll);
             if (!$scope.loading && !$scope.disableScroll) {
                 console.log("Loading");

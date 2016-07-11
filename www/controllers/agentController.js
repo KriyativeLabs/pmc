@@ -33,44 +33,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
                 });
             }
         };
-
-        $scope.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('createdRow', createdRow)
-            .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
-            .withPaginationType('full_numbers')
-            .withDisplayLength(-1)
-            .withOption('language', {
-                paginate: {
-                    next: "",
-                    previous: ""
-                },
-                search: "Search: ",
-                lengthMenu: "_MENU_ records per page"
-            });
-
-        $scope.dtColumns = [
-            DTColumnBuilder.newColumn('sNo').withTitle('S.No'),
-            DTColumnBuilder.newColumn('id').withTitle('Id').withClass('none'),
-            DTColumnBuilder.newColumn('name').withTitle('Name').withClass('all'),
-            DTColumnBuilder.newColumn('mobile').withTitle('Mobile No').withClass('all'),
-            DTColumnBuilder.newColumn('email').withTitle('Email'),
-            DTColumnBuilder.newColumn('loginId').withTitle('Login ID'),
-            DTColumnBuilder.newColumn('accType').withTitle('Account Type'),
-            DTColumnBuilder.newColumn(null).withTitle('Action').withClass('all').notSortable().renderWith(actionsHtml)
-        ];
-
-
-        function actionsHtml(data, type, full, meta) {
-            return '<button ng-click="openUpdate(' + data.id + ')" class="btn btn-primary btn-sm pull-right" style="padding:1px 17.5px !important;">Edit</button><br>' +
-                '<button ng-click="deleteAgent(' + data.id + ')" class="btn btn-danger btn-sm pull-right" style="padding:1px 10px !important;">Delete</button>';
-        }
-
-        function createdRow(row, data, dataIndex) {
-            $compile(angular.element(row).contents())($scope);
-        }
-
-
+        
         $scope.changeData = function (search) {
             $scope.agents = $filter('filter')($scope.agentsBackup, search);
         };

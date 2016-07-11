@@ -1,13 +1,23 @@
 pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$timeout', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
     function ($scope, $location,$uibModal,$timeout, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
         $scope.progressbar.start();
+        var pageNo = 1;
+        var pageSize = 30;
+        
+        $scope.loading = false;
+        $scope.disableScroll = false;
+        
+        $scope.receipts = [];
         $scope.getReceipts = function () {
-            apiService.GET("/payments").then(function (response) {
-                $scope.receipts = response.data.data;
+            $scope.loading = true;
+            apiService.GET("/payments?pageNo="+ pageNo + "&pageSize="+ pageSize).then(function (response) {
+                $scope.receipts = $scope.receipts.concat(response.data.data);
                 $scope.setTotal();
                 $scope.progressbar.complete();
+                $scope.loading = false;
             }, function (errorResponse) {
                 $scope.progressbar.complete();
+                $scope.loading = false;
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
@@ -26,6 +36,14 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
 
         $scope.getReceipts();
 
+        $scope.loadNext = function(){
+            if (!$scope.loading && !$scope.disableScroll) {
+                pageNo = pageNo + 1;
+                
+                $scope.getReceipts();
+            }
+        };
+        
         var today = new Date();
         $scope.startDate = today;
         $scope.endDate = today;
@@ -42,7 +60,6 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
             });
         };
 
-
         $scope.advHide = true;
         $scope.toggleadv = function(){
             $scope.advHide = !$scope.advHide;
@@ -50,47 +67,23 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
 
         $scope.advancedSearch = function(){
             $scope.progressbar.start();
+            $scope.disableScroll = true;
             var startdate = commonService.getDateString($scope.startDate);
             var enddate = commonService.getDateString($scope.endDate);
             apiService.GET("/payments/advanced?startdate="+startdate+"&enddate="+enddate).then(function (response) {
                 $scope.receipts = response.data.data;
+                pageNo = 1;
                 $scope.setTotal();
                 $scope.progressbar.complete();
             }, function (errorResponse) {
+                pageNo = 1;
                 $scope.progressbar.complete();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
             });
-
-
         };
-
-        $scope.dtOptions = DTOptionsBuilder.newOptions()
-            .withOption('responsive', true)
-            .withDOM('<"row"<"col-sm-12 m-xs"i>>tr')
-            //.withPaginationType('full_numbers')
-            .withDisplayLength(-1)
-            .withOption('order', [2, 'desc'])
-            .withOption('language', {
-                paginate: {
-                    next: "",
-                    previous: ""
-                },
-                search: "Search: ",
-                lengthMenu: "_MENU_ records per page"
-            });
-
-        $scope.dtColumns = [
-            DTColumnBuilder.newColumn('receiptNo').withTitle('Receipt No').withClass('all'),
-            DTColumnBuilder.newColumn('customerDetails').withTitle('Customer Name').withClass('all'),
-            DTColumnBuilder.newColumn('paidOn').withTitle('Date'),
-            DTColumnBuilder.newColumn('paidAmount').withTitle('Amount').withClass('all'),
-            DTColumnBuilder.newColumn('remarks').withTitle('Remarks'),
-            DTColumnBuilder.newColumn('agentDetails').withTitle('Agent')
-        ];
-
         $scope.dateOptions = {
             maxDate: new Date(),
             //minDate: new Date(),

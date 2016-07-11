@@ -11,7 +11,7 @@
                                         <h5><b>{{customer.name}}</b></h5></td>
                                     <td>
                                         
-                                        <button ng-disabled="isLoading" class="btn btn-primary btn-xs font-bold pull-right" ng-click="balanceAlert()">
+                                        <button ng-hide="{{isAgent}}" ng-disabled="isLoading" class="btn btn-primary btn-xs font-bold pull-right" ng-click="balanceAlert()">
                                             <span ng-hide="isLoading">Balance Reminder</span><span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i><span class="sr-only">Loading...</span></span></button>
                                     </td>
                                 </tr>
