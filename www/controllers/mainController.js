@@ -3,6 +3,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
 
         $scope.isPLoading = false;
         $scope.isError = false;
+        $scope.loader = false;
         $scope.progressbar = ngProgressFactory.createInstance();
 
         $scope.titleClass = "fa fa-pie-chart";
@@ -59,7 +60,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             });
         };
 
-        $scope.getNotifications();
+//        $scope.getNotifications();
 
         $scope.username = cookieService.get(constantsService.USERNAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
@@ -130,19 +131,21 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             });
         };
 
+        //###########################################End##############################################
+        var modalInstance = $uibModal;
         $scope.openLoader = function () {
-            var modalInstance = $uibModal.open({
-                templateUrl: 'loading.html'
-            });
+            $scope.progressbar.start();
+            $scope.modalOpenInstance = modalInstance.open({
+                templateUrl: 'loading.html',
+                backdrop: 'static',
+                windowClass: 'center-modal'
 
-            modalInstance.result.then(function (selected) {
-                $scope.selected = selected;
-            }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
             });
         };
-
-        //###########################################End##############################################
+        $scope.closeLoader = function () {
+            $scope.progressbar.complete();
+            $scope.modalOpenInstance.close();
+        };
     }]);
 
 var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService, commonService, customerId) {

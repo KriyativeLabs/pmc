@@ -10,11 +10,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="vendor/bower_components/sweetalert/dist/sweetalert.css"/>
     <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
     <link rel="stylesheet" href="vendor/angular-chart.css">
     <link rel="stylesheet" href="vendor/angular-csp.css">
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
-    <link rel="stylesheet" href="vendor/dataTables.responsive.css">
     <link rel="stylesheet" href="vendor/ngProgress.css">
 
     <link rel="stylesheet" href="https://rawgithub.com/JumpLink/angular-toggle-switch/master/style/bootstrap3/angular-toggle-switch-bootstrap-3.css" type="text/css" media="screen">
@@ -43,6 +43,62 @@
         .alert {
             padding: 10px;
             margin-bottom: 10px;
+        }
+        
+        .center-modal {
+            position: absolute;
+            top: 40%;
+            left: 20%;
+            z-index: 1050;
+            width: 80%;
+            height: 60%;
+            margin-left: -10%;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+        
+        .loading-bar {
+            display: inline-block;
+            width: 4px;
+            height: 15px;
+            border-radius: 4px;
+            animation: loading 1s ease-in-out infinite;
+        }
+        
+        .loading-bar:nth-child(1) {
+            background-color: #3498db;
+            animation-delay: 0;
+        }
+        
+        .loading-bar:nth-child(2) {
+            background-color: #c0392b;
+            animation-delay: 0.09s;
+        }
+        
+        .loading-bar:nth-child(3) {
+            background-color: #f1c40f;
+            animation-delay: .18s;
+        }
+        
+        .loading-bar:nth-child(4) {
+            background-color: #27ae60;
+            animation-delay: .27s;
+        }
+        
+        @keyframes loading {
+            0% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(1, 2.2);
+            }
+            40% {
+                transform: scale(1);
+            }
         }
     </style>
 </head>
@@ -259,6 +315,12 @@
                                                 <span class="font-bold">Change Password</span>
                                             </a>
                                         </li>
+                                        <li ng-hide="isAgent" ng-class="{ active: isActive('/settings') }">
+                                            <a href="#/settings" class="auto">
+                                                <i class="fa fa-cog"></i>
+                                                <span class="font-bold">Settings</span>
+                                            </a>
+                                        </li>
                                         <li>
                                             <a style="cursor:pointer" ng-click="logout()">
                                                 <i class="i i-logout icon"></i>
@@ -294,27 +356,20 @@
     </section>
 
     <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/jquery.dataTables.js"></script>
     <script src="assets/js/bootstrap.js"></script>
     <script src="assets/js/app.js"></script>
     <script src="assets/js/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="vendor/bower_components/sweetalert/dist/sweetalert.min.js"></script>
     <script src="vendor/angular.js"></script>
     <script src="vendor/angular-cookies.js"></script>
     <script src="vendor/angular-animate.js"></script>
     <script src="vendor/angular-cache.js"></script>
     <script src="vendor/angular-resource.js"></script>
     <script src="vendor/angular-route.js"></script>
-    <script src="vendor/angular-datatables.directive.js"></script>
-    <script src="vendor/angular-datatables.instances.js"></script>
-    <script src="vendor/angular-datatables.util.js"></script>
-    <script src="vendor/angular-datatables.renderer.js"></script>
-    <script src="vendor/angular-datatables.factory.js"></script>
-    <script src="vendor/angular-datatables.options.js"></script>
-    <script src="vendor/angular-datatables.js"></script>
     <script src="vendor/angular-sanitize.js"></script>
-    <script src="vendor/dataTables.responsive.js"></script>
     <script src="vendor/ui-bootstrap.js"></script>
     <script src="vendor/ui-bootstrap-tpls.js"></script>
+    <script src="vendor/bower_components/ngSweetAlert/SweetAlert.min.js"></script>
     <script type="text/javascript" src="vendor/Chart.min.js"></script>
     <script src="vendor/angular-ui-notification.min.js"></script>
     <script src="vendor/angular-toggle-switch.min.js"></script>
@@ -500,11 +555,28 @@
             </div>
         </div>
     </script>
-
     <script type="text/ng-template" id="loading.html">
-        <div>
-            <div class="m-b-md">
-                <h3 class="m-b-none text-center">Change Password</h3>
+        <style>
+            .modal-content {
+                border-radius: 3px;
+            }
+            
+            .modal {
+                overflow-y: auto;
+            }
+        </style>
+        <div class="modal-body">
+            <div class="text-center bg-white font-bold">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <!--                        <div class="loading" style="width:90%;height:90%">-->
+                        <div class="loading-bar"></div>
+                        <div class="loading-bar"></div>
+                        <div class="loading-bar"></div>
+                        <div class="loading-bar"></div>&nbsp;&nbsp;Please Wait...
+                        <!--                        </div>-->
+                    </div>
+                </div>
             </div>
         </div>
     </script>

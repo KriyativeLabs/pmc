@@ -65,33 +65,9 @@
                 </div>
             </li>
         </ul>
-        
-        <!-- <div class="table-responsive">
-            <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                <thead>
-                </thead>
-                <tbody>
-                <tr ng-repeat="receipt in receipts | filter:search | orderBy:paidAmount">
-                    <td>{{receipt.receiptNo}}</td>
-                    <td>{{receipt.customerDetails}}</td>
-                    <td>{{receipt.paidOn}}</td>
-                    <td>{{receipt.paidAmount}}&nbsp;<span class="fa fa-inr text-sm"></span></td>
-                    <td>{{receipt.remarks}}</td>
-                    <td>{{receipt.agentDetails}}</td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr class="success">
-                    <td></td>
-                    <td>Total:</td>
-                    <td></td>
-                    <td>{{total}}&nbsp;<span class="fa fa-inr text-sm"></span></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                </tfoot>
-            </table>
-        </div> -->
+        <div ng-show="loader" class="text-center bg-white fond-bold" style="height:100%">
+         Please Wait...
+        </div>
     </div>
 </div>
 

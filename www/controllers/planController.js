@@ -1,15 +1,18 @@
-pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
-
+pmcApp.controller('planController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService) {
         $scope.sNo = 1;
         $scope.isLoading=false;
         $scope.progressbar.start();
+        
         $scope.getPlans = function () {
+            $scope.openLoader();
             apiService.GET("/plans").then(function (response) {
                 $scope.plans = response.data.data;
                 $scope.progressbar.complete();
+                $scope.closeLoader();
             }, function (errorResponse) {
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }

@@ -1,15 +1,19 @@
-pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
+    function ($scope, $compile, $filter, $location, $route, $uibModal, $log, apiService, cookieService, constantsService) {
         $scope.sNo = 1;
         $scope.isLoading = false;
         $scope.progressbar.start();
+        
         $scope.getAreas = function () {
+            $scope.openLoader();
             apiService.GET("/areas").then(function (response) {
                 $scope.areas = response.data.data;
                 $scope.areasBackup = response.data.data;
                 $scope.progressbar.complete();
+                $scope.closeLoader();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
+                $scope.closeLoader();
                 $scope.progressbar.complete();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

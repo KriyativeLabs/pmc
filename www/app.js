@@ -1,4 +1,4 @@
-var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap','datatables', 'chart.js','ui-notification', 'ngAnimate', 'ngFileSaver','toggle-switch','infinite-scroll', 'ngProgress']);
+var pmcApp = angular.module("pmcApp", ['ngCookies', 'ngResource', 'ngRoute','ui.bootstrap', 'chart.js','ui-notification', 'ngAnimate', 'ngFileSaver','toggle-switch','infinite-scroll', 'ngProgress', 'oitozero.ngSweetAlert']);
 
 pmcApp.config(['$routeProvider','$compileProvider', function ($routeProvider,$compileProvider) {
     $routeProvider.when("/login", {
@@ -37,26 +37,13 @@ pmcApp.config(['$routeProvider','$compileProvider', function ($routeProvider,$co
     }).when("/agents/:id", {
         templateUrl: "agent-view.html",
         controller: 'agentViewController'
-    }).when("/change_password", {
-        templateUrl: "change_password.html",
+    }).when("/settings", {
+        templateUrl: "settings.html",
         controller: 'settingsController'
     }).otherwise({
         redirectTo: '/'
     });
-    //$compileProvider.urlSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/)
 }]);
-
-/*
-pmcApp.config([
-        "$locationProvider", function($locationProvider) {
-            return $locationProvider.html5Mode({
-                enabled: false,
-                requireBase: false
-            }).hashPrefix("!"); // enable the new HTML5 routing and history API
-            // return $locationProvider.html5Mode(true).hashPrefix("!"); // enable the new HTML5 routing and history API
-        }
-    ]);
-*/
 
 pmcApp.run(function ($rootScope, $location, $cookies, $cookieStore) {
 console.log("pmcApp intialised");

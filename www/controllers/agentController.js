@@ -1,17 +1,21 @@
-pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'SweetAlert',
+    function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, cookieService, constantsService, SweetAlert) {
 
         $scope.isLoading = false;
         $scope.sNo = 1;
         $scope.progressbar.start();
+
         $scope.getAgents = function () {
+            $scope.openLoader();
             apiService.GET("/users").then(function (response) {
                 $scope.agents = response.data.data;
                 $scope.agentsBackup = response.data.data;
                 $scope.progressbar.complete();
+                $scope.closeLoader();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
@@ -19,25 +23,41 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
         };
 
         $scope.deleteAgent = function (id) {
-            var userConfirmation = confirm("Are you sure you want to delete agent?");
-            if (userConfirmation) {
-                apiService.DELETE("/users/" + id).then(function (response) {
-                    apiService.NOTIF_SUCCESS(response.data.message);
-                    $scope.getAgents();
-                }, function (errorResponse) {
-                    apiService.NOTIF_ERROR(errorResponse.data.message);
-                    if (errorResponse.status != 200) {
-                        if (errorResponse.status == 304)
-                            alert(errorResponse);
+            SweetAlert.swal({
+                    title: "",
+                    text: "Are You Sure? Want to delete agent?",
+                    //                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1AAE88",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+//                    cancelButtonColor: "#DD6B55",   
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        apiService.DELETE("/users/" + id).then(function (response) {
+                            SweetAlert.swal("", "Deleted!", "success");
+                            $scope.getAgents();
+                        }, function (errorResponse) {
+                            SweetAlert.swal("", errorResponse.data.message, "error");
+                            if (errorResponse.status != 200) {
+                                if (errorResponse.status == 304)
+                                    alert(errorResponse);
+                            }
+                        });
+                        
+                    } else {
+                        //SweetAlert.swal("Cancelled", "", "error");
                     }
                 });
-            }
         };
-        
+
         $scope.changeData = function (search) {
             $scope.agents = $filter('filter')($scope.agentsBackup, search);
         };
-//############################################Modal###########################################
+        //############################################Modal###########################################
         $scope.open = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'agentModal.html',
@@ -51,9 +71,9 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-//###########################################End##############################################
+        //###########################################End##############################################
 
-//############################################Modal###########################################
+        //############################################Modal###########################################
         $scope.openUpdate = function (agentId, agentName, contactNo, email, loginId, accountType) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'agentModal.html',
@@ -72,7 +92,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-//################End##########
+        //################End##########
 
     }]);
 

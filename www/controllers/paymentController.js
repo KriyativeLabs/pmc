@@ -1,23 +1,29 @@
-pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$timeout', '$log', 'apiService', 'commonService', 'DTOptionsBuilder', 'DTColumnBuilder',
-    function ($scope, $location,$uibModal,$timeout, $log, apiService, commonService, DTOptionsBuilder, DTColumnBuilder) {
+pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$timeout', '$log', 'apiService', 'commonService',
+    function ($scope, $location,$uibModal,$timeout, $log, apiService, commonService) {
         $scope.progressbar.start();
         var pageNo = 1;
         var pageSize = 30;
         
         $scope.loading = false;
         $scope.disableScroll = false;
+        $scope.openLoader();
         
         $scope.receipts = [];
         $scope.getReceipts = function () {
             $scope.loading = true;
+            $scope.loader = true;
             apiService.GET("/payments?pageNo="+ pageNo + "&pageSize="+ pageSize).then(function (response) {
                 $scope.receipts = $scope.receipts.concat(response.data.data);
                 $scope.setTotal();
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 $scope.loading = false;
+                $scope.loader = false;
             }, function (errorResponse) {
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 $scope.loading = false;
+                $scope.loader = false;
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
@@ -76,6 +82,7 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
 
         $scope.advancedSearch = function(){
             $scope.progressbar.start();
+            $scope.openLoader();
             $scope.disableScroll = true;
             var startdate = commonService.getDateString($scope.startDate);
             var enddate = commonService.getDateString($scope.endDate);
@@ -84,9 +91,11 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
                 pageNo = 1;
                 $scope.setTotal();
                 $scope.progressbar.complete();
+                $scope.closeLoader();
             }, function (errorResponse) {
                 pageNo = 1;
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

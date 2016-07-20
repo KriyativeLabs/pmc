@@ -1,11 +1,13 @@
 pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService',
-    'commonService', 'cookieService', 'constantsService', 'DTOptionsBuilder', 'DTColumnBuilder', 'FileSaver', 'Blob',
+    'commonService', 'cookieService', 'constantsService', 'FileSaver', 'Blob',
     function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService,
-              DTOptionsBuilder, DTColumnBuilder, FileSaver, Blob) {
+            FileSaver, Blob) {
 
         //########################################Customers Page########################################
         var first = true;
         $scope.switchStatus = true;
+        $scope.loader = false;
+        $scope.openLoader();
         var query = $location.search().query;
         if (!query) {
             query = "all";
@@ -58,6 +60,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         }
         
         $scope.getCustomers = function () {
+            $scope.loader = true;
             var li = finalLink;
             if ($scope.switchStatus) {
                 li = li + "&active=true";
@@ -66,17 +69,22 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             }
             $scope.getCustomersCount();
             $scope.progressbar.start();
+            
             apiService.GET(li).then(function (result) {
-                console.log(result.data.data);
+//                console.log(result.data.data);
                 $scope.customers = $scope.customers.concat(result.data.data);
                 $scope.loading = false;
                 $scope.progressbar.complete();
+                $scope.loader = false;
+                $scope.closeLoader();
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 $scope.loading = false;
+                $scope.loader = false;
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 if (errorResponse.status != 200) {
-                    console.log(errorResponse);
+//                    console.log(errorResponse);
                 }
             });
         };
@@ -102,7 +110,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             apiService.DOWNLOAD(dLink).then(function (result) {
                 var data = new Blob([result.data], {type: result.headers('Content-Type')});
                 FileSaver.saveAs(data, result.headers("filename"));
-                console.log(result);
+//                console.log(result);
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
@@ -114,7 +122,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.loadNext = function () {
             console.log($scope.disableScroll);
             if (!$scope.loading && !$scope.disableScroll) {
-                console.log("Loading");
+//                console.log("Loading");
                 $scope.loading = true;
                 finalLink = link + "&pageNo=" + pageNo + "&pageSize=20";
                 $scope.getCustomers();
@@ -142,8 +150,10 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             pageNo = 1;
             if (search) {
                 $scope.disableScroll = true;
+                $scope.loader = true;
                 commonService.getResultFromLink("/customers?q=" + search).then(function (result) {
                     $scope.customers = result.data.data;
+                    $scope.loader = false;
                 });
             } else {
                 $scope.customers = [];
