@@ -41,7 +41,7 @@ class AreasController @Inject()(implicit val messagesApi: MessagesApi, implicit 
 
   def delete(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER)) { implicit request =>
     Areas.delete(id.toInt,request.user.companyId) match {
-      case Left(e) => failed("Something ")
+      case Left(e) => failed(e)
       case Right(msg) => ok(None,s"Successfully deleted Area!")
     }
   }
@@ -55,7 +55,7 @@ class AreasController @Inject()(implicit val messagesApi: MessagesApi, implicit 
           val newArea = area.copy(companyId = request.user.companyId)
           Areas.update(newArea) match {
             case Left(e) => failed(s"Area with code:${area.code} already exists!")
-            case Right(r) => ok(Some(newArea), s"Updated Area(${newArea.name}}) with code:${newArea.code}")
+            case Right(r) => ok(Some(newArea), s"Updated area ${newArea.name} with code:${newArea.code}")
           }
         }
       }

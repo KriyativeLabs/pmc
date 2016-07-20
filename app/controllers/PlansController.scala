@@ -55,7 +55,7 @@ class PlansController @Inject()(implicit val messagesApi: MessagesApi, implicit 
           val newPlan = plan.copy(companyId = request.user.companyId)
           Plans.update(newPlan) match {
             case Left(e) => validationError(plan, e)
-            case Right(r) => ok(Some(plan), s"Updated Plan with details:" + newPlan)
+            case Right(r) => ok(Some(plan), s"Successfully Updated Plan ${newPlan.name}")
           }
         }
       }

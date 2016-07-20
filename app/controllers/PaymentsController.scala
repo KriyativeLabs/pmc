@@ -74,31 +74,4 @@ class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implic
     val payments = Payments.searchByDateRange(startDate, endDate)
     ok(Json.toJson(payments), "List of Payments")
   }
-
-
-
-/*
-  def searchPayments(search: String) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-    implicit val loggedInUser = request.user
-    val payments = Payments.search(search)
-    ok(Json.toJson(payments), "List of Payments")
-  }
-*/
-  /*
-    def update(id:Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
-      request.body.validate[Payment].fold(
-        errors => BadRequest(errors.mkString),
-        payment => {
-          if(!payment.id.isDefined || (payment.id.isDefined && id != payment.id.get)) validationError(payment,"Id provided in url and data are not equal")
-          else {
-            Payments.update(payment) match {
-              case Left(e) => validationError(payment, e)
-              case Right(r) => ok(Some(payment), s"Updated Payment with details" + payment)
-            }
-          }
-        }
-      )
-    }
-    */
-
 }
