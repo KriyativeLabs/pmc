@@ -22,16 +22,15 @@ class CompaniesController @Inject()(implicit val messagesApi: MessagesApi, impli
       company => {
         Companies.insert(company) match {
           case Left(e) =>  badRequest(e)
-          case Right(id) => created (Some (company), s"Created Company with id:$id")
+          case Right(id) => created (Some(company), s"Created Company with id:$id")
         }
       }
     )
   }
 
   def find(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
-
     val companyDao = Companies.findById(id.toInt)
-    if (companyDao.isDefined) ok(Json.toJson(companyDao), "Company details") else notFound(s"Company with $id not found")
+    if (companyDao.isDefined) ok(Json.toJson(companyDao.get), "Company details") else notFound(s"Company with $id not found")
   }
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
