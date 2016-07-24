@@ -42,15 +42,14 @@
                 </div>
             </div>
             <div class="well m-t">
-                <strong>Plans & CAF Details</strong>
-
+                <strong>{{cheader}}</strong>
                 <div ng-repeat="con in connections">
                     <div class="row">
                         <div class="col-xs-12">
 
-                            <p>STB Number: {{con.setupBoxId}}
-                                <br/> CAF: {{con.cafId}}
-                                <br/> Box Series: {{con.boxSerialNo}}
+                            <p>{{sbtname}}: {{con.setupBoxId}}
+                                <br/> {{boxseriesname}}: {{con.boxSerialNo}}
+                                <br/> {{cafname}}: {{con.cafId}}
                                 <br/> Status: <span ng-if="con.status == 'ACTIVE'" class="label bg-success">Active</span><span ng-if="con.status != 'ACTIVE'" class="label bg-danger">InActive</span>
                                 <br> Plan: <strong>{{connectionPlan(con.planId)}}</strong>
                                 <br/> Discounted: <strong> {{con.discount}} INR</strong>
@@ -85,6 +84,30 @@
                 </div>
                 <div ng-hide="displayPayments">
                     No Recent Payments!
+                </div>
+            </div>
+            
+            <div ng-show="displayCredits" style="padding: 0px !important">
+                <h5><strong>Recent Credits</strong></h5>
+                <div>
+                    <ul class="list-group alt" >
+                        <li class="list-group-item" ng-repeat="credit in credits">
+                            <div class="media">
+                                <div class="media-body">
+                                    <div class="font-bold">For Month: {{credit.creditedOn}}
+                                        <div class="pull-right font-bold text-success">{{credit.amount}} <i class="fa fa-rupee"></i></div>
+                                    </div>
+                                    <div><small class="text-muted font-bold">On: {{credit.generatedOn}}</small>
+                                        <div class="pull-right">
+                                            <div>
+                                                <small class="font-bold text-danger"></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

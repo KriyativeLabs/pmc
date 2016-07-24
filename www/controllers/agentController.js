@@ -26,12 +26,13 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
             SweetAlert.swal({
                     title: "",
                     text: "Are You Sure? Want to delete agent?",
-                    //                    type: "warning",
+                    type: "warning",
+                    //                    imageSize: '10x10',
                     showCancelButton: true,
                     confirmButtonColor: "#1AAE88",
                     confirmButtonText: "Yes",
                     cancelButtonText: "No",
-//                    cancelButtonColor: "#DD6B55",   
+                    //                    cancelButtonColor: "#DD6B55",   
                     closeOnConfirm: false,
                     closeOnCancel: true
                 },
@@ -47,9 +48,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
                                     alert(errorResponse);
                             }
                         });
-                        
-                    } else {
-                        //SweetAlert.swal("Cancelled", "", "error");
+
                     }
                 });
         };
@@ -61,6 +60,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
         $scope.open = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'agentModal.html',
+                backdrop: 'static',
                 controller: AgentCreateCtrl
             });
 
@@ -77,6 +77,7 @@ pmcApp.controller('agentController', ['$scope', '$compile', '$filter', '$locatio
         $scope.openUpdate = function (agentId, agentName, contactNo, email, loginId, accountType) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'agentModal.html',
+                backdrop: 'static',
                 controller: AgentUpdateCtrl,
                 resolve: {
                     agentId: function () {

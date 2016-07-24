@@ -1,5 +1,6 @@
 pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Notification', function ($http, cookieService, constantsService, Notification) {
-    var apiURL = 'http://paymycable.in/api/v1';
+    //var apiURL = 'http://paymycable.in/api/v1';
+    var apiURL = 'http://localhost:9000/api/v1';
     var doRequest = function (path, method, data) {
         var authToken = cookieService.get(constantsService.TOKEN);
         if (authToken) {

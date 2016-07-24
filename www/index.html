@@ -10,14 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="assets/css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="assets/css/font-awesome.min.css" type="text/css" />
-    <link rel="stylesheet" href="vendor/bower_components/sweetalert/dist/sweetalert.css"/>
+    <link rel="stylesheet" href="vendor/bower_components/sweetalert/dist/sweetalert.css" />
     <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
     <link rel="stylesheet" href="vendor/angular-chart.css">
     <link rel="stylesheet" href="vendor/angular-csp.css">
     <link rel="stylesheet" href="vendor/angular-ui-notification.min.css">
     <link rel="stylesheet" href="vendor/ngProgress.css">
-
-    <link rel="stylesheet" href="https://rawgithub.com/JumpLink/angular-toggle-switch/master/style/bootstrap3/angular-toggle-switch-bootstrap-3.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="assets/css/angular-toggle-switch-bootstrap-3.css" type="text/css">
 
     <style>
         .form-control {
@@ -100,6 +99,22 @@
                 transform: scale(1);
             }
         }
+        
+        .sweet-alert button.cancel {
+            background-color: #DD6B55;
+        }
+        
+        .sweet-alert button.cancel:hover {
+            background-color: #DD6B55;
+        }
+        
+        .sweet-alert button.confirm {
+            background-color: ##1AAE88;
+        }
+        
+        .sweet-alert button.confirm:hover {
+            background-color: #1AAE88;
+        }
     </style>
 </head>
 
@@ -108,14 +123,15 @@
         <header class="bg-white header header-md navbar navbar-fixed-top-xs box-shadow">
             <div class="navbar-header text-center aside-md dk">
                 <a class="btn btn-link visible-xs" style="z-index: 1" data-toggle="class:nav-off-screen" data-target="#nav">
-                    <i class="fa fa-bars"></i>
+                    <i class="fa fa-align-justify"></i>
                 </a>
                 <a class="navbar-brand">
                     <i ng-class="titleClass"></i> {{title}}
                 </a>
 
                 <a class="btn btn-link visible-xs">
-                    <img src="assets/images/pay-logo.png" style="width:20%;float:right;margin-top:-5px !important;">
+                    <img src="assets/images/pay-logo.png" ng-click="reloadRoute()" style="width:20%;float:right;margin-top:-5px !important;">
+                    <!--                    <i class="fa fa-refresh" ng-click="reloadRoute()"></i>-->
                 </a>
             </div>
             <ul class="nav navbar-nav hidden-xs">
@@ -287,7 +303,7 @@
                                                 <span class="font-bold">Areas</span>
                                             </a>
                                         </li>
-                                        <li ng-hide="isAgent" ng-class="{ active: isActive('/sms') }">
+                                        <li ng-hide="bSmsEnable" ng-class="{ active: isActive('/sms') }">
                                             <a ng-click="openSms()" class="auto">
                                                 <i class="i i-mail icon"></i>
                                                 <span class="font-bold">Send Sms</span>
@@ -391,6 +407,7 @@
     <script src="controllers/authenticationController.js"></script>
     <script src="controllers/agentController.js"></script>
     <script src="controllers/agentViewController.js"></script>
+    <script src="controllers/settingsController.js"></script>
     <script src="directives/inputMaxLengthNumber.js"></script>
     <script src="vendor/angular-file-saver.bundle.min.js"></script>
     <script src="vendor/angular-chart.js"></script>
@@ -435,7 +452,7 @@
                                         <div class="form-material">
                                             <label for="validation-city">Amount* (Pending Amount={{pending_amount}})</label>
                                             <input ng-model="amount" class="form-control" type="number" id="validation-city" name="validation-city" placeholder="Amount">
-                                            <lable class="text-danger" ng-show="isError">Amount entered is more than pending balance</lable>
+                                            <lable class="text-danger" ng-show="isError">{{amount}} + {{discount}} is more than pending balance {{pending_amount}}</lable>
                                         </div>
                                     </div>
                                 </div>
@@ -555,6 +572,7 @@
             </div>
         </div>
     </script>
+    
     <script type="text/ng-template" id="loading.html">
         <style>
             .modal-content {

@@ -166,7 +166,9 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'customerModal.html',
+                backdrop: 'static',
                 controller: CustomerCreateCtrl
+                
             });
 
             modalInstance.result.then(function (selected) {
@@ -181,6 +183,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
 
             var modalInstance = $uibModal.open({
                 templateUrl: 'customerModal.html',
+                backdrop: 'static',
                 controller: CustomerUpdateCtrl,
                 resolve: {
                     id: function () {
@@ -198,11 +201,13 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         };
     }]);
 
-var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService) {
+var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, constantsService) {
     $scope.title = "Create";
-//    var today = new Date();
-//    $scope.dt = today.toLocaleDateString('en-GB');
-
+    $scope.sbtname = constantsService.SBT_NAME;
+    $scope.boxseriesname = constantsService.BOX_SERIES;
+    $scope.cafname = constantsService.CAF;
+    $scope.cheader = constantsService.C_CON_HEADER;
+    
     $scope.open = function (con) {
         $timeout(function () {
             con.opened = true;
@@ -311,6 +316,10 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
 
 var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, id) {
     $scope.title = "Update";
+    $scope.sbtname = constantsService.SBT_NAME;
+    $scope.boxseriesname = constantsService.BOX_SERIES;
+    $scope.cafname = constantsService.CAF;
+    $scope.cheader = constantsService.C_CON_HEADER;
     //var today = new Date();
     //$scope.dt = today.toLocaleDateString('en-GB');
 

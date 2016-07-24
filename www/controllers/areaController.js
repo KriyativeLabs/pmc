@@ -1,9 +1,9 @@
-pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $compile, $filter, $location, $route, $uibModal, $log, apiService, cookieService, constantsService) {
+pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'SweetAlert',
+    function ($scope, $compile, $filter, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, SweetAlert) {
         $scope.sNo = 1;
         $scope.isLoading = false;
         $scope.progressbar.start();
-        
+
         $scope.getAreas = function () {
             $scope.openLoader();
             apiService.GET("/areas").then(function (response) {
@@ -22,20 +22,35 @@ pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location
         };
 
         $scope.deleteArea = function (id) {
-            var userConfirmation = confirm("Are you sure you want to delete area?");
-            if (userConfirmation) {
-                apiService.DELETE("/areas/" + id).then(function (response) {
-                    apiService.NOTIF_SUCCESS(response.data.message);
-                    $scope.getAreas();
-                }, function (errorResponse) {
-                    apiService.NOTIF_ERROR(errorResponse.data.message);
-                    if (errorResponse.status != 200) {
-                        if (errorResponse.status == 304)
-                            apiService.NOTIF_ERROR(errorResponse.data.message);
+            SweetAlert.swal({
+                    title: "",
+                    text: "Are You Sure? Want to delete area?",
+                    type: "warning",
+                    //                    imageSize: '10x10',
+                    showCancelButton: true,
+                    confirmButtonColor: "#1AAE88",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    //                    cancelButtonColor: "#DD6B55",   
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        apiService.DELETE("/areas/" + id).then(function (response) {
+                            SweetAlert.swal("", "Deleted!", "success");
+                            $scope.getAreas();
+                        }, function (errorResponse) {
+                            SweetAlert.swal("", errorResponse.data.message, "error");
+                            if (errorResponse.status != 200) {
+                                if (errorResponse.status == 304)
+                                    apiService.NOTIF_ERROR(errorResponse.data.message);
+                            }
+                        });
                     }
                 });
-            }
         };
+        
         $scope.changeData = function (search) {
             $scope.areas = $filter('filter')($scope.areasBackup, search);
         };
@@ -44,6 +59,7 @@ pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location
         $scope.open = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'areaCreate.html',
+                backdrop: 'static',
                 controller: AreaCreateCtrl
             });
 
@@ -60,6 +76,7 @@ pmcApp.controller('areaController', ['$scope', '$compile', '$filter', '$location
         $scope.openUpdate = function (areaId) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'areaCreate.html',
+                backdrop: 'static',
                 controller: AreaUpdateCtrl,
                 resolve: {
                     areaId: function () {

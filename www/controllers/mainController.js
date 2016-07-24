@@ -1,5 +1,5 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
-    function ($scope, $location, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
+pmcApp.controller('mainController', ['$scope', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
+    function ($scope, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
 
         $scope.isPLoading = false;
         $scope.isError = false;
@@ -33,10 +33,17 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             } else if ($location.path().match('/agents')) {
                 $scope.titleClass = "fa fa-user";
                 $scope.title = "Agents";
+            } else if ($location.path().match('/settings')) {
+                $scope.titleClass = "fa fa-cog";
+                $scope.title = "Settings";
             }
 
             return ($location.path().match(viewLocation));
         };
+
+        $scope.reloadRoute = function () {
+            $route.reload();
+        }
 
         $scope.logout = function () {
             cookieService.destroy();
@@ -60,17 +67,20 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             });
         };
 
-//        $scope.getNotifications();
+        //        $scope.getNotifications();
 
         $scope.username = cookieService.get(constantsService.USERNAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
         });
 
+        $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
+        
+        $scope.bSmsEnable = (!(cookieService.get(constantsService.BULK_SMS) == "true") || $scope.isAgent);
+        $scope.balanceReminder = !(cookieService.get(constantsService.BALANCE_REMINDER) == "true") || $scope.isAgent;
+        
         $scope.companyName = cookieService.get(constantsService.COMPANY_NAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
-        });
-
-        $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
+        });        
 
         $scope.isInvalidRemark = function (remark) {
             if (remark == "No Problems" | remark == "") {
@@ -86,6 +96,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             var modalInstance = $uibModal.open({
                 templateUrl: 'receiptModal.html',
                 controller: PaymentReceiptCtrl,
+                backdrop: 'static',
                 resolve: {
                     customerId: function () {
                         return customerId;
@@ -105,6 +116,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
         $scope.openSms = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'smsModal.html',
+                backdrop: 'static',
                 controller: SmsCtrl
             });
 
@@ -121,6 +133,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
         $scope.openChangePass = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'changePasswordModal.html',
+                backdrop: 'static',
                 controller: PasswordChangeCtrl
             });
 
@@ -183,7 +196,7 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
     };
 
     $scope.recordPayment = function () {
-        if ($scope.pending_amount < $scope.amount - $scope.discount) {
+        if ($scope.pending_amount < $scope.amount + $scope.discount) {
             $scope.isError = true;
         } else {
             $scope.isError = false;

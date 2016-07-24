@@ -1,0 +1,101 @@
+<div class="font-bold" style="padding:6px; background-color:white">
+    <form id="" name="sForm" method="get" action="">
+        <div class="row">
+            <div class="form-group col-sm-10">
+                <div class="form-material font-bold">
+                    <label class="ll">Company Name:&nbsp;</label>
+                    <input ng-model="name" disabled type="text" placeholder="name" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-init="nedit=true">
+            <div class="form-group col-sm-6">
+                <div class="form-material">
+                    <label class="ll">Owner:<font style="color:red">*</font></label>
+                    <p>
+                        <input ng-model="owner" ng-disabled="nedit" type="text" placeholder="owner" class="form-control" style="display:inline; width:95%">&nbsp;<i class="fa fa-pencil" ng-click="nedit?nedit=false:nedit=true"></i></p>
+                </div>
+            </div>
+            <div class="form-group col-sm-6" ng-init="medit=true">
+                <div class="form-material font-bold">
+                    <label class="ll">MobileNo:<font style="color:red">*</font></label>
+                    <input ng-model="contactNo" ng-disabled="medit" type="number" class="form-control" placeholder="MobileNo" ng-maxlength="10" required max="9999999999" style="width:95%; display:inline">&nbsp;<i class="fa fa-pencil" ng-click="medit?medit=false:medit=true"></i>
+                    <label ng-show="sForm.contactNo.$error.valid"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-sm-6 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Opt SMS:</label>
+                    <input type="checkbox" ng-model="smsEnabled" />
+                    <!--                    <toggle-switch ng-model="switchStatus" knob-label="SMS" class="switch-mini">-->
+                    <!--                    </toggle-switch>-->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Bulk SMS:</label>
+                    <toggle-switch ng-model="bulkSms" knob-label="SMS" class="switch-mini">
+                    </toggle-switch>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Payment SMS:</label>
+                    <toggle-switch ng-model="paymentSms" knob-label="SMS" class="switch-mini">
+                    </toggle-switch>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Balance Reminder:</label>
+                    <toggle-switch ng-model="balanceReminders" knob-label="SMS" class="switch-mini">
+                    </toggle-switch>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Subscription SMS:</label>
+                    <toggle-switch ng-model="subscriptionSMS" knob-label="SMS" class="switch-mini">
+                    </toggle-switch>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Month's SMS Count:&nbsp;</label>{{smsCount}}
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-init="aedit=true">
+            <div class="form-group col-sm-12 push-5-l">
+                <div class="form-material font-bold">
+                    <label class="ll">Address: &nbsp;</label><i class="fa fa-pencil" ng-click="aedit?aedit=false:aedit=true"></i>
+                    <textarea ng-model="address" class="form-control" ng-disabled="aedit" rows="2" placeholder="Enter Address"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 text-right">
+            <button ng-click="update()" type="button" class="btn btn-sm btn-success font-bold" ng-disabled="isPLoading"><span ng-hide="isPLoading">Update</span><span ng-show="isPLoading"><i class="fa fa-circle-o-notch fa-spin"></i>
+                            <span class="sr-only">Loading...</span></span>
+            </button>
+        </div>
+    </form>
+</div>
+<style>
+    .ll {
+        color: black;
+        font-weight: bold;
+    }
+</style>
