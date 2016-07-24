@@ -83,6 +83,16 @@ object Users {
     }
   }
 
+  def resetPassword(id:Int, password:String):Either[String, Int] = {
+    val updateQuery = userQuery.filter(x => x.id === id).map(c => c.password)
+      .update(Codecs.md5(password.getBytes))
+    try {
+      Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
+    } catch {
+      case e: Exception => Left(e.getMessage)
+    }
+  }
+
   def update(user: User)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
     val userData = findById(user.id.get).getOrElse(throw new EntityNotFoundException(s"User not found with Id:${user.id}"))
     if (user.password == userData.password) {
@@ -106,6 +116,11 @@ object Users {
 
   def findById(id: Int)(implicit loggedInUser: LoggedInUser): Option[User] = {
     val filterQuery = userQuery.filter(x => x.id === id && x.companyId === loggedInUser.companyId)
+    DatabaseSession.run(filterQuery.result.headOption).asInstanceOf[Option[User]]
+  }
+
+  def findByUserId(userId: String): Option[User] = {
+    val filterQuery = userQuery.filter(x => x.loginId === userId)
     DatabaseSession.run(filterQuery.result.headOption).asInstanceOf[Option[User]]
   }
 

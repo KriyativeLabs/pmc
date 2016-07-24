@@ -1,6 +1,7 @@
 package models
 
 import controllers.CustomerCreate
+import helpers.enums.SmsType
 import helpers.enums.UserType.UserType
 import org.joda.time.DateTime
 import play.api.Logger
@@ -76,9 +77,9 @@ object Customers {
           Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
           val company = Companies.findById(loggedInUser.companyId).getOrElse(throw EntityNotFoundException(s"Company with id:${loggedInUser.companyId} not found"))
           if (company.isCableNetwork) {
-            SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo, company)
+            SmsGateway.sendSms(s"You have been registered for sms bill payments for cable operator:${company.name}", customer.mobileNo, company, SmsType.SUBSCRIPTION_SMS)
           } else {
-            SmsGateway.sendSms(s"You have been registered for sms bill payments for Internet operator:${company.name}", customer.mobileNo, company)
+            SmsGateway.sendSms(s"You have been registered for sms bill payments for Internet operator:${company.name}", customer.mobileNo, company, SmsType.SUBSCRIPTION_SMS)
           }
           Right(result)
         } catch {
@@ -117,7 +118,7 @@ object Customers {
     val now = DateTime.now().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfDay(0)
     val updateQuery = for {
       cUp <- customerQuery.filter(x => x.id === customerId && x.balanceAmount === customer.balanceAmount).map(c => c.balanceAmount).update(customer.balanceAmount - paidAmount)
-      _ <- creditsQuery += Credit(None, customerId, Some(connectionId), paidAmount, now, customer.companyId)
+      _ <- creditsQuery += Credit(None, customerId, Some(connectionId), paidAmount, now, DateTime.now(), customer.companyId)
     } yield cUp
     try {
       if (DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int] == 1) {

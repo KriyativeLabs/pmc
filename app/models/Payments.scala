@@ -1,5 +1,6 @@
 package models
 
+import helpers.enums.SmsType
 import org.joda.time.DateTime
 import play.api.Play
 import play.api.libs.json.Json
@@ -17,7 +18,7 @@ object Payment {
   implicit val fmt = Json.format[Payment]
 }
 
-case class Credit(id: Option[Int], customerId: Int, connectionId:Option[Int], amount: Int, creditedOn: DateTime, companyId: Int)
+case class Credit(id: Option[Int], customerId: Int, connectionId: Option[Int], amount: Int, creditedOn: DateTime, generatedOn: DateTime, companyId: Int)
 
 object Credit {
   implicit val fmt = Json.format[Credit]
@@ -63,9 +64,11 @@ class CreditsTable(tag: Tag) extends Table[Credit](tag, "credits") {
 
   def creditedOn = column[DateTime]("credited_on")
 
+  def generatedOn = column[DateTime]("generated_on")
+
   def companyId = column[Int]("company_id")
 
-  def * = (id.?, customerId, connectionId, amount, creditedOn, companyId) <>((Credit.apply _).tupled, Credit.unapply _)
+  def * = (id.?, customerId, connectionId, amount, creditedOn, generatedOn, companyId) <>((Credit.apply _).tupled, Credit.unapply _)
 }
 
 object Payments {
@@ -98,7 +101,7 @@ object Payments {
             replace("%%RECEIPT%%", receiptNo).
             replace("%%PAMOUNT%%", payment.paidAmount.toString).
             replace("%%BALANCE%%", (customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
-          SmsGateway.sendSms(sms, customer.customer.mobileNo, company)
+          SmsGateway.sendSms(sms, customer.customer.mobileNo, company, SmsType.PAYMENT_SMS)
         }
         //Await.result(future, Duration(5, SECONDS))
         Right(result._1)

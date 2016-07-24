@@ -41,15 +41,18 @@ trait PaymentSerializer {
     }
   }
 
-  implicit val creditWriter:Writes[Credit] = Json.writes[Credit]
+  implicit val creditWriter:Writes[Credit] = new Writes[Credit] {
+    override def writes(c: Credit): JsValue = Json.obj(
+    "amount" -> c.amount,
+    "creditedOn" -> c.creditedOn.toString("yyyy-MM"),
+    "generatedOn" -> c.generatedOn.toString("yyyy-MM-dd")
+    )
+  }
 
   implicit val creditListWriter:Writes[Vector[Credit]] = new Writes[Vector[Credit]] {
     override def writes(o: Vector[Credit]): JsValue ={
       JsArray(o.map(credit => creditWriter.writes(credit)))
     }
   }
-
-
-  Json.writes[Credit]
 
 }

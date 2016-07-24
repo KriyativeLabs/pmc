@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import helpers.enums.UserType
+import helpers.enums.{SmsType, UserType}
 import helpers.json.SmsSerializer
 import helpers.{CommonUtil, ResponseHelper}
 import models.{Sms, SmsGateway}
@@ -20,7 +20,7 @@ class SmsController  @Inject()(implicit val messagesApi: MessagesApi, implicit v
       errors => badRequest(errors.mkString),
       sms => {
         implicit val loggedInUser = request.user
-        SmsGateway.send(sms) match {
+        SmsGateway.send(sms, SmsType.BULK_SMS) match {
           case Left(e) => failed(s"Failed to send sms!")
           case Right(msg) => ok(Some(msg), "Sent Sms Successfully")
         }

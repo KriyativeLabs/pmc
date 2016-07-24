@@ -25,7 +25,7 @@ class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implic
         val newPayment = payment.copy(companyId = request.user.companyId, agentId = request.user.userId)
         Payments.insert(newPayment) match {
           case Left(e) => badRequest(e)
-          case Right(id) => created(Some(newPayment), s"Payment of amount:${newPayment.paidAmount} Rs has been received!")
+          case Right(id) => created(Some(newPayment), s"Payment of amount:${newPayment.paidAmount} has been received!")
         }
       }
     )
@@ -39,7 +39,7 @@ class PaymentsController @Inject()(implicit val messagesApi: MessagesApi, implic
 
   def all() = (IsAuthenticated andThen PermissionCheckAction(UserType.AGENT)) { implicit request =>
     implicit val loggedInUser = request.user
-    val paymentList = Payments.getAll(paginationAttributes._3.getOrElse(1), paginationAttributes._4.getOrElse(20))
+    val paymentList = Payments.getAll(paginationAttributes._4.getOrElse(1), paginationAttributes._3.getOrElse(20))
     ok(Json.toJson(paymentList), "List of payments")
   }
 

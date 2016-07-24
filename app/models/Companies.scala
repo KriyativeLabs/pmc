@@ -9,8 +9,7 @@ import utils.{APIException, EntityNotFoundException}
 
 case class Company(id: Option[Int], name: String, owner: String, contactNo: Long, address: String, receiptNo: Long,
                    customerSeqNo: Option[Int], lastBillGeneratedOn: Option[DateTime], billStatus: Option[Boolean],
-                   smsCount: Int, pricePerCustomer: Int, smsEnabled:Boolean, isCableNetwork:Boolean)
-
+                   smsCount: Int, pricePerCustomer: Int, smsEnabled: Boolean, paymentSMS: Boolean, balanceReminders: Boolean, bulkSMS: Boolean, subscriptionSMS: Boolean, isCableNetwork: Boolean)
 object Company {
   implicit val fmt = Json.format[Company]
 }
@@ -46,9 +45,17 @@ class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
 
   def smsEnabled = column[Boolean]("sms_enabled")
 
+  def paymentSMS = column[Boolean]("payment_sms")
+
+  def balanceReminders = column[Boolean]("balance_reminders")
+
+  def bulkSMS = column[Boolean]("bulk_sms")
+
+  def subscriptionSMS = column[Boolean]("subscription_sms")
+
   def isCableNetwork = column[Boolean]("is_cable_network")
 
-  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled, isCableNetwork) <>((Company.apply _).tupled, Company.unapply _)
+  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled, paymentSMS, balanceReminders, bulkSMS, subscriptionSMS, isCableNetwork) <>((Company.apply _).tupled, Company.unapply _)
 }
 
 object Companies {
@@ -66,7 +73,9 @@ object Companies {
   }
 
   def update(company: Company): Either[String, Int] = {
-    val updateQuery = companyQuery.filter(_.id === company.id).map(c => (c.name, c.owner, c.contactNo, c.address)).update(company.name, company.owner, company.contactNo, company.address)
+    val updateQuery = companyQuery.filter(_.id === company.id).
+      map(c => (c.name, c.owner, c.contactNo, c.address, c.smsEnabled, c.paymentSMS, c.balanceReminders, c.bulkSMS, c.subscriptionSMS)).
+      update(company.name, company.owner, company.contactNo, company.address,  company.smsEnabled, company.paymentSMS, company.balanceReminders, company.bulkSMS, company.subscriptionSMS)
     try {
       Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
     } catch {
@@ -107,17 +116,17 @@ object Companies {
     }
   }
 
-  def startBilling(companyId:Int):Boolean = {
-    val updateQuery = companyQuery.filter(_.id === companyId).map(c => (c.billStatus, c.lastBillGeneratedOn,c.customerSeqNo)).update(Some(false),Some(DateTime.now().withDayOfMonth(1)),Some(0))
+  def startBilling(companyId: Int): Boolean = {
+    val updateQuery = companyQuery.filter(_.id === companyId).map(c => (c.billStatus, c.lastBillGeneratedOn, c.customerSeqNo)).update(Some(false), Some(DateTime.now().withDayOfMonth(1)), Some(0))
     DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
   }
 
-  def endBilling(companyId:Int):Boolean = {
+  def endBilling(companyId: Int): Boolean = {
     val updateQuery = companyQuery.filter(_.id === companyId).map(_.billStatus).update(Some(true))
     DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
   }
 
-  def updateCustomerSeqNo(companyId:Int, customerId:Int):Boolean = {
+  def updateCustomerSeqNo(companyId: Int, customerId: Int): Boolean = {
     val updateQuery = companyQuery.filter(_.id === companyId).map(_.customerSeqNo).update(Some(customerId))
     DatabaseSession.run(updateQuery).asInstanceOf[Int] == 1
   }

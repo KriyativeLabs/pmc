@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import helpers.enums.UserType
+import helpers.enums.{SmsType, UserType}
 import helpers.json.CustomerSerializer
 import helpers.{CommonUtil, ResponseHelper}
 import models._
@@ -127,7 +127,7 @@ class CustomersController @Inject()(implicit val messagesApi: MessagesApi, impli
       case Some(customer) => {
         val company = Companies.findById(customer.customer.companyId).get
         val message = s"Dear Customer, You cable connection pending balance is:${customer.customer.balanceAmount}. Please pay to our agent to avoid disconnection."
-        SmsGateway.sendSms(message, customer.customer.mobileNo, company)
+        SmsGateway.sendSms(message, customer.customer.mobileNo, company, SmsType.BALANCE_REMINDER)
         ok(Some("Successfully sent balance reminder"),"Successfully sent balance reminder")
       }
       case None => {

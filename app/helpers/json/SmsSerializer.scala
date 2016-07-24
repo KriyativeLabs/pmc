@@ -6,7 +6,7 @@ import play.api.libs.json._
 trait SmsSerializer {
   implicit val smsWriter = new Writes[Sms] {
     def writes(sms: Sms) = Json.obj(
-      "smsType" -> sms.smsType,
+      "smsType" -> sms.smsGroup,
       "message" -> sms.message
     )
   }

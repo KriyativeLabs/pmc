@@ -21,6 +21,7 @@ GET           /api/v1/companies/:id                         controllers.Companie
 # Users
 GET           /api/v1/users                                 controllers.UsersController.all
 POST          /api/v1/users                                 controllers.UsersController.create
+POST          /api/v1/users/reset/:userId                   controllers.UsersController.forgotPassword(userId:String)
 PUT           /api/v1/users/:id                             controllers.UsersController.update(id:Int)
 GET           /api/v1/users/:id                             controllers.UsersController.find(id:Int)
 GET           /api/v1/users/:id/payments                    controllers.PaymentsController.findByAgentId(id:Int)
