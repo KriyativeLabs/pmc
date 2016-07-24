@@ -314,7 +314,7 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     };
 };
 
-var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, id) {
+var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, constantsService, id) {
     $scope.title = "Update";
     $scope.sbtname = constantsService.SBT_NAME;
     $scope.boxseriesname = constantsService.BOX_SERIES;

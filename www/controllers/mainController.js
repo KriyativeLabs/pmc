@@ -1,5 +1,8 @@
 pmcApp.controller('mainController', ['$scope', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
     function ($scope, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
+        if(!cookieService.get(constantsService.TOKEN)){
+		$window.location.href = "login.html";
+	}
 
         $scope.isPLoading = false;
         $scope.isError = false;
