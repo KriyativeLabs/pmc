@@ -1,9 +1,6 @@
 <div class="vbox" data-ng-init="getPlans()">
     <div class="">
         <div class="row m-b-md">
-            <!-- <div class="col-sm-6">
-                <h3 class="m-b-xs text-black">Plans</h3>
-            </div> -->
             <div class="col-sm-12 text-right text-left-xs">
                 <form class="m-b-none" action="">
                     <div class="input-group">
@@ -17,41 +14,29 @@
         </div>
         <section class="row m-b-md">
             <div class="col-sm-6">
-                <a class="btn btn-sm btn-primary" ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0;"
-                   ng-click="open()"><i class="i i-plus2"></i>Add</a>
+                <button ng-hide="{{isAgent}}" class="btn btn-sm btn-primary font-bold" ng-click="open()"><i class="i i-tag2 icon"></i> Add Plan</button>
             </div>
         </section>
         <div class="panel panel-default">
-            <div class="table-responsive">
-                <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns"
-                       class="table table-striped m-b-none">
-                    <thead>
-                    <tr>
-                        <th width="10%">S.No</th>
-                        <th ng-hide="true" width="5%">Id</th>
-                        <th width="15%">Name</th>
-                        <th width="20%">Price</th>
-                        <th width="20%">No of Months</th>
-                        <th ng-hide="isAgent" width="20%">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="plan in plans | filter:search | orderBy:'name'">
-                        <td>#{{$index + 1}}</td>
-                        <td>{{plan.id}}</td>
-                        <td>{{plan.name}}</td>
-                        <td>{{plan.amount}}</td>
-                        <td>{{plan.noOfMonths}}</td>
-                        <td ng-hide="isAgent">
-                            <!--<button ng-click="openUpdate(plan.id,plan.name,plan.amount, plan.noOfMonths)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
-                            <button ng-click="delete(plan.id,plan.name)" class="btn btn-danger btn-sm"
-                                    style="padding:1px 10px !important;">Delete
-                            </button>-->
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+            <ul class="list-group alt">
+                <li class="list-group-item" ng-repeat="plan in plans | filter:search | orderBy:'name'">
+                    <div class="media">
+                        <div class="media-body">
+                            <div class="font-bold">{{plan.name | limitTo: 100 }}{{plan.name.length > 100 ? '...' : ''}}
+                                <div class="pull-right font-bold">{{plan.amount}} <i class="fa fa-rupee"></i></div>
+                            </div>
+                            <div><small class="text-muted">{{plan.noOfMonths}} Months</small>
+                                <div class="pull-right">
+                                    <div>
+                                        <button ng-hide="{{isAgent}}" class="btn btn-success btn-xs" ng-click="openUpdate(plan.id)"><i class="fa fa-pencil"></i></button>
+                                        <button ng-hide="{{isAgent}}" class="btn btn-danger btn-xs" ng-click="deletePlan(plan.id)"><i class="fa fa fa-trash-o"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -69,8 +54,7 @@
                             <!--<div class="row">-->
                             <div class="form-group">
                                 <label>Plan Name</label>
-                                <input ng-model="name" ng-disabled="{{isUpdate}}" class="form-control" type="text"
-                                       placeholder="Plan Name ">
+                                <input ng-model="name" ng-disabled="{{isUpdate}}" class="form-control" type="text" placeholder="Plan Name ">
                             </div>
                             <div class="form-group">
                                 <label>Plan Amount</label>
@@ -80,16 +64,15 @@
                             <!-- <div class="row">-->
                             <div class="form-group">
                                 <label>Plan Duration</label>
-                                <input ng-model="duration" class="form-control" type="number"
-                                       placeholder="Plan Duration">
+                                <input ng-model="duration" class="form-control" type="number" placeholder="Plan Duration">
                             </div>
                             <!-- </div>-->
                             <div class="row pull-right">
                                 <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
                                 <button class="btn btn-sm btn-primary" ng-click="planFunc()" ng-disabled="isLoading">
-                                    <span ng-hide="isLoading"><i class="fa fa-check"></i>{{title}}</span> <span
-                                        ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
-                                 <span class="sr-only">Loading...</span></span></button>
+                                    <span ng-hide="isLoading"><i class="fa fa-check"></i>{{title}}</span> <span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i>
+                                <span class="sr-only">Loading...</span></span>
+                                </button>
                             </div>
 
                         </form>

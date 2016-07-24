@@ -2,12 +2,13 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
     function ($scope, $filter, apiService, cookieService, constantsService) {
 
         var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        //$scope.titleHtml = "<i class='i i-chart icon'></i> Dashboard";
+        $scope.openLoader();
         $scope.title = "Dashboard";
+        $scope.progressbar.start();
+        $scope.loader = true;
         $scope.doughnutlabels = [];
         $scope.doughnutdata = [];
         $scope.doughnutcolors = [
-
             {
                 "fillColor": "rgba(227,50,68,0.8)",
                 "strokeColor": "rgba(227,50,68,0.8)",
@@ -54,12 +55,14 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
         ];
 
         $scope.getDashboardData = function () {
+            
             apiService.GET("/dashboarddata").then(function (response) {
                 console.log(response);
                 $scope.unpaidCustomers = response.data.data.unpaidCustomers;
                 $scope.paidCustomers = response.data.data.totalCustomers - response.data.data.unpaidCustomers;
                 $scope.balanceAmount = response.data.data.balanceAmount;
                 $scope.amountCollected = response.data.data.amountCollected;
+                
                 apiService.GET("/agent_stats").then(function (response) {
                     var responseData = response.data.data;
                     $scope.doughnutlabels.push("Balance Amount");
@@ -70,14 +73,17 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
                             $scope.doughnutdata.push(responseData[key]);
                         }
                     }
+                   $scope.closeLoader();
                 }, function (errorResponse) {
                     apiService.NOTIF_ERROR(errorResponse.data.message);
+                    $scope.closeLoader();
                     if (errorResponse.status != 200) {
                         console.log(errorResponse);
                     }
                 });
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
+                $scope.closeLoader();
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);
                 }
@@ -85,13 +91,7 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
         };
 
         $scope.getDashboardData();
-
-/*        var agentStats = function () {
-
-        };
-        agentStats();
-        */
-
+        
         var monthlyStats = function () {
             apiService.GET("/company_stats").then(function (response) {
                 var responseData = response.data.data;
@@ -108,7 +108,9 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
                     $scope.bardata[0].push(0);
                     $scope.bardata[1].push(0);
                 }
+                $scope.progressbar.complete();
             }, function (errorResponse) {
+                $scope.progressbar.complete();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

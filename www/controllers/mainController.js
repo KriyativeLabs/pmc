@@ -1,36 +1,56 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService',
-    function ($scope, $location, $uibModal, $log, apiService, cookieService, constantsService) {
+pmcApp.controller('mainController', ['$scope', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
+    function ($scope, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
 
         $scope.isPLoading = false;
+        $scope.isError = false;
+        $scope.loader = false;
+        $scope.progressbar = ngProgressFactory.createInstance();
 
-        $scope.titleClass = "i i-chart icon";
+        $scope.titleClass = "fa fa-pie-chart";
         $scope.title = "Dashboard";
         $scope.isActive = function (viewLocation) {
             if ($location.path().match('/dashboard')) {
-                $scope.titleClass = "i i-chart icon";
+                $scope.titleClass = "fa fa-pie-chart";
                 $scope.title = "Dashboard";
+            } else if ($location.path().match('/customers/')) {
+                $scope.titleClass = "fa fa-user";
+                $scope.title = "Customer Details";
             } else if ($location.path().match('/customers')) {
-                $scope.titleClass = "i i-users2 icon";
+                $scope.titleClass = "fa fa-users";
                 $scope.title = "Customers";
             } else if ($location.path().match('/payments')) {
                 $scope.titleClass = "i i-stack2 icon";
                 $scope.title = "Payments";
             } else if ($location.path().match('/areas')) {
-                $scope.titleClass = "i i-pin icon";
+                $scope.titleClass = "fa fa-map-marker";
                 $scope.title = "Areas";
             } else if ($location.path().match('/plans')) {
                 $scope.titleClass = "i i-tag2 icon";
                 $scope.title = "Plans";
+            } else if ($location.path().match('/agents/')) {
+                $scope.titleClass = "fa fa-user";
+                $scope.title = "Agent Details";
             } else if ($location.path().match('/agents')) {
-                $scope.titleClass = "i i-user2 icon";
+                $scope.titleClass = "fa fa-user";
                 $scope.title = "Agents";
+            } else if ($location.path().match('/settings')) {
+                $scope.titleClass = "fa fa-cog";
+                $scope.title = "Settings";
             }
 
             return ($location.path().match(viewLocation));
         };
 
+        $scope.reloadRoute = function () {
+            $route.reload();
+        }
+
         $scope.logout = function () {
             cookieService.destroy();
+        };
+
+        $scope.truncateName = function (name) {
+
         };
 
         $scope.getNotifications = function () {
@@ -47,24 +67,36 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
             });
         };
 
-        $scope.getNotifications();
+        //        $scope.getNotifications();
 
         $scope.username = cookieService.get(constantsService.USERNAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
         });
 
+        $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
+        
+        $scope.bSmsEnable = (!(cookieService.get(constantsService.BULK_SMS) == "true") || $scope.isAgent);
+        $scope.balanceReminder = !(cookieService.get(constantsService.BALANCE_REMINDER) == "true") || $scope.isAgent;
+        
         $scope.companyName = cookieService.get(constantsService.COMPANY_NAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
-        });
+        });        
 
-        $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
+        $scope.isInvalidRemark = function (remark) {
+            if (remark == "No Problems" | remark == "") {
+                return true;
+            } else {
+                return false;
+            }
+        };
 
 
-//############################################Modal###########################################
+        //############################################Modal###########################################
         $scope.openReceipt = function (customerId) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'receiptModal.html',
                 controller: PaymentReceiptCtrl,
+                backdrop: 'static',
                 resolve: {
                     customerId: function () {
                         return customerId;
@@ -78,12 +110,13 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-//###########################################End##############################################
+        //###########################################End##############################################
 
-//############################################SMS Modal###########################################
+        //############################################SMS Modal###########################################
         $scope.openSms = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'smsModal.html',
+                backdrop: 'static',
                 controller: SmsCtrl
             });
 
@@ -93,13 +126,14 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-//###########################################End##############################################
+        //###########################################End##############################################
 
 
-//############################################SMS Modal###########################################
+        //############################################SMS Modal###########################################
         $scope.openChangePass = function () {
             var modalInstance = $uibModal.open({
                 templateUrl: 'changePasswordModal.html',
+                backdrop: 'static',
                 controller: PasswordChangeCtrl
             });
 
@@ -109,14 +143,29 @@ pmcApp.controller('mainController', ['$scope', '$location', '$uibModal', '$log',
                 $log.info('Modal dismissed at: ' + new Date());
             });
         };
-//###########################################End##############################################
+
+        //###########################################End##############################################
+        var modalInstance = $uibModal;
+        $scope.openLoader = function () {
+            $scope.progressbar.start();
+            $scope.modalOpenInstance = modalInstance.open({
+                templateUrl: 'loading.html',
+                backdrop: 'static',
+                windowClass: 'center-modal'
+
+            });
+        };
+        $scope.closeLoader = function () {
+            $scope.progressbar.complete();
+            $scope.modalOpenInstance.close();
+        };
     }]);
 
 var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService, commonService, customerId) {
 
     $scope.discount = 0;
     $scope.remarks = "No Problems";
-
+    $scope.isError = false;
     var customerData = {};
     if (customerId != 0) {
         $scope.isPLoading = true;
@@ -147,29 +196,36 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
     };
 
     $scope.recordPayment = function () {
-        $scope.isPLoading = true;
-        var createObj = {};
-        createObj.customerId = $scope.id;
-        createObj.paidAmount = $scope.amount;
-        createObj.paidOn = commonService.getDateString($scope.paidOn);
-        createObj.receiptNo = "";
-        createObj.remarks = $scope.remarks;
-        createObj.discountedAmount = $scope.discount;
-        createObj.companyId = -1;
-        createObj.agentId = -1;
+        if ($scope.pending_amount < $scope.amount + $scope.discount) {
+            $scope.isError = true;
+        } else {
+            $scope.isError = false;
+            $scope.isPLoading = true;
 
-        apiService.POST("/payments", createObj).then(function (response) {
-            apiService.NOTIF_SUCCESS(response.data.message);
-            $scope.isPLoading = false;
-            $uibModalInstance.close($scope.dt);
-        }, function (errorResponse) {
-            apiService.NOTIF_ERROR(errorResponse.data.message);
-            $scope.isPLoading = false;
-            if (errorResponse.status != 200) {
-                console.log(errorResponse);
-            }
-            $scope.code = "";
-        });
+            var createObj = {};
+            createObj.customerId = $scope.id;
+            createObj.paidAmount = $scope.amount;
+            createObj.paidOn = commonService.getDateString($scope.paidOn);
+            createObj.receiptNo = "";
+            createObj.remarks = $scope.remarks;
+            createObj.discountedAmount = $scope.discount;
+            createObj.companyId = -1;
+            createObj.agentId = -1;
+
+            apiService.POST("/payments", createObj).then(function (response) {
+                apiService.NOTIF_SUCCESS(response.data.message);
+                $scope.isPLoading = false;
+                $uibModalInstance.close($scope.dt);
+            }, function (errorResponse) {
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                $scope.isPLoading = false;
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+                $scope.code = "";
+            });
+        }
+
     };
 
     $scope.closeAlert = function (index) {
@@ -188,7 +244,7 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
         startingDay: 1
     };
 
-    $scope.today = function() {
+    $scope.today = function () {
         $scope.paidOn = new Date();
     };
     $scope.today();

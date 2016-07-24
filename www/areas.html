@@ -1,54 +1,44 @@
 <div data-ng-init="getAreas()">
-    <section class="row m-b-md">
-        <!-- <div class="col-sm-6">
-            <h3 class="m-b-xs text-black">Areas</h3>
-        </div> -->
+    <div class="row m-b-md">
         <div class="col-sm-6 text-right text-left-xs">
             <form class="m-b-none" action="">
                 <div class="input-group">
                     <input type="text" placeholder="Type to Search.." ng-model="search" class="form-control">
                     <span class="input-group-btn">
-                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i
-                                      class="i i-search2"></i></button>
-                            </span>
+                        <button type="button" ng-click="changeData(search)" class="btn btn-primary">
+                            <i class="i i-search2"></i>
+                        </button>
+                    </span>
                 </div>
             </form>
         </div>
-    </section>
-    <section class="row m-b-md">
+    </div>
+    <div class="row m-b-md">
         <div class="col-sm-6">
-            <a class="btn btn-sm btn-primary" style="padding:4px 10px !important; bottom: 0" ng-hide="isAgent"
-               ng-click="open()"><i class="i i-plus2"></i>Add</a>
+            <button ng-hide="{{isAgent}}" class="btn btn-sm btn-primary font-bold" ng-click="open()"><i class="fa fa-map-marker"></i> Add Area</button>
         </div>
-    </section>
-    <section class="panel panel-default">
-        <div class="table-responsive">
-            <table datatable="ng" dt-options="dtOptions" dt-instance="dtInstance" dt-columns="dtColumns"
-                   class="table table-striped m-b-none">
-                <thead>
-                <tr>
-                    <th width="20%">Sl.No</th>
-                    <th ng-hide="true" width="5%">Id</th>
-                    <th width="30%">Area Code</th>
-                    <th width="35%">Area Name</th>
-                    <th ng-hide="isAgent" width="15%">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="area in areas | orderBy:'name'"> <!--| filter:search | orderBy:'name'">-->
-                    <td>#{{$index + 1}}</td>
-                    <td>{{area.id}}</td>
-                    <td>{{area.code}}</td>
-                    <td>{{area.name}}</td>
-                    <td ng-hide="isAgent">
-                        <!--<button ng-click="openUpdate(area.id,area.name,area.code)" class="btn btn-primary btn-sm" style="padding:1px 10px !important;">Edit</button>
-                        <button ng-click="deleteArea(area.id,area.name)" class="btn btn-danger btn-sm" style="padding:1px 10px !important;">Delete</button>-->
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
+    </div>
+    <div class="panel panel-default">
+        <ul class="list-group alt">
+            <li class="list-group-item" ng-repeat="area in areas | orderBy:'name'">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="font-bold">{{area.name | limitTo: 100 }}{{area.name.length > 100 ? '...' : ''}}
+                            <div class="pull-right font-bold">{{area.code}}</div>
+                        </div>
+                        <div><small class="text-muted">{{area.code}}</small>
+                            <div class="pull-right">
+                                <div>
+                                    <button ng-hide="{{isAgent}}" class="btn btn-success btn-xs" ng-click="openUpdate(area.id)"><i class="fa fa-pencil"></i></button>
+                                    <button ng-hide="{{isAgent}}" class="btn btn-danger btn-xs" ng-click="deleteArea(area.id)"><i class="fa fa fa-trash-o"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <script type="text/ng-template" id="areaCreate.html">
@@ -61,29 +51,27 @@
         </alert>
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1">
-                <section class="panel panel-default">
+                <div class="panel panel-default">
                     <div class="panel-body">
                         <form role="form">
                             <div class="form-group">
                                 <label for="validation-city">Area Code</label>
-                                <input ng-model="code" maxlength="5" class="form-control" type="text"
-                                       placeholder="Area Code ">
+                                <input ng-model="code" maxlength="5" class="form-control" type="text" placeholder="Area Code ">
                             </div>
                             <div class="form-group">
                                 <label for="validation-city">Area Name</label>
-                                <input ng-model="name" maxlength="64" class="form-control" type="text"
-                                       id="validation-city" name="validation-city" placeholder="Area Name">
+                                <input ng-model="name" maxlength="64" class="form-control" type="text" id="validation-city" name="validation-city" placeholder="Area Name">
                             </div>
                             <div class="pull-right">
                                 <button class="btn btn-sm btn-danger" ng-click="cancel()" type="submit">Cancel</button>
                                 <button class="btn btn-sm btn-primary" ng-click="areaFunc()" ng-disabled="isLoading">
-                                    <span ng-hide="isLoading"><i class="fa fa-check"></i>{{title}}</span> <span
-                                        ng-show="isLoading"><i class="fa fa-spinner fa-spin"></i>
-                                 <span class="sr-only">Loading...</span></span></button>
+                                    <span ng-hide="isLoading"><i class="fa fa-check"></i>{{title}}</span> <span ng-show="isLoading"><i class="fa fa-circle-o-notch fa-spin"></i>
+                                 <span class="sr-only">Loading...</span></span>
+                                </button>
                             </div>
                         </form>
                     </div>
-                </section>
+                </div>
             </div>
 
         </div>

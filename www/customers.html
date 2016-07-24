@@ -1,12 +1,11 @@
-<div data-ng-init="loadNext(-2)">
+<div>
     <div class="row">
         <div class="col-sm-12 text-right text-left-xs">
             <form class="m-b-none" action="">
                 <div class="input-group">
                     <input type="search" placeholder="Type to Search.." ng-model="search" class="form-control">
                     <span class="input-group-btn">
-                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i
-                                      class="i i-search2"></i>
+                              <button type="button" ng-click="changeData(search)" class="btn btn-primary"><i class="i i-search2"></i>
                               </button>
                      </span>
                 </div>
@@ -14,26 +13,13 @@
         </div>
     </div>
     <section class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-12" style="padding-top: 5px;padding-bottom: 5px;">
             <table width="100%">
                 <tr>
                     <td align="left">
-                        <button ng-hide="{{isAgent}}" style="padding:4px 10px !important; bottom: 0"
-                                class="btn btn-sm btn-primary" ng-click="open()">
-                            <i class="i i-plus2"></i>Add
+                        <button ng-hide="{{isAgent}}" class="btn btn-sm btn-primary font-bold" ng-click="open()"><i class="fa fa-user-plus"></i> Add
                         </button>
                     </td>
-                    <td class="pull-right" style="bottom: 0">
-                        <ul class="pagination pagination-sm" style="margin-bottom: 5px">
-                            <li><a ng-click="loadNext(-2)"><i class="fa fa-fast-backward"></i></a></li>
-                            <li><a ng-click="loadNext(-1)"><i class="fa fa-step-backward"></i></a></li>
-                            <li><a ng-click="loadNext(1)"><i class="fa fa-step-forward"></i></a></li>
-                            <li><a ng-click="loadNext(2)"><i class="fa fa-fast-forward"></i></a></li>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
                     <td class="pull-right" style="margin-bottom: 2px">
                         <toggle-switch ng-model="switchStatus" knob-label="Active" class="switch-mini">
                         </toggle-switch>
@@ -43,46 +29,35 @@
         </div>
     </section>
     <div class="panel panel-default">
-        <div class="table-responsive">
-            <div class="col-sm-12 m-xs">
-                <div aria-live="polite" role="status" id="DataTables_Table_4_info" class="dataTables_info">Showing
-                    {{from}} to {{to}} of {{customersCount}}
+        <ul class="list-group alt" infinite-scroll="loadNext()">
+            <li class="list-group-item" ng-repeat="customerCap in customers">
+                <div class="media">
+                    <div class="media-body">
+                        <div class="font-bold"><a class="font-bold" ng-href="#/customers/{{customerCap.customer.id}}" style="text-decoration: underline" uib-tooltip="{{customerCap.customer.name}}">{{customerCap.customer.name | limitTo: 100 }}{{customerCap.customer.name.length > 100 ? '...' : ''}}</a>
+                            <div class="pull-right">{{customerCap.customer.balanceAmount}} <i class="fa fa-rupee"></i></div>
+                        </div>
+                        <div><small class="text-muted" uib-tooltip="{{stbString(customerCap.connections, true)}} {{stbString(customerCap.connections, false)}}">{{stbString(customerCap.connections, true) | limitTo: 100 }}{{stbString(customerCap.connections, true).length > 100 ? '...' : ''}}</small>
+                            <div class="pull-right">
+                                <div>
+                                    <a ng-hide="isInvalidPhoneNo(customerCap.customer.mobileNo)" ng-href="tel:{{customerCap.customer.mobileNo}}" uib-tooltip="{{customerCap.customer.mobileNo}}">
+                                        <button class="btn btn-success btn-xs"><i class="fa fa-phone"></i></button>
+                                    </a>
+                                    <button ng-hide="{{isAgent}}" class="btn btn-danger btn-xs" ng-click="openUpdate(customerCap.customer.id)"><i class="fa fa-pencil"></i></button>
+                                    <button ng-disabled="{{customerCap.customer.balanceAmount < 1}}" class="btn btn-primary btn-xs pull-t font-bold" ng-click="openReceipt(customerCap.customer.id)">Pay</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <table datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" class="table table-striped m-b-none">
-                <thead>
-                <tr>
-                    <th width="5%">Id</th>
-                    <th width="5%">H.No</th>
-                    <th width="20%">Name</th>
-                    <th width="15%">Mobile No.</th>
-                    <th width="20%">UserName</th>
-                    <th width="20%">Password</th>
-                    <th width="10%">Balance</th>
-                    <th width="15%">Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="customerCap in customers | orderBy:'name'">
-                    <td>{{customerCap.customer.id}}</td>
-                    <td>{{customerCap.customer.houseNo}}</td>
-                    <td><u><a ng-href="#/customers/{{customerCap.customer.id}}">{{customerCap.customer.name}}</a></u>
-                    </td>
-                    <td>{{customerCap.customer.mobileNo}}</td>
-                    <td>{{stbString(customerCap.connections, true)}}</td>
-                    <td>{{stbString(customerCap.connections, false)}}</td>
-                    <td>{{customerCap.customer.balanceAmount}}</td>
-                    <td class="all">
-                        <!--    <button ng-disabled="customerCap.customer.balanceAmount == 0" class="btn btn-success btn-sm"
-                                    style="padding:1px 10px !important;" ng-click="openReceipt(customerCap.customer.id)">Pay
-                            </button>
-                            <button class="btn btn-primary btn-sm" ng-click="openUpdate(customerCap.customer.id)"
-                                    style="padding:1px 10px !important;">Edit
-                            </button>-->
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            </li>
+        </ul>
+        <style>
+            .tooltip-inner {
+                white-space: pre-wrap;
+            }
+        </style>
+        <div ng-show="loader" class="text-center bg-white fond-bold" style="height:100%">
+            Please Wait...
         </div>
     </div>
     <button id="btn-1" ng-click="download()" class="btn btn-primary pull-right hidden-xs hidden-sm">
@@ -93,48 +68,40 @@
 
 <script type="text/ng-template" id="customerModal.html">
     <div>
-        <div class="modal-header">
+        <div class="modal-header text-center" style="padding: 0px;padding-left: 10px">
             <h3>{{title}} Customer</h3>
         </div>
-        <div class="modal-body" style="height:80%;">
+        <div class="modal-body" style="height:80%; padding:10px">
             <div>
                 <div class="row">
                     <div class="col-sm-12">
                         <div>{{createErrorMsg}}</div>
                         <div>
                             <div>
-                                <h4>1. Customer Data</h4>
-
                                 <div class="row">
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Name*</p>
-                                        <input ng-model="name" class="form-control" maxlength="128" type="text"
-                                               data-trigger="change"
-                                               data-required="true" placeholder="Customer Name" required>
+                                        <input ng-model="name" class="form-control" maxlength="128" type="text" data-trigger="change" data-required="true" placeholder="Customer Name">
                                     </div>
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Mobile Number</p>
-                                        <input class="form-control" type="number" ng-model="mobile_no" maxlength="10"
-                                               placeholder="Customer Mobile Number" limit-to="10"/>
+                                        <input class="form-control" type="number" ng-model="mobile_no" maxlength="10" placeholder="Customer Mobile Number" limit-to="10" />
                                     </div>
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Email</p>
-                                        <input ng-model="email" class="form-control" type="email"
-                                               placeholder="Customer Email ID">
+                                        <input ng-model="email" class="form-control" type="email" placeholder="Customer Email ID">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Old Balance</p>
-                                        <input ng-model="old_balance" class="form-control" type="number"
-                                               placeholder="Old Balance If Any?">
+                                        <input ng-model="old_balance" class="form-control" type="number" placeholder="Old Balance If Any?">
                                     </div>
                                     <div class="col-sm-4" style="padding-right:20px;">
                                         <p>Area*</p>
                                         <select ng-model="area" class="form-control">
                                             <option value="">Select Area</option>
-                                            <option ng-repeat="area in areas" value="{{area.id}}"
-                                                    ng-selected="areaId == area.id">{{area.name}}
+                                            <option ng-repeat="area in areas" value="{{area.id}}" ng-selected="areaId == area.id">{{area.name}}
                                             </option>
                                         </select>
                                     </div>
@@ -143,26 +110,22 @@
                                     <div class="col-sm-12" style="padding-right:20px;">
                                         <p>Address</p>
 
-                                        <textarea ng-model="address" class="form-control" rows="2"
-                                                  data-trigger="change"
-                                                  data-required="false"
-                                                  placeholder="Enter Customer Address"></textarea>
+                                        <textarea ng-model="address" class="form-control" rows="2" data-trigger="change" data-required="false" placeholder="Enter Customer Address"></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div>
                                 <br>
-                                <h4>2. Connections <span><button class="pull-right btn-success btn btn-sm"
-                                                                 ng-click="add()">+
+                                <h4>{{cheader}}<span><button class="pull-right btn-success btn btn-xs"
+                                                                            ng-click="add()"><i class="fa fa-plus"></i>
                                 </button></span></h4>
                                 <br>
                                 <style>
                                     .panel-group .panel {
                                         overflow: inherit !important;
                                     }
-
                                 </style>
-                                <uib-accordion class="accord" close-others="true">
+                                <uib-accordion close-others="true">
                                     <uib-accordion-group heading="{{con.title}}" ng-repeat="con in cons">
                                         <div>
                                             <uib-accordion-heading>
@@ -170,30 +133,24 @@
                                             </uib-accordion-heading>
                                             <div class="row">
                                                 <div class="col-sm-4" style="padding-right:20px;">
-                                                    <p>User Name</p>
-                                                    <input ng-model="con.sbt_no" class="form-control" type="text"
-                                                           data-trigger="change"
-                                                           data-required="false" placeholder="User Name">
+                                                    <p>{{sbtname}}</p>
+                                                    <input ng-model="con.sbt_no" class="form-control" type="text" data-trigger="change" data-required="false" placeholder="{{sbtname}}">
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
-                                                    <p>Password</p>
-                                                    <input ng-model="con.box_series" class="form-control" type="text"
-                                                           data-trigger="change" data-required="false"
-                                                           placeholder="Password">
+                                                    <p>{{boxseriesname}}</p>
+                                                    <input ng-model="con.box_series" class="form-control" type="text" data-trigger="change" data-required="false" placeholder="{{boxseriesname}}">
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
-                                                    <p>Ip Address</p>
-                                                    <input ng-model="con.caf" class="form-control" type="text"
-                                                           data-trigger="change"
-                                                           data-required="false" placeholder="Ip Address">
+                                                    <p>{{cafname}}</p>
+                                                    <input ng-model="con.caf" class="form-control" type="text" data-trigger="change" data-required="false" placeholder="{{cafname}}">
                                                 </div>
                                             </div>
+
                                             <div class="row">
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Connection Status</p>
-                                                    <select ng-model="con.status" class="form-control"
-                                                            data-trigger="change"
-                                                            data-required="true">
+                                                    <select ng-model="con.status" class="form-control" data-trigger="change" data-required="true">
+                                                        <option value="">Select Status</option>
                                                         <option value="ACTIVE" ng-selected="con.status=='ACTIVE'">
                                                             Active
                                                         </option>
@@ -205,39 +162,29 @@
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Plan</p>
-                                                    <select ng-model="con.plan" class="form-control"
-                                                            data-trigger="change"
-                                                            data-required="true">
+                                                    <select ng-model="con.plan" class="form-control" data-trigger="change" data-required="true">
                                                         <option value="">Select Plan</option>
-                                                        <option ng-repeat="plan in plans" value="{{plan.id}}"
-                                                                ng-selected="con.planId == plan.id">{{plan.name}}
+                                                        <option ng-repeat="plan in plans" value="{{plan.id}}" ng-selected="con.planId == plan.id">{{plan.name}}
                                                         </option>
                                                     </select>
 
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Discount</p>
-                                                    <input ng-model="con.discount" class="form-control" type="number"
-                                                           data-trigger="change" data-required="false"
-                                                           placeholder="Discount">
+                                                    <input ng-model="con.discount" class="form-control" type="number" data-trigger="change" data-required="false" placeholder="Discount">
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>ID Proof*</p>
-                                                    <input ng-model="con.id_proof" class="form-control" type="text"
-                                                           data-trigger="change" data-required="true"
-                                                           placeholder="Who's ID Proof?">
+                                                    <input ng-model="con.id_proof" class="form-control" type="text" data-trigger="change" data-required="true" placeholder="Who's ID Proof?">
                                                 </div>
                                                 <div class="col-sm-4" style="padding-right:20px;">
                                                     <p>Plan Starts On*</p>
 
                                                     <p class="input-group">
-                                                        <input type="text" class="form-control"
-                                                               uib-datepicker-popup datepicker-options="dateOptions"
-                                                               ng-model="con.dt" is-open="con.opened" ng-required="true"
-                                                               close-text="Close"/>
-              <span class="input-group-btn">
+                                                        <input type="text" class="form-control" uib-datepicker-popup datepicker-options="dateOptions" ng-model="con.dt" is-open="con.opened" ng-required="true" close-text="Close" />
+                                                        <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open(con)"><i
                         class="glyphicon glyphicon-calendar"></i></button>
               </span>
@@ -245,8 +192,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <button class="pull-right" ng-click="remove($index)">x</button>
+                                        <div ng-hide="{{$index==0}}">
+                                            <i class="pull-right fa fa-trash-o text-danger" ng-click="remove($index)"></i>
                                         </div>
                                     </uib-accordion-group>
                                 </uib-accordion>
@@ -261,10 +208,11 @@
         <button class="btn btn-danger" ng-click="cancel()">Cancel</button>
         <button class="btn btn-primary" ng-click="customerFunc()" ng-disabled="isLoading"><span ng-hide="isLoading"><i
                 class="i i-user2"></i>&nbsp;{{title}}</span><span ng-show="isLoading"><i
-                class="fa fa-spinner fa-spin"></i>
+                class="fa fa-circle-o-notch fa-spin"></i>
 <span class="sr-only">Loading...</span></span>
         </button>
 
+    </div>
     </div>
 </script>
 <script>
