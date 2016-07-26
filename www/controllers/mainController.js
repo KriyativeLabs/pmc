@@ -1,13 +1,34 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
-    function ($scope, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
-
+pmcApp.controller('mainController', ['$scope', '$location', '$window', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
+    function ($scope, $location, $window, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
+        if(!cookieService.get(constantsService.TOKEN)){
+            $window.location.href = "login.html";
+        }
+        
         $scope.isPLoading = false;
         $scope.isError = false;
         $scope.loader = false;
         $scope.progressbar = ngProgressFactory.createInstance();
+        
+        var modalInstance = $uibModal;
+        $scope.openLoader = function () {
+            $scope.progressbar.start();
+            $scope.modalOpenInstance = modalInstance.open({
+                templateUrl: 'loading.html',
+                backdrop: 'static',
+                windowClass: 'center-modal'
 
+            });
+        };
+        $scope.closeLoader = function () {
+            $scope.progressbar.complete();
+            $scope.modalOpenInstance.close();
+        };
+        
+
+        
         $scope.titleClass = "fa fa-pie-chart";
         $scope.title = "Dashboard";
+        
         $scope.isActive = function (viewLocation) {
             if ($location.path().match('/dashboard')) {
                 $scope.titleClass = "fa fa-pie-chart";
@@ -145,20 +166,7 @@ pmcApp.controller('mainController', ['$scope', '$location', '$route', '$uibModal
         };
 
         //###########################################End##############################################
-        var modalInstance = $uibModal;
-        $scope.openLoader = function () {
-            $scope.progressbar.start();
-            $scope.modalOpenInstance = modalInstance.open({
-                templateUrl: 'loading.html',
-                backdrop: 'static',
-                windowClass: 'center-modal'
 
-            });
-        };
-        $scope.closeLoader = function () {
-            $scope.progressbar.complete();
-            $scope.modalOpenInstance.close();
-        };
     }]);
 
 var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService, commonService, customerId) {

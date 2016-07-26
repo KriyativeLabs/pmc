@@ -1,7 +1,7 @@
 pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$location', '$uibModal', '$log', 'apiService',
     'commonService', 'cookieService', 'constantsService', 'FileSaver', 'Blob',
     function ($scope, $compile, $filter, $location, $uibModal, $log, apiService, commonService, cookieService, constantsService,
-            FileSaver, Blob) {
+        FileSaver, Blob) {
 
         //########################################Customers Page########################################
         var first = true;
@@ -48,17 +48,17 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             link = "/customers?isPaid=all";
             countLink = "/customers/count?isPaid=all";
         }
-        
-        $scope.isInvalidPhoneNo = function(mobileNo){
-            if((mobileNo + '').length != 10){
-                return true;    
+
+        $scope.isInvalidPhoneNo = function (mobileNo) {
+            if ((mobileNo + '').length != 10) {
+                return true;
             }
-            if(!angular.isNumber(mobileNo)){
+            if (!angular.isNumber(mobileNo)) {
                 return true;
             }
             return false;
         }
-        
+
         $scope.getCustomers = function () {
             $scope.loader = true;
             var li = finalLink;
@@ -69,9 +69,9 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
             }
             $scope.getCustomersCount();
             $scope.progressbar.start();
-            
+
             apiService.GET(li).then(function (result) {
-//                console.log(result.data.data);
+                //                console.log(result.data.data);
                 $scope.customers = $scope.customers.concat(result.data.data);
                 $scope.loading = false;
                 $scope.progressbar.complete();
@@ -84,7 +84,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 $scope.progressbar.complete();
                 $scope.closeLoader();
                 if (errorResponse.status != 200) {
-//                    console.log(errorResponse);
+                    //                    console.log(errorResponse);
                 }
             });
         };
@@ -108,9 +108,11 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.download = function () {
             var dLink = "/customers/download?isPaid=" + isPaid + "&q=" + q;
             apiService.DOWNLOAD(dLink).then(function (result) {
-                var data = new Blob([result.data], {type: result.headers('Content-Type')});
+                var data = new Blob([result.data], {
+                    type: result.headers('Content-Type')
+                });
                 FileSaver.saveAs(data, result.headers("filename"));
-//                console.log(result);
+                //                console.log(result);
             }, function (errorResponse) {
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
@@ -122,7 +124,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
         $scope.loadNext = function () {
             console.log($scope.disableScroll);
             if (!$scope.loading && !$scope.disableScroll) {
-//                console.log("Loading");
+                //                console.log("Loading");
                 $scope.loading = true;
                 finalLink = link + "&pageNo=" + pageNo + "&pageSize=20";
                 $scope.getCustomers();
@@ -168,7 +170,7 @@ pmcApp.controller('customerController', ['$scope', '$compile', '$filter', '$loca
                 templateUrl: 'customerModal.html',
                 backdrop: 'static',
                 controller: CustomerCreateCtrl
-                
+
             });
 
             modalInstance.result.then(function (selected) {
@@ -207,7 +209,7 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     $scope.boxseriesname = constantsService.BOX_SERIES;
     $scope.cafname = constantsService.CAF;
     $scope.cheader = constantsService.C_CON_HEADER;
-    
+
     $scope.open = function (con) {
         $timeout(function () {
             con.opened = true;
@@ -314,7 +316,7 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
     };
 };
 
-var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, id) {
+var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiService, commonService, constantsService, id) {
     $scope.title = "Update";
     $scope.sbtname = constantsService.SBT_NAME;
     $scope.boxseriesname = constantsService.BOX_SERIES;

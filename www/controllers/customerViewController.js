@@ -10,6 +10,7 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
         $scope.cheader = constantsService.C_CON_HEADER;
 
         var custId = $location.path().split(/[\s/]+/).pop();
+        $scope.openLoader();
         if (angular.isNumber(parseInt(custId))) {
             var getCustomerData = function () {
                 apiService.GET("/customers/" + custId).then(function (result) {
@@ -50,7 +51,9 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
                             $scope.displayCredits = true;
                         }
                         console.log($scope.credits);
+                        $scope.closeLoader();
                     }, function (errorResponse) {
+                        $scope.closeLoader();
                         apiService.NOTIF_ERROR(errorResponse.data.message);
                         if (errorResponse.status != 200) {
                             console.log(errorResponse);
@@ -58,6 +61,7 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
                     });
                     
                 }, function (errorResponse) {
+                    $scope.closeLoader();
                     apiService.NOTIF_ERROR(errorResponse.data.message);
                     if (errorResponse.status != 200) {
                         console.log(errorResponse);
