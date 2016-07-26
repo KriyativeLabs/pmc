@@ -7,7 +7,7 @@ POST          /api/v1/login                                 controllers.UsersCon
 POST          /api/v1/users/changepassword                  controllers.UsersController.updatePassword
 GET           /api/v1/dashboarddata                         controllers.DashboardController.dashboardData
 GET           /api/v1/notifications                         controllers.DashboardController.notifications
-POST          /api/v1/sms                                   controllers.SmsController.sendSms
+#POST          /api/v1/sms                                   controllers.SmsController.sendSms
 
 GET           /api/v1/agent_stats                           controllers.DashboardController.agentStatistics
 GET           /api/v1/company_stats                         controllers.DashboardController.monthlyStatistics
