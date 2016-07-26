@@ -1,5 +1,5 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
-    function ($scope, $location, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
+pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
+    function ($scope, $location, $window, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
         if(!cookieService.get(constantsService.TOKEN)){
 		$window.location.href = "login.html";
 	}
