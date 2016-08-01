@@ -65,9 +65,9 @@ object CompanyStats {
     val noOfCustomers = DatabaseSession.run(noOfCustomersQuery.result).asInstanceOf[Int]
 
     val smsQuery = companyQuery.filter(x => x.id === companyId).map(_.smsCount)
-    val smsCount = DatabaseSession.run(smsQuery.result).asInstanceOf[Int]
+    val smsCount = DatabaseSession.run(smsQuery.result.headOption).asInstanceOf[Option[Int]]
 
-    val resultQuery = companyStatisticsQuery returning companyStatisticsQuery.map(_.id) += CompanyStatistics(None, companyId, lastMonth, totalAmountCollected.getOrElse(0), closingBalance.getOrElse(0), noOfCustomers, smsCount)
+    val resultQuery = companyStatisticsQuery returning companyStatisticsQuery.map(_.id) += CompanyStatistics(None, companyId, lastMonth, totalAmountCollected.getOrElse(0), closingBalance.getOrElse(0), noOfCustomers, smsCount.getOrElse(0))
     try {
       val res = DatabaseSession.run(resultQuery).asInstanceOf[Int]
       val smsUpdateQuery = companyQuery.filter(x => x.id === companyId).map(_.smsCount).update(0)
