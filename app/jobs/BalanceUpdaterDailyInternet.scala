@@ -58,7 +58,7 @@ class BalanceUpdaterDailyInternet extends Job {
           if(!customersSmsCompleted.contains(customer.id.get)){
             customersSmsCompleted += customer.id.get
             if (customer.balanceAmount > 0 && customer.mobileNo.isDefined) {
-              val message = s"Dear Customer, You internet connection pending balance is:${customer.balanceAmount}. Please pay to our agent to avoid disconnection."
+              val message = s"Dear Customer, Your internet connection's balance amount is Rs ${customer.balanceAmount}. Please pay to our agent to avoid disconnection."
               SmsGateway.sendSms(message, customer.mobileNo, company, SmsType.BALANCE_REMINDER)
             }
           }

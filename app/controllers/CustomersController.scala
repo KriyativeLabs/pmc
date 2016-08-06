@@ -126,7 +126,7 @@ class CustomersController @Inject()(implicit val messagesApi: MessagesApi, impli
     Customers.findById(id) match {
       case Some(customer) => {
         val company = Companies.findById(customer.customer.companyId).get
-        val message = s"Dear Customer, You cable connection pending balance is:${customer.customer.balanceAmount}. Please pay to our agent to avoid disconnection."
+        val message = s"Dear Customer, Your cable connection's balance amount is Rs ${customer.customer.balanceAmount}. Please pay to our agent to avoid disconnection."
         SmsGateway.sendSms(message, customer.customer.mobileNo, company, SmsType.BALANCE_REMINDER)
         ok(Some("Successfully sent balance reminder"),"Successfully sent balance reminder")
       }
