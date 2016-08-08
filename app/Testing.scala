@@ -34,7 +34,7 @@ object Testing {
 
     var flag = true
 
-    val csvData = new CSVUtils("/Users/surya/Downloads/Mohan_Data_1.csv", false)
+    val csvData = new CSVUtils("/tmp/Mohan_Data_1.csv", false)
     for (values <- csvData.all) {
       if (i != 0 && flag) {
         println(values(10).trim)
