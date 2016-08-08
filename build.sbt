@@ -25,5 +25,7 @@ libraryDependencies ++= Seq(
   "org.json4s" %% "json4s-ext" % "3.2.11",
   "com.github.tototoshi" %% "slick-joda-mapper" % "2.0.0",
   "org.quartz-scheduler" % "quartz" % "2.2.2",
-  "com.typesafe.play" %% "play-mailer" % "4.0.0"
+  "com.typesafe.play" %% "play-mailer" % "4.0.0",
+  "org.seleniumhq.selenium" % "selenium-java" % "2.53.1",
+  "com.github.tototoshi" %% "scala-csv" % "1.3.3"
 )
