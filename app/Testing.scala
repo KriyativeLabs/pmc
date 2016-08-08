@@ -51,7 +51,7 @@ object Testing {
           0,
           List(Connection(None, None,
             values(6).trim,
-            values(7),
+            values(8).trim,
             planMap.getOrElse(values(10).trim, 84),
             0,
             DateTime.now(),
