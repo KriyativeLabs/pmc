@@ -3,12 +3,12 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
 
         $scope.isLoading = false;
         $scope.displayPayments = true;
-
         $scope.sbtname = constantsService.SBT_NAME;
         $scope.boxseriesname = constantsService.BOX_SERIES;
         $scope.cafname = constantsService.CAF;
         $scope.cheader = constantsService.C_CON_HEADER;
-
+        $scope.openLoader();
+        
         var custId = $location.path().split(/[\s/]+/).pop();
         $scope.openLoader();
         if (angular.isNumber(parseInt(custId))) {
@@ -70,19 +70,65 @@ pmcApp.controller('customerViewController', ['$scope', '$filter', '$location', '
             };
             getCustomerData();
         }
-
         
-        
-        $scope.balanceAlert = function () {
+        $scope.activate = funtion(id){
             $scope.progressbar.start();
             $scope.isLoading = true;
-            apiService.GET("/customers/" + custId + "/balance_reminder").then(function (result) {
+            apiService.POST("/connections/" + id + "/activate", {}).then(function (result) {
                 $scope.progressbar.complete();
-                apiService.NOTIF_SUCCESS("Balance Reminder Sent Successfully");
                 $scope.isLoading = false;
+                apiService.NOTIF_SUCCESS(result.data.message)
             }, function (errorResponse) {
                 $scope.progressbar.complete();
                 $scope.isLoading = false;
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+            });
+        };
+        
+        $scope.showActive = funtion(con){
+            if(con.msoStatus) {
+                if(con.msoStatus == "ACTIVE") {
+                    return false;
+                } else (con.msoStatus == "IN_ACTIVE") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        
+        $scope.deactivate = funtion(id){
+            $scope.progressbar.start();
+            $scope.isLoading = true;
+            apiService.POST("/connections/" + id + "/deactivate", {}).then(function (result) {
+                $scope.progressbar.complete();
+                $scope.isLoading = false;
+                apiService.NOTIF_SUCCESS(result.data.message)
+            }, function (errorResponse) {
+                $scope.progressbar.complete();
+                $scope.isLoading = false;
+                apiService.NOTIF_ERROR(errorResponse.data.message);
+                if (errorResponse.status != 200) {
+                    console.log(errorResponse);
+                }
+            });
+        };
+        
+        $scope.balanceAlert = function () {
+            $scope.progressbar.start();
+            $scope.openLoader();
+            apiService.GET("/customers/" + custId + "/balance_reminder").then(function (result) {
+                $scope.progressbar.complete();
+                $scope.closeLoader();
+                apiService.NOTIF_SUCCESS("Balance Reminder Sent Successfully");
+            }, function (errorResponse) {
+                $scope.progressbar.complete();
+                $scope.closeLoader();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

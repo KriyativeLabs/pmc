@@ -46,7 +46,7 @@
                 <div ng-repeat="con in connections">
                     <div class="row">
                         <div class="col-xs-12">
-
+                            <button class="btn btn-danger" ng-hide="showActive(con)" ng-click="deactivate()">DeActivate</button><button class="btn btn-primary" ng-click="activate()" ng-show="showActive(con)"></button>
                             <p>{{sbtname}}: {{con.setupBoxId}}
                                 <br/> {{boxseriesname}}: {{con.boxSerialNo}}
                                 <br/> {{cafname}}: {{con.cafId}}
