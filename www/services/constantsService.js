@@ -12,6 +12,7 @@ pmcApp.service('constantsService',function() {
         SBT_NAME:"STB Number",
         BOX_SERIES:"BOX Series",
         CAF:"CAF",
+        MSO:"MSO",
         C_CON_HEADER:"Plans & CAF Details"
     }
 });

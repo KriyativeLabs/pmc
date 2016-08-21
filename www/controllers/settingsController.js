@@ -55,6 +55,7 @@ pmcApp.controller('settingsController', ['$scope', '$location', '$uibModal', '$t
             createObj.receiptNo = 0;
             createObj.isCableNetwork = true;
             createObj.pricePerCustomer = 2;
+            createObj.msoType = "UNKNOWN";
 
             apiService.PUT("/companies/"+companyId, createObj).then(function (response) {
                 $scope.isLoading = false;

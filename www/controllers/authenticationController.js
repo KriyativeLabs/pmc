@@ -18,6 +18,7 @@ pmcApp.controller('authenticationController', ['$scope','$window', 'cookieServic
                 cookieService.set(constantsService.C_ID, response.data.data.cId);
                 cookieService.set(constantsService.BULK_SMS, response.data.data.bSMS);
                 cookieService.set(constantsService.BALANCE_REMINDER, response.data.data.balanceReminder);
+                cookieService.set(constantsService.MSO, response.data.data.mso);
                 $scope.isLoading = false;
                 console.log(response.data.data);
                 $window.location.href = "index.html";
