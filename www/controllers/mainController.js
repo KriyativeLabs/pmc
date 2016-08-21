@@ -81,6 +81,8 @@ pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', 
         $scope.bSmsEnable = (!(cookieService.get(constantsService.BULK_SMS) == "true") || $scope.isAgent);
         $scope.balanceReminder = !(cookieService.get(constantsService.BALANCE_REMINDER) == "true") || $scope.isAgent;
         
+        $scope.mso = cookieService.get(constantsService.MSO);
+        
         $scope.companyName = cookieService.get(constantsService.COMPANY_NAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
         });        
@@ -174,11 +176,11 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
         $scope.isPLoading = true;
         apiService.GET("/customers/" + customerId).then(function (response) {
             customerData = response.data.data;
-            $scope.id = customerData.customer.id;
-            $scope.name = customerData.customer.name;
-            $scope.houseNo = customerData.customer.houseNo;
-            $scope.pending_amount = customerData.customer.balanceAmount;
-            $scope.amount = customerData.customer.balanceAmount;
+            $scope.id = customerData.id;
+            $scope.name = customerData.name;
+            $scope.houseNo = customerData.houseNo;
+            $scope.pending_amount = customerData.balanceAmount;
+            $scope.amount = customerData.balanceAmount;
             $scope.isPLoading = false;
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);

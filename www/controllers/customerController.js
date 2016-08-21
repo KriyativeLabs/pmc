@@ -249,7 +249,8 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
         createObj.balanceAmount = $scope.old_balance;
         createObj.areaId = parseInt($scope.area);
         createObj.address = $scope.address;
-
+        createObj.companyId = -1;
+        
         var connections = [];
         angular.forEach($scope.cons, function (value, key) {
             connections.push({
@@ -260,12 +261,13 @@ var CustomerCreateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
                 planId: parseInt(value.plan),
                 discount: value.discount,
                 idProof: value.id_proof,
+                companyId: -1,
                 installationDate: commonService.getDateString(value.dt)
             });
         });
-
+        
         createObj.connections = connections;
-
+        
         apiService.POST("/customers", createObj).then(function (response) {
             apiService.NOTIF_SUCCESS(response.data.message);
             $scope.isLoading = false;
@@ -372,8 +374,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
 
 
     apiService.GET("/customers/" + id).then(function (response) {
-
-        var customerData = response.data.data.customer;
+        var customerData = response.data.data;
         $scope.id = customerData.id;
         $scope.name = customerData.name;
         $scope.mobile_no = customerData.mobileNo;
@@ -389,6 +390,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
             $scope.cons.push({
                 title: 'Connection#' + ($scope.conCount),
                 opened: false,
+                id: value.id,
                 sbt_no: value.setupBoxId,
                 caf: value.cafId,
                 box_series: value.boxSerialNo,
@@ -427,10 +429,12 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
         createObj.balanceAmount = $scope.old_balance;
         createObj.areaId = parseInt($scope.area);
         createObj.address = $scope.address;
+        createObj.companyId = -1;
 
         var connections = [];
         angular.forEach($scope.cons, function (value, key) {
             connections.push({
+                id:value.id,
                 setupBoxId: value.sbt_no,
                 cafId: value.caf,
                 boxSerialNo: value.box_series,
@@ -438,6 +442,7 @@ var CustomerUpdateCtrl = function ($scope, $uibModalInstance, $timeout, apiServi
                 planId: parseInt(value.plan),
                 discount: value.discount,
                 idProof: value.id_proof,
+                companyId: -1,
                 installationDate: commonService.getDateString(value.dt)
             });
         });

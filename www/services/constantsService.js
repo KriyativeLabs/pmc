@@ -12,6 +12,7 @@ pmcApp.service('constantsService',function() {
         SBT_NAME:"Username",
         BOX_SERIES:"Password",
         CAF:"Ip Address",
+        MSO:"MSO",
         C_CON_HEADER:"Connections"
     }
 });
