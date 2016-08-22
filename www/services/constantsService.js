@@ -2,7 +2,7 @@ pmcApp.service('constantsService',function() {
     return {
         TOKEN:"token",
         USERNAME:"user_name",
-        API_URL:"http://paymyinternet.in/api/v1",
+        API_URL:"http://paymyinternet.in/api/v2",
         APP_TYPE:"internet",
         COMPANY_NAME:"company_name",
         ACC_TYPE:"account_type",
