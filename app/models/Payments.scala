@@ -88,28 +88,28 @@ object Payments {
 
     val resultQuery = for {
       id <- paymentsQuery returning paymentsQuery.map(_.id) += payment.copy(receiptNo = receiptNo)
-      customerUpdate <- customersQuery.filter(_.id === payment.customerId).map(_.balanceAmount).update((customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount))
+      customerUpdate <- customersQuery.filter(_.id === payment.customerId).map(_.balanceAmount).update((customer.balanceAmount - payment.paidAmount - payment.discountedAmount))
     } yield (id, customerUpdate)
 
     try {
       val result = DatabaseSession.run(resultQuery.transactionally).asInstanceOf[(Int, Int)]
       if (result._1 > 0 && result._2 == 1) {
-        Notifications.createNotification(s"Payment collected from Customer(${customer.customer.name}) ", loggedInUser.userId)
+        Notifications.createNotification(s"Payment collected from Customer(${customer.name}) ", loggedInUser.userId)
         if (company.smsEnabled) {
           val sms = (if (company.isCableNetwork) paymentCableSMSTemplate else paymentInternetSMSTemplate).
-            replace("%%NAME%%", customer.customer.name).
+            replace("%%NAME%%", customer.name).
             replace("%%RECEIPT%%", receiptNo).
             replace("%%PAMOUNT%%", payment.paidAmount.toString).
-            replace("%%BALANCE%%", (customer.customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
-          SmsGateway.sendSms(sms, customer.customer.mobileNo, company, SmsType.PAYMENT_SMS)
+            replace("%%BALANCE%%", (customer.balanceAmount - payment.paidAmount - payment.discountedAmount).toString)
+          SmsGateway.sendSms(sms, customer.mobileNo, company, SmsType.PAYMENT_SMS)
         }
         //Await.result(future, Duration(5, SECONDS))
         Right(result._1)
       } else {
-        Notifications.createNotification(s"Payment failed from Customer(${customer.customer.name}) ", loggedInUser.userId)
+        Notifications.createNotification(s"Payment failed from Customer(${customer.name}) ", loggedInUser.userId)
         val resultQuery = for {
           id <- paymentsQuery.filter(_.id === result._1).delete
-          customerUpdate <- customersQuery.filter(_.id === payment.customerId).map(_.balanceAmount).update(customer.customer.balanceAmount)
+          customerUpdate <- customersQuery.filter(_.id === payment.customerId).map(_.balanceAmount).update(customer.balanceAmount)
         } yield (id, customerUpdate)
         DatabaseSession.run(resultQuery.transactionally).asInstanceOf[(Int, Int)]
         Left("Payment failed due to some error! Please try again")
@@ -146,28 +146,28 @@ object Payments {
     val filterQuery = for {
       ((payment, customer), agent) <- (paymentsQuery.filter(x => x.companyId === loggedInUser.companyId).sortBy(_.id.desc).drop((pageNo - 1) * pageSize).take(pageSize) join customersQuery on (_.customerId === _.id) join agentsQuery on (_._1.agentId === _.id)).sortBy(_._1._1.id.desc)
     } yield (payment, customer, agent)
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, CustomerCore, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
   }
 
   def findByCustId(id: Int)(implicit loggedInUser: LoggedInUser): Vector[PaymentCapsule] = {
     val filterQuery = for {
       ((payment, customer), agent) <- paymentsQuery.filter(x => (x.companyId === loggedInUser.companyId && x.customerId === id)).sortBy(_.paidOn.desc).take(10) join customersQuery on (_.customerId === _.id) join agentsQuery on (_._1.agentId === _.id)
     } yield (payment, customer, agent)
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, CustomerCore, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
   }
 
   def findByAgentId(id: Int)(implicit loggedInUser: LoggedInUser): Vector[PaymentCapsule] = {
     val filterQuery = for {
       ((payment, customer), agent) <- paymentsQuery.filter(x => (x.companyId === loggedInUser.companyId && x.agentId === id && x.paidOn < CommonUtils.yesterday)).sortBy(_.paidOn.desc).take(30) join customersQuery on (_.customerId === _.id) join agentsQuery on (_._1.agentId === _.id)
     } yield (payment, customer, agent)
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, CustomerCore, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
   }
 
   def findByAgentIdToday(id: Int)(implicit loggedInUser: LoggedInUser): Vector[PaymentCapsule] = {
     val filterQuery = for {
       ((payment, customer), agent) <- paymentsQuery.filter(x => (x.companyId === loggedInUser.companyId && x.agentId === id && x.paidOn > CommonUtils.yesterday)).sortBy(_.paidOn.desc).take(30) join customersQuery on (_.customerId === _.id) join agentsQuery on (_._1.agentId === _.id)
     } yield (payment, customer, agent)
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}(${x._3.id.get})"))
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, CustomerCore, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}(${x._3.id.get})"))
   }
 
   def findByDate(date: DateTime)(implicit loggedInUser: LoggedInUser): Option[Payment] = {
@@ -198,7 +198,7 @@ object Payments {
         } yield (payment, customer, agent)
       }
     }
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, CustomerCore, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
   }
 
   def searchByDateRange(startDate: DateTime, endDate: DateTime)(implicit loggedInUser: LoggedInUser): Vector[PaymentCapsule] = {
@@ -207,7 +207,7 @@ object Payments {
     val filterQuery = for {
       ((payment, customer), agent) <- (paymentsQuery.filter(x => (x.companyId === loggedInUser.companyId && x.paidOn > sDate && x.paidOn < eDate)).sortBy(_.paidOn.desc) join customersQuery on (_.customerId === _.id) join agentsQuery on (_._1.agentId === _.id)).sortBy(_._1._1.id.desc)
     } yield (payment, customer, agent)
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, Customer, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Payment, CustomerCore, User)]].map(x => PaymentCapsule(x._1.receiptNo, s"${x._2.name}(${x._2.houseNo.get})", x._1.paidAmount, x._1.paidOn, x._1.remarks, s"${x._3.name}"))
   }
 
 

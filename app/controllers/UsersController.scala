@@ -44,6 +44,7 @@ class UsersController @Inject()(implicit val messagesApi: MessagesApi, implicit 
             request.getQueryString("account_type") match {
               case Some(x) if (x.toLowerCase == "internet" && !company.get.isCableNetwork) || (x.toLowerCase != "internet" && company.get.isCableNetwork) => {
                 ok(Json.obj("token" -> token,
+                  "mso" -> company.get.msoType,
                   "name" -> r.name,
                   "company" -> company.get.name,
                   "cId" -> company.get.id.get,

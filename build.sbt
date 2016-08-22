@@ -27,5 +27,8 @@ libraryDependencies ++= Seq(
   "org.quartz-scheduler" % "quartz" % "2.2.2",
   "com.typesafe.play" %% "play-mailer" % "4.0.0",
   "org.seleniumhq.selenium" % "selenium-java" % "2.53.1",
-  "com.github.tototoshi" %% "scala-csv" % "1.3.3"
+  "com.github.tototoshi" %% "scala-csv" % "1.3.3",
+  "com.codeborne" % "phantomjsdriver" % "1.3.0",
+  "net.sourceforge.htmlunit" % "htmlunit" % "2.23",
+  "net.databinder.dispatch" %% "dispatch-core" % "0.11.3"
 )

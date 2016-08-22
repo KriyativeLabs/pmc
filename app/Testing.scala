@@ -1,8 +1,6 @@
 import java.io.{FileWriter, BufferedWriter, File}
-import java.nio.charset.CodingErrorAction
-
-import controllers.CustomerCreate
-import models.{Connection, Customers}
+import helpers.enums.ConnectionStatus
+import models.{CustomerCapsule, Connection, Customers}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import utils.CSVUtils
@@ -38,18 +36,25 @@ object Testing {
     for (values <- csvData.all) {
       if (i != 0 && flag) {
         println(values(10).trim)
-        //case class CustomerCreate(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String],
-        // address: String, areaId: Int, balanceAmount: Int, connections: List[Connection])
         //case class Connection(id: Option[Int], customerId: Option[Int], setupBoxId: String, boxSerialNo:String, planId: Int, discount: Int, installationDate: DateTime,
         //                     status: String, cafId: String, idProof: String, companyId: Option[Int])
-        val cust = CustomerCreate(None,
+
+        //        case class CustomerCapsule(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String],
+        //                                   address: String, companyId: Int, areaId: Int, houseNo: Option[String], balanceAmount: Int,
+        //                                   createdBy: Option[Int], updatedBy: Option[Int], connections: List[Connection])
+        val cust = CustomerCapsule(None,
           values(0),
           (if (values(1).replace(" ", "").length > 0) Some(values(1).replace(" ", "").toLong) else None),
           Some(values(2).trim),
           values(5),
+          companyId,
           areaMap.getOrElse(values(4).trim, throw new Exception("Error Parsing")),
+          None,
           0,
-          List(Connection(None, None,
+          None,
+          None,
+          List(Connection(None,
+            None,
             values(6).trim,
             values(8).trim,
             planMap.getOrElse(values(10).trim, 84),
@@ -58,7 +63,9 @@ object Testing {
             "ACTIVE",
             "NIL",
             "NIL",
-            Some(companyId))))
+            Some(companyId),
+            Some(ConnectionStatus.UNKNOWN),
+            Some(false))))
 
         println(cust)
         Customers.tempInsert(cust, companyId) match {

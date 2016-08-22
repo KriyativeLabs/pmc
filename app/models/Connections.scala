@@ -1,18 +1,22 @@
 package models
 
+import helpers.enums.{MSOType, ConnectionStatus}
+import helpers.enums.ConnectionStatus.ConnectionStatus
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import slick.driver.PostgresDriver.api._
+import utils.{EnumUtils, EnumImplicits}
 
-case class Connection(id: Option[Int], customerId: Option[Int], setupBoxId: String, boxSerialNo:String, planId: Int, discount: Int, installationDate: DateTime,
-                      status: String, cafId: String, idProof: String, companyId: Option[Int])
+case class Connection(id: Option[Int], customerId: Option[Int], setupBoxId: String, boxSerialNo: String, planId: Int, discount: Int, installationDate: DateTime,
+                      status: String, cafId: String, idProof: String, companyId: Option[Int], msoStatus: Option[ConnectionStatus] = Some(ConnectionStatus.UNKNOWN), isArchived: Option[Boolean] = Some(false))
 
 object Connection {
+  implicit val conFormat = EnumUtils.enumFormat(ConnectionStatus)
   implicit val fmt = Json.format[Connection]
 }
 
-class ConnectionsTable(tag: Tag) extends Table[Connection](tag, "connections") {
+class ConnectionsTable(tag: Tag) extends Table[Connection](tag, "connections") with EnumImplicits {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
   def customerId = column[Option[Int]]("customer_id")
@@ -33,12 +37,16 @@ class ConnectionsTable(tag: Tag) extends Table[Connection](tag, "connections") {
 
   def idProof = column[String]("id_proof")
 
+  def msoStatus = column[Option[ConnectionStatus]]("mso_status")
+
   def companyId = column[Option[Int]]("company_id")
 
-  def * = (id.?, customerId, setupBoxId, boxSerialNo, planId, discount, installationDate, status, cafId, idProof, companyId) <>((Connection.apply _).tupled, Connection.unapply _)
+  def isArchived = column[Option[Boolean]]("is_archived")
+
+  def * = (id.?, customerId, setupBoxId, boxSerialNo, planId, discount, installationDate, status, cafId, idProof, companyId, msoStatus, isArchived) <>((Connection.apply _).tupled, Connection.unapply _)
 }
 
-object Connections {
+object Connections extends EnumImplicits {
   private lazy val connectionQuery = TableQuery[ConnectionsTable]
 
   def insert(connection: Connection): Either[String, Int] = {
@@ -52,8 +60,17 @@ object Connections {
 
   def update(connection: Connection): Either[String, Int] = {
     val updateQuery = connectionQuery.filter(x => x.id === connection.id && x.companyId === connection.companyId).
-      map(c => (c.setupBoxId, c.planId, c.discount, c.installationDate, c.status, c.cafId, c.idProof)).
-      update(connection.setupBoxId, connection.planId, connection.discount, connection.installationDate, connection.status, connection.cafId, connection.idProof)
+      map(c => (c.setupBoxId, c.boxSerialNo, c.planId, c.discount, c.installationDate, c.status, c.cafId, c.idProof, c.isArchived)).
+      update(connection.setupBoxId, connection.boxSerialNo, connection.planId, connection.discount, connection.installationDate, connection.status, connection.cafId, connection.idProof, Some(false))
+    try {
+      Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
+    } catch {
+      case e: Exception => Left(e.getMessage)
+    }
+  }
+
+  def updateMSOStatus(id: Int, status: ConnectionStatus) = {
+    val updateQuery = connectionQuery.filter(x => x.id === id).map(_.msoStatus).update(Some(status))
     try {
       Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
     } catch {

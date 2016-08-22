@@ -14,19 +14,12 @@ import play.api.libs.mailer.MailerClient
 import play.api.mvc._
 import security.{IsAuthenticated, PermissionCheckAction}
 
-case class CustomerCreate(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String], address: String, areaId: Int, balanceAmount: Int, connections: List[Connection])
-
-object CustomerCreate {
-  implicit val fmt = Json.format[CustomerCreate]
-}
-
 class CustomersController @Inject()(implicit val messagesApi: MessagesApi, implicit val mail:MailerClient) extends Controller with CustomerSerializer with CommonUtil with ResponseHelper {
 
   val logger = Logger(this.getClass)
 
-
   def create() = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
-    request.body.validate[CustomerCreate].fold(
+    request.body.validate[CustomerCapsule].fold(
       errors => badRequest(errors.mkString),
       customer => {
         implicit val loggedInUser = request.user
@@ -106,7 +99,7 @@ class CustomersController @Inject()(implicit val messagesApi: MessagesApi, impli
 */
 
   def update(id: Int) = (IsAuthenticated andThen PermissionCheckAction(UserType.OWNER))(parse.json) { implicit request =>
-    request.body.validate[CustomerCreate].fold(
+    request.body.validate[CustomerCapsule].fold(
       errors => badRequest(errors.mkString),
       customer => {
         implicit val loggedInUser = request.user
@@ -125,9 +118,9 @@ class CustomersController @Inject()(implicit val messagesApi: MessagesApi, impli
     implicit val loggedInUser = request.user
     Customers.findById(id) match {
       case Some(customer) => {
-        val company = Companies.findById(customer.customer.companyId).get
-        val message = s"Dear Customer, Your cable connection's balance amount is Rs ${customer.customer.balanceAmount}. Please pay to our agent to avoid disconnection."
-        SmsGateway.sendSms(message, customer.customer.mobileNo, company, SmsType.BALANCE_REMINDER)
+        val company = Companies.findById(customer.companyId).get
+        val message = s"Dear Customer, Your cable connection's balance amount is Rs ${customer.balanceAmount}. Please pay to our agent to avoid disconnection."
+        SmsGateway.sendSms(message, customer.mobileNo, company, SmsType.BALANCE_REMINDER)
         ok(Some("Successfully sent balance reminder"),"Successfully sent balance reminder")
       }
       case None => {
@@ -161,7 +154,7 @@ class CustomersController @Inject()(implicit val messagesApi: MessagesApi, impli
     fileName += "report.csv"
     ok(HEADER +"\n"+ Customers.getAllWithFilters(loggedInUser.companyId, active, isPaid, request.getQueryString("q")).map({ c =>
       c.connections.map({ con =>
-        s"${c.customer.name},${c.customer.address}, ${con.setupBoxId},${con.cafId},${plans.getOrElse(con.planId, "No-Plan")}, ${c.customer.balanceAmount}, ${con.status.toUpperCase}, ${dateFormat(con.installationDate)}"
+        s"${c.name},${c.address}, ${con.setupBoxId},${con.cafId},${plans.getOrElse(con.planId, "No-Plan")}, ${c.balanceAmount}, ${con.status.toUpperCase}, ${dateFormat(con.installationDate)}"
       }).mkString("\n")
     }).mkString("\n"), fileName, fileName)
   }

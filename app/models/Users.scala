@@ -66,6 +66,7 @@ object Users {
   }
 
   def login(login: LoginCase): Either[Boolean, User] = {
+    println(Codecs.md5(login.password.getBytes))
     val filterQuery = userQuery.filter(l => l.status && l.loginId.toLowerCase === login.loginId.toLowerCase && l.password === Codecs.md5(login.password.getBytes))
     DatabaseSession.run(filterQuery.result.headOption).asInstanceOf[Option[User]] match {
       case Some(x) => Right(x)

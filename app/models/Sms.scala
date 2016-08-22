@@ -27,7 +27,7 @@ object SmsGateway {
       case "paid" => Customers.getAllWithFilters(loggedInUser.companyId, Some(false), Some(false), None)
       case "all" => Customers.getAllWithFilters(loggedInUser.companyId, None, Some(false), None)
     }
-    sendSms(sms.message, customerList.flatMap(_.customer.mobileNo), company, sType)
+    sendSms(sms.message, customerList.flatMap(_.mobileNo), company, sType)
   }
 
   def sendSms(message: String, contactNo: Option[Long], company: Company, sType:SmsType): Either[String, String] = {

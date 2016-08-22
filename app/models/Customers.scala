@@ -1,32 +1,34 @@
 package models
 
-import controllers.CustomerCreate
-import helpers.enums.SmsType
-import helpers.enums.UserType.UserType
+import helpers.enums.{ConnectionStatus, SmsType}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.libs.json.Json
 import security.LoggedInUser
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
-import com.github.tototoshi.slick.JdbcJodaSupport._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-//import scala.concurrent.ExecutionContext.Implicits.global
+case class CustomerCore(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String], address: String, companyId: Int, areaId: Int, houseNo: Option[String], balanceAmount: Int, createdBy: Option[Int], updatedBy: Option[Int])
 
-case class Customer(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String], address: String, companyId: Int, areaId: Int, houseNo: Option[String], balanceAmount: Int, createdBy: Option[Int], updatedBy: Option[Int])
-
-object Customer {
-  implicit val fmt = Json.format[Customer]
+object CustomerCore {
+  implicit val fmt = Json.format[CustomerCore]
 }
 
-case class CustomerCapsule(customer: Customer, connections: List[Connection])
+case class CustomerCapsule(id: Option[Int], name: String, mobileNo: Option[Long], emailId: Option[String], address: String, companyId: Int, areaId: Int, houseNo: Option[String], balanceAmount: Int, createdBy: Option[Int], updatedBy: Option[Int], connections: List[Connection]) {
+  def this(core: CustomerCore, connections: List[Connection]) {
+    this(core.id, core.name, core.mobileNo, core.emailId, core.address, core.companyId, core.areaId, core.houseNo, core.balanceAmount, core.createdBy, core.updatedBy, connections)
+  }
+
+  def core = CustomerCore(id, name, mobileNo, emailId, address, companyId, areaId, houseNo, balanceAmount, createdBy, updatedBy)
+}
 
 object CustomerCapsule {
   implicit val fmt = Json.format[CustomerCapsule]
 }
 
-class CustomersTable(tag: Tag) extends Table[Customer](tag, "customers") {
+class CustomersTable(tag: Tag) extends Table[CustomerCore](tag, "customers") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
   def name = column[String]("name")
@@ -49,7 +51,7 @@ class CustomersTable(tag: Tag) extends Table[Customer](tag, "customers") {
 
   def updatedBy = column[Option[Int]]("updated_by")
 
-  def * = (id.?, name, mobileNo, emailId, address, companyId, areaId, houseNo, balanceAmount, createdBy, updatedBy) <>((Customer.apply _).tupled, Customer.unapply _)
+  def * = (id.?, name, mobileNo, emailId, address, companyId, areaId, houseNo, balanceAmount, createdBy, updatedBy) <>((CustomerCore.apply _).tupled, CustomerCore.unapply _)
 }
 
 object Customers {
@@ -57,11 +59,11 @@ object Customers {
   val logger = Logger(this.getClass)
 
   private lazy val customerQuery = TableQuery[CustomersTable]
-  private lazy val connectionsQuery = TableQuery[ConnectionsTable]
+  private lazy val connectionsQuery = TableQuery[ConnectionsTable].filter(!_.isArchived.getOrElse(false))
   private lazy val creditsQuery = TableQuery[CreditsTable]
 
-  def insert(customer: CustomerCreate)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
-    val newCustomer = Customer(None, customer.name, customer.mobileNo, customer.emailId, customer.address, loggedInUser.companyId, customer.areaId, None, customer.balanceAmount, Some(loggedInUser.userId), Some(loggedInUser.userId))
+  def insert(customer: CustomerCapsule)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
+    val newCustomer = CustomerCore(None, customer.name, customer.mobileNo, customer.emailId, customer.address, loggedInUser.companyId, customer.areaId, None, customer.balanceAmount, Some(loggedInUser.userId), Some(loggedInUser.userId))
     val houseNo = Areas.getIdSequence(newCustomer.areaId, newCustomer.companyId)
     houseNo match {
       case Left(e) => {
@@ -89,8 +91,8 @@ object Customers {
     }
   }
 
-  def tempInsert(customer: CustomerCreate, companyId: Int): Either[String, Int] = {
-    val newCustomer = Customer(None, customer.name, customer.mobileNo, customer.emailId, customer.address, companyId, customer.areaId, None, customer.balanceAmount, None, None)
+  def tempInsert(customer: CustomerCapsule, companyId: Int): Either[String, Int] = {
+    val newCustomer = CustomerCore(None, customer.name, customer.mobileNo, customer.emailId, customer.address, companyId, customer.areaId, None, customer.balanceAmount, None, None)
     val houseNo = Areas.getIdSequence(newCustomer.areaId, newCustomer.companyId)
     houseNo match {
       case Left(e) => {
@@ -111,9 +113,9 @@ object Customers {
     }
   }
 
-  def updateAmount(customerId: Int, connectionId:Int, paidAmount: Int): Boolean = {
+  def updateAmount(customerId: Int, connectionId: Int, paidAmount: Int): Boolean = {
     val custQuery = customerQuery.filter(x => x.id === customerId)
-    val custResult = DatabaseSession.run(custQuery.result.headOption).asInstanceOf[Option[Customer]]
+    val custResult = DatabaseSession.run(custQuery.result.headOption).asInstanceOf[Option[CustomerCore]]
     val customer = custResult.getOrElse(throw EntityNotFoundException(s"Customer not found with Id:$customerId"))
     val now = DateTime.now().withDayOfMonth(1).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfDay(0)
     val updateQuery = for {
@@ -127,20 +129,25 @@ object Customers {
         false
       }
     } catch {
-      case e:Throwable => {
-          logger.error(s"Already Update connection($connectionId) for billing of customer $customerId")
-          false
+      case e: Throwable => {
+        logger.error(s"Already Update connection($connectionId) for billing of customer $customerId")
+        false
       }
     }
   }
 
-  def update(customer: CustomerCreate)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
+  def update(customer: CustomerCapsule)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
+    val conIdList = customer.connections.flatMap(_.id)
     val updateQuery = for {
       cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId, p.balanceAmount, p.updatedBy)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId, customer.balanceAmount, Some(loggedInUser.userId))
-      _ <- connectionsQuery.filter(_.customerId === customer.id).delete
-      _ <- connectionsQuery ++= customer.connections.map(_.copy(customerId = customer.id, companyId = Some(loggedInUser.companyId)))
+      _ <- connectionsQuery.filter(con => con.customerId === customer.id && !(con.id inSet conIdList)).map(_.isArchived).update(Some(true))
+      _ <- connectionsQuery ++= customer.connections.filter(_.id.isEmpty).map(_.copy(customerId = customer.id, msoStatus = Some(ConnectionStatus.UNKNOWN), companyId = Some(loggedInUser.companyId), isArchived = Some(false)))
     } yield cust
     try {
+      customer.connections.filter(_.id.isDefined).foreach({ con =>
+        logger.info("Updating Connection" + con)
+        Connections.update(con.copy(isArchived = Some(false), companyId = Some(loggedInUser.companyId)))
+      })
       Right(DatabaseSession.run(updateQuery.transactionally).asInstanceOf[Int])
     } catch {
       case e: Exception => Left(e.getMessage)
@@ -162,12 +169,12 @@ object Customers {
   }
   */
 
-  private def processResult(result: Vector[(Customer, Option[Connection])]): Vector[CustomerCapsule] = {
-    result.groupBy(_._1).map(c => CustomerCapsule(c._1, c._2.flatMap(_._2).toList)).toVector.sortBy(_.customer.balanceAmount).reverse
+  private def processResult(result: Vector[(CustomerCore, Option[Connection])]): Vector[CustomerCapsule] = {
+    result.groupBy(_._1).map(c => new CustomerCapsule(c._1, c._2.flatMap(_._2).toList)).toVector.sortBy(_.balanceAmount).reverse
   }
 
-  private def processResult_1(result: Vector[(Customer, Connection)]): Vector[CustomerCapsule] = {
-    result.groupBy(_._1).map(c => CustomerCapsule(c._1, c._2.map(_._2).toList)).toVector.sortBy(_.customer.balanceAmount).reverse
+  private def processResult_1(result: Vector[(CustomerCore, Connection)]): Vector[CustomerCapsule] = {
+    result.groupBy(_._1).map(c => new CustomerCapsule(c._1, c._2.map(_._2).toList)).toVector.sortBy(_.balanceAmount).reverse
   }
 
   /*def getPaidCustomers(userType: UserType, userId: Int, sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
@@ -208,7 +215,7 @@ object Customers {
     val filterQuery = for {
       (cust, conn) <- customerQuery.filter(x => x.id === id && x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)
     } yield (cust, conn)
-    processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]]).headOption
+    processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(CustomerCore, Option[Connection])]]).headOption
   }
 
   def getAlll(sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
@@ -221,7 +228,7 @@ object Customers {
         (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
       } yield (cust, conn)
     }
-    processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]])
+    processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(CustomerCore, Option[Connection])]])
   }
 
   def getAllCount()(implicit loggedInUser: LoggedInUser): Int = {
@@ -229,20 +236,20 @@ object Customers {
     DatabaseSession.run(filterQuery.result).asInstanceOf[Int]
   }
 
-  def getAll(companyId: Int): Vector[(Customer, Connection)] = {
+  def getAll(companyId: Int): Vector[(CustomerCore, Connection)] = {
     val filterQuery = for {
       (cust, conn) <- (customerQuery.filter(x => x.companyId === companyId).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)).sortBy(_._1.id.asc)
     } yield (cust, conn)
 
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Connection)]]
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(CustomerCore, Connection)]]
   }
 
-  def getAll(companyId: Int, customerIdSeq: Int): Vector[(Customer, Connection)] = {
+  def getAll(companyId: Int, customerIdSeq: Int): Vector[(CustomerCore, Connection)] = {
     val filterQuery = for {
       (cust, conn) <- (customerQuery.filter(x => x.companyId === companyId && x.id > customerIdSeq).sortBy(_.id.asc) join connectionsQuery.filter(y => y.status === "ACTIVE") on (_.id === _.customerId)).sortBy(_._1.id)
     } yield (cust, conn)
 
-    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Connection)]]
+    DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(CustomerCore, Connection)]]
   }
 
   def getAllWithFilters(companyId: Int, active: Option[Boolean], isPaid: Option[Boolean], search: Option[String], sortBy: Option[String] = None, sortOrder: Option[String] = None, pageSize: Option[Int] = None, pageNo: Option[Int] = None): Vector[CustomerCapsule] = {
@@ -291,7 +298,7 @@ object Customers {
           (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) join conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
         } yield (cust, conn)
       }
-      processResult_1(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(Customer, Connection)]])
+      processResult_1(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(CustomerCore, Connection)]])
     } else {
       val pageQuery = if (pageSize.isDefined && pageNo.isDefined) {
         for {
@@ -302,7 +309,7 @@ object Customers {
           (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
         } yield (cust, conn)
       }
-      processResult(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]])
+      processResult(DatabaseSession.run(pageQuery.result).asInstanceOf[Vector[(CustomerCore, Option[Connection])]])
     }
   }
 

@@ -1,16 +1,21 @@
 package models
 
+import helpers.enums.MSOType
+import helpers.enums.MSOType.MSOType
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
-import utils.{APIException, EntityNotFoundException}
-
+import utils.{EnumUtils, EnumImplicits, APIException, EntityNotFoundException}
 
 case class Company(id: Option[Int], name: String, owner: String, contactNo: Long, address: String, receiptNo: Long,
                    customerSeqNo: Option[Int], lastBillGeneratedOn: Option[DateTime], billStatus: Option[Boolean],
-                   smsCount: Int, pricePerCustomer: Int, smsEnabled: Boolean, paymentSMS: Boolean, balanceReminders: Boolean, bulkSMS: Boolean, subscriptionSMS: Boolean, isCableNetwork: Boolean)
+                   smsCount: Int, pricePerCustomer: Int, smsEnabled: Boolean, paymentSMS: Boolean, balanceReminders: Boolean,
+                   bulkSMS: Boolean, subscriptionSMS: Boolean, isCableNetwork: Boolean, msoType: MSOType, cred1: Option[String],
+                   cred2: Option[String], cred3: Option[String], cred4: Option[String])
+
 object Company {
+  implicit val msoFormat = EnumUtils.enumFormat(MSOType)
   implicit val fmt = Json.format[Company]
 }
 
@@ -20,7 +25,7 @@ object DashboardData {
   implicit val fmt = Json.format[DashboardData]
 }
 
-class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
+class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") with EnumImplicits {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
   def name = column[String]("name")
@@ -55,10 +60,20 @@ class CompaniesTable(tag: Tag) extends Table[Company](tag, "companies") {
 
   def isCableNetwork = column[Boolean]("is_cable_network")
 
-  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled, paymentSMS, balanceReminders, bulkSMS, subscriptionSMS, isCableNetwork) <>((Company.apply _).tupled, Company.unapply _)
+  def msoType = column[MSOType]("mso_type")
+
+  def cred1 = column[Option[String]]("cred1")
+
+  def cred2 = column[Option[String]]("cred2")
+
+  def cred3 = column[Option[String]]("cred3")
+
+  def cred4 = column[Option[String]]("cred4")
+
+  def * = (id.?, name, owner, contactNo, address, receiptNo, customerSeqNo, lastBillGeneratedOn, billStatus, smsCount, pricePerCustomer, smsEnabled, paymentSMS, balanceReminders, bulkSMS, subscriptionSMS, isCableNetwork, msoType, cred1, cred2, cred3, cred4) <>((Company.apply _).tupled, Company.unapply _)
 }
 
-object Companies {
+object Companies extends EnumImplicits {
   private lazy val companyQuery = TableQuery[CompaniesTable]
   private lazy val customerQuery = TableQuery[CustomersTable]
   private lazy val paymentsQuery = TableQuery[PaymentsTable]
@@ -75,7 +90,7 @@ object Companies {
   def update(company: Company): Either[String, Int] = {
     val updateQuery = companyQuery.filter(_.id === company.id).
       map(c => (c.name, c.owner, c.contactNo, c.address, c.smsEnabled, c.paymentSMS, c.balanceReminders, c.bulkSMS, c.subscriptionSMS)).
-      update(company.name, company.owner, company.contactNo, company.address,  company.smsEnabled, company.paymentSMS, company.balanceReminders, company.bulkSMS, company.subscriptionSMS)
+      update(company.name, company.owner, company.contactNo, company.address, company.smsEnabled, company.paymentSMS, company.balanceReminders, company.bulkSMS, company.subscriptionSMS)
     try {
       Right(DatabaseSession.run(updateQuery).asInstanceOf[Int])
     } catch {
@@ -94,7 +109,7 @@ object Companies {
 
   def dashboardData(companyId: Int): DashboardData = {
     val unpaidCustomerQuery = customerQuery.filter(x => x.companyId === companyId && x.balanceAmount > 0)
-    val unpaidCustomers = DatabaseSession.run(unpaidCustomerQuery.result).asInstanceOf[Vector[Customer]]
+    val unpaidCustomers = DatabaseSession.run(unpaidCustomerQuery.result).asInstanceOf[Vector[CustomerCore]]
 
     val totalCustomerQuery = customerQuery.filter(x => x.companyId === companyId).length
     val totalCustomersCount = DatabaseSession.run(totalCustomerQuery.result).asInstanceOf[Int]
