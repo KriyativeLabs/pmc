@@ -3,7 +3,7 @@ package v1.controllers
 import javax.inject.Inject
 
 import helpers.enums.UserType
-import helpers.{CommonUtil, ResponseHelper}
+import v1.helpers.{CommonUtil, ResponseHelper}
 import v1.models.{Companies, Company}
 import play.api.Logger
 import play.api.i18n.MessagesApi

@@ -3,8 +3,8 @@ package v1.controllers
 import javax.inject.Inject
 
 import helpers.enums.{SmsType, UserType}
-import helpers.json.CustomerSerializer
-import helpers.{CommonUtil, ResponseHelper}
+import v1.helpers.json.CustomerSerializer
+import v1.helpers.{CommonUtil, ResponseHelper}
 import v1.models._
 import org.joda.time.DateTime
 import play.api._

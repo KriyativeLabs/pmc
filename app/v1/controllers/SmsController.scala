@@ -3,8 +3,8 @@ package v1.controllers
 import javax.inject.Inject
 
 import helpers.enums.{SmsType, UserType}
-import helpers.json.SmsSerializer
-import helpers.{CommonUtil, ResponseHelper}
+import v1.helpers.json.SmsSerializer
+import v1.helpers.{CommonUtil, ResponseHelper}
 import v1.models.{Sms, SmsGateway}
 import play.api._
 import play.api.i18n.MessagesApi

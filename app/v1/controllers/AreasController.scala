@@ -3,8 +3,8 @@ package v1.controllers
 import javax.inject.Inject
 
 import helpers.enums.UserType
-import helpers.json.AreaSerializer
-import helpers.{CommonUtil, ResponseHelper}
+import v1.helpers.json.AreaSerializer
+import v1.helpers.{CommonUtil, ResponseHelper}
 import v1.models.{Area, Areas}
 import play.api._
 import play.api.i18n.MessagesApi

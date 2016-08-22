@@ -4,8 +4,8 @@ package v1.controllers
 import javax.inject.Inject
 
 import helpers.enums.UserType
-import helpers.json.DashboardSerializer
-import helpers.{CommonUtil, ResponseHelper}
+import v1.helpers.json.DashboardSerializer
+import v1.helpers.{CommonUtil, ResponseHelper}
 import v1.models.{Companies, CompanyStats, Notifications}
 import play.api._
 import play.api.i18n.MessagesApi
