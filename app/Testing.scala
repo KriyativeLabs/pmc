@@ -20,11 +20,13 @@ object Testing {
     var i = 0
     val companyId = 15
     val areaMap = Map(
-      "1" -> 160,
-      "2" -> 161,
-      "3" -> 162,
-      "4" -> 163,
-      "5" -> 163)
+      "BVR" -> 160,
+      "CL" -> 161,
+      "KD" -> 162,
+      "RN" -> 163,
+      "NH" -> 161,
+        "RL"-> 163,
+        "NIL" -> 160)
 
     val planMap = Map(
       "Monthly" -> 84
@@ -32,10 +34,10 @@ object Testing {
 
     var flag = true
 
-    val csvData = new CSVUtils("/tmp/Mohan_Data_1.csv", false)
+    val csvData = new CSVUtils("/tmp/Mohan_Data_1.csv", true)
     for (values <- csvData.all) {
       if (i != 0 && flag) {
-        println(values(10).trim)
+        println(values)
         //case class Connection(id: Option[Int], customerId: Option[Int], setupBoxId: String, boxSerialNo:String, planId: Int, discount: Int, installationDate: DateTime,
         //                     status: String, cafId: String, idProof: String, companyId: Option[Int])
 

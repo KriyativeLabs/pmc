@@ -60,6 +60,7 @@ object Customers {
 
   private lazy val customerQuery = TableQuery[CustomersTable]
   private lazy val connectionsQuery = TableQuery[ConnectionsTable].filter(!_.isArchived.getOrElse(false))
+  private lazy val iConnectionsQuery = TableQuery[ConnectionsTable]
   private lazy val creditsQuery = TableQuery[CreditsTable]
 
   def insert(customer: CustomerCapsule)(implicit loggedInUser: LoggedInUser): Either[String, Int] = {
@@ -73,7 +74,7 @@ object Customers {
         try {
           val resultQuery = for {
             id <- customerQuery returning customerQuery.map(_.id) += newCustomer.copy(houseNo = Some(s))
-            conns <- connectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(loggedInUser.companyId)))
+            conns <- iConnectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(loggedInUser.companyId)))
           } yield id
           val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
           Notifications.createNotification(s"New Customer(${customer.name}) with id(${result}) was added", loggedInUser.userId)
@@ -102,12 +103,12 @@ object Customers {
         try {
           val resultQuery = for {
             id <- customerQuery returning customerQuery.map(_.id) += newCustomer.copy(houseNo = Some(s))
-            conns <- connectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(companyId)))
+            conns <- iConnectionsQuery ++= customer.connections.map(x => x.copy(customerId = Some(id), companyId = Some(companyId)))
           } yield id
-          val result = DatabaseSession.run(resultQuery).asInstanceOf[Int]
+          val result = DatabaseSession.run(resultQuery.transactionally).asInstanceOf[Int]
           Right(result)
         } catch {
-          case e: Exception => Left(e.getMessage)
+          case e: Exception => e.printStackTrace();Left(e.getMessage)
         }
       }
     }
@@ -140,8 +141,8 @@ object Customers {
     val conIdList = customer.connections.flatMap(_.id)
     val updateQuery = for {
       cust <- customerQuery.filter(x => x.id === customer.id && x.companyId === loggedInUser.companyId).map(p => (p.name, p.mobileNo, p.emailId, p.address, p.areaId, p.balanceAmount, p.updatedBy)).update(customer.name, customer.mobileNo, customer.emailId, customer.address, customer.areaId, customer.balanceAmount, Some(loggedInUser.userId))
-      _ <- connectionsQuery.filter(con => con.customerId === customer.id && !(con.id inSet conIdList)).map(_.isArchived).update(Some(true))
-      _ <- connectionsQuery ++= customer.connections.filter(_.id.isEmpty).map(_.copy(customerId = customer.id, msoStatus = Some(ConnectionStatus.UNKNOWN), companyId = Some(loggedInUser.companyId), isArchived = Some(false)))
+      _ <- iConnectionsQuery.filter(con => con.customerId === customer.id && !(con.id inSet conIdList)).map(_.isArchived).update(Some(true))
+      _ <- iConnectionsQuery ++= customer.connections.filter(_.id.isEmpty).map(_.copy(customerId = customer.id, msoStatus = Some(ConnectionStatus.UNKNOWN), companyId = Some(loggedInUser.companyId), isArchived = Some(false)))
     } yield cust
     try {
       customer.connections.filter(_.id.isDefined).foreach({ con =>
