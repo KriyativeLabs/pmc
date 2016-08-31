@@ -4,7 +4,7 @@ import models.{CustomerCapsule, Connection, Customers}
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import utils.CSVUtils
-
+import scala.util._
 import scala.io.{Source, Codec}
 
 object Testing {
@@ -25,8 +25,11 @@ object Testing {
       "KD" -> 162,
       "RN" -> 163,
       "NH" -> 161,
-        "RL"-> 163,
-        "NIL" -> 160)
+      "GC"->165,
+      "CY"->166,
+      "OB"->166,
+       "RL"-> 163,
+       "NIL" -> 160)
 
     val planMap = Map(
       "Monthly" -> 84
@@ -52,7 +55,10 @@ object Testing {
           companyId,
           areaMap.getOrElse(values(4).trim, throw new Exception("Error Parsing")),
           None,
-          0,
+          Try(values(3).trim.toInt) match {
+            case Success(x) => x
+            case Failure(e) => 0
+          },
           None,
           None,
           List(Connection(None,
