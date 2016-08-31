@@ -21,7 +21,7 @@ class AreasController @Inject()(implicit val messagesApi: MessagesApi, implicit 
       errors => badRequest(errors.mkString),
       area => {
         val newArea = if(request.user.userType != UserType.ADMIN) area.copy(companyId = request.user.companyId) else area
-        Areas.insert(newArea) match {
+        Areas.insert(newArea.copy(idSequence = 1)) match {
           case Left(e) =>  failed(s"Area with code:${area.code} already exists!")
           case Right(id) => created (Some (newArea), s"Successfully created new Area with code:${newArea.code}")
         }
