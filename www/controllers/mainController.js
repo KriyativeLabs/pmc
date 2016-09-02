@@ -1,9 +1,8 @@
-pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
-    function ($scope, $location, $window, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
-        if(!cookieService.get(constantsService.TOKEN)){
-		$window.location.href = "login.html";
-	}
-
+pmcApp.controller('mainController', ['$scope', '$location', '$window', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory', 'SweetAlert',
+    function ($scope, $location, $window, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory, SweetAlert) {
+        if (!cookieService.get(constantsService.TOKEN)) {
+            $window.location.href = "login.html";
+        }
         $scope.isPLoading = false;
         $scope.isError = false;
         $scope.loader = false;
@@ -17,7 +16,7 @@ pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', 
                 $scope.title = "Dashboard";
             } else if ($location.path().match('/customers/')) {
                 $scope.titleClass = "fa fa-user";
-                $scope.title = "Customer Details";
+                $scope.title = "Customer Info";
             } else if ($location.path().match('/customers')) {
                 $scope.titleClass = "fa fa-users";
                 $scope.title = "Customers";
@@ -32,7 +31,7 @@ pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', 
                 $scope.title = "Plans";
             } else if ($location.path().match('/agents/')) {
                 $scope.titleClass = "fa fa-user";
-                $scope.title = "Agent Details";
+                $scope.title = "Agent Info";
             } else if ($location.path().match('/agents')) {
                 $scope.titleClass = "fa fa-user";
                 $scope.title = "Agents";
@@ -77,15 +76,15 @@ pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', 
         });
 
         $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
-        
+
         $scope.bSmsEnable = (!(cookieService.get(constantsService.BULK_SMS) == "true") || $scope.isAgent);
         $scope.balanceReminder = !(cookieService.get(constantsService.BALANCE_REMINDER) == "true") || $scope.isAgent;
-        
+
         $scope.mso = cookieService.get(constantsService.MSO);
-        
+
         $scope.companyName = cookieService.get(constantsService.COMPANY_NAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
-        });        
+        });
 
         $scope.isInvalidRemark = function (remark) {
             if (remark == "No Problems" | remark == "") {
@@ -166,7 +165,7 @@ pmcApp.controller('mainController', ['$scope', '$location','$window', '$route', 
         };
     }]);
 
-var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiService, commonService, customerId) {
+var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $location, SweetAlert, apiService, commonService, customerId) {
 
     $scope.discount = 0;
     $scope.remarks = "No Problems";
@@ -179,8 +178,13 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
             $scope.id = customerData.id;
             $scope.name = customerData.name;
             $scope.houseNo = customerData.houseNo;
-            $scope.pending_amount = customerData.balanceAmount;
-            $scope.amount = customerData.balanceAmount;
+            if (customerData.balanceAmount < 0) {
+                $scope.amount = 0;
+                $scope.pending_amount = 0;
+            } else {
+                $scope.pending_amount = customerData.balanceAmount;
+                $scope.amount = customerData.balanceAmount;
+            }
             $scope.isPLoading = false;
         }, function (errorResponse) {
             apiService.NOTIF_ERROR(errorResponse.data.message);
@@ -201,36 +205,70 @@ var PaymentReceiptCtrl = function ($scope, $uibModalInstance, $timeout, $locatio
     };
 
     $scope.recordPayment = function () {
-        if ($scope.pending_amount < $scope.amount + $scope.discount) {
-            $scope.isError = true;
+        $scope.isError = false;
+        $scope.isPLoading = true;
+        var createObj = {};
+        createObj.customerId = $scope.id;
+        createObj.paidAmount = $scope.amount;
+        createObj.paidOn = commonService.getDateString($scope.paidOn);
+        createObj.receiptNo = "";
+        createObj.remarks = $scope.remarks;
+        createObj.discountedAmount = 0;
+        createObj.companyId = -1;
+        createObj.agentId = -1;
+        if ($scope.amount < 1) {
+            apiService.NOTIF_ERROR("Amount cannot be less than 1 rupees");
+            $scope.isPLoading = false;
         } else {
-            $scope.isError = false;
-            $scope.isPLoading = true;
-
-            var createObj = {};
-            createObj.customerId = $scope.id;
-            createObj.paidAmount = $scope.amount;
-            createObj.paidOn = commonService.getDateString($scope.paidOn);
-            createObj.receiptNo = "";
-            createObj.remarks = $scope.remarks;
-            createObj.discountedAmount = $scope.discount;
-            createObj.companyId = -1;
-            createObj.agentId = -1;
-
-            apiService.POST("/payments", createObj).then(function (response) {
-                apiService.NOTIF_SUCCESS(response.data.message);
-                $scope.isPLoading = false;
-                $uibModalInstance.close($scope.dt);
-            }, function (errorResponse) {
-                apiService.NOTIF_ERROR(errorResponse.data.message);
-                $scope.isPLoading = false;
-                if (errorResponse.status != 200) {
-                    console.log(errorResponse);
-                }
-                $scope.code = "";
-            });
+            if ($scope.pending_amount < $scope.amount + $scope.discount) {
+                SweetAlert.swal({
+                        title: "",
+                        text: "Enetered amount " + $scope.amount + " is more than Pending Amount " + $scope.pending_amount + "\n" + "You want pay in advance?",
+                        type: "warning",
+                        //                    imageSize: '10x10',
+                        showCancelButton: true,
+                        confirmButtonColor: "#1AAE88",
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No",
+                        //                    cancelButtonColor: "#DD6B55",   
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $scope.isError = false;
+                            apiService.POST("/payments", createObj).then(function (response) {
+                                apiService.NOTIF_SUCCESS(response.data.message);
+                                $scope.isPLoading = false;
+                                $uibModalInstance.close($scope.dt);
+                            }, function (errorResponse) {
+                                apiService.NOTIF_ERROR(errorResponse.data.message);
+                                $scope.isPLoading = false;
+                                if (errorResponse.status != 200) {
+                                    console.log(errorResponse);
+                                }
+                                $scope.code = "";
+                            });
+                        } else {
+                            $scope.isPLoading = false;
+                            $scope.isError = true;
+                        }
+                    });
+            } else {
+                apiService.POST("/payments", createObj).then(function (response) {
+                    apiService.NOTIF_SUCCESS(response.data.message);
+                    $scope.isPLoading = false;
+                    $uibModalInstance.close($scope.dt);
+                }, function (errorResponse) {
+                    apiService.NOTIF_ERROR(errorResponse.data.message);
+                    $scope.isPLoading = false;
+                    if (errorResponse.status != 200) {
+                        console.log(errorResponse);
+                    }
+                    $scope.code = "";
+                });
+            }
         }
-
     };
 
     $scope.closeAlert = function (index) {
@@ -269,9 +307,9 @@ var SmsCtrl = function ($scope, $uibModalInstance, $timeout, $location, apiServi
         console.log("Sms");
         var createObj = {};
         if ($scope.smsType != null) {
-            createObj.smsType = $scope.smsType;
+            createObj.smsGroup = $scope.smsType;
         } else {
-            createObj.smsType = "ALL";
+            createObj.smsGroup = "ALL";
         }
         createObj.message = $scope.smsData;
 

@@ -19,9 +19,9 @@
                         </div>
                     </div>
                     <hr style="margin-top:5px">
-                    <p><b>Customer Serial Number:</b> {{customer.houseNo}}</p>
+                    <p><b>Serial No:</b> {{customer.houseNo}}</p>
 
-                    <p><b>Mobile Number:</b> {{customer.mobileNo}}</p>
+                    <p><b>Mobile No:</b> {{customer.mobileNo}}</p>
 
                     <p><b>Email ID:</b> {{customer.emailId}}</p>
 
@@ -29,7 +29,7 @@
 
                     <!--<p><b>Id Proof:</b> {{connection.idProof}}</p>-->
 
-                    <p><b>Pending Balance:</b> {{customer.balanceAmount}} <i class="fa fa-rupee"></i></p>
+                    <p><b>Balance:</b> <span ng-hide="customer.balanceAmount < 0">{{customer.balanceAmount}} <i class="fa fa-rupee"></i></span><span ng-hide="customer.balanceAmount >= 0" class="text-success" >AD {{customer.balanceAmount * -1}} <i class="fa fa-rupee"></i></span></p>
 
                     <!--<p>Area : </p>-->
 
@@ -70,7 +70,7 @@
                                     <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalidRemark(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}" style="z-index:999"></i>
                                         <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
                                     </div>
-                                    <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
+                                    <div><small class="text-muted font-bold">On {{receipt.paidOn | date:'dd/MM/yyyy'}} by {{receipt.agentDetails}}</small>
                                         <div class="pull-right">
                                             <div>
                                                 <small class="font-bold text-danger">{{receipt.receiptNo}}</small>
@@ -97,7 +97,7 @@
                                     <div class="font-bold">For Month: {{credit.creditedOn}}
                                         <div class="pull-right font-bold text-success">{{credit.amount}} <i class="fa fa-rupee"></i></div>
                                     </div>
-                                    <div><small class="text-muted font-bold">On: {{credit.generatedOn}}</small>
+                                    <div><small class="text-muted font-bold">On {{credit.generatedOn | date:'dd/MM/yyyy'}}</small>
                                         <div class="pull-right">
                                             <div>
                                                 <small class="font-bold text-danger"></small>

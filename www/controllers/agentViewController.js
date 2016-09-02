@@ -50,10 +50,14 @@ pmcApp.controller('agentViewController', ['$scope', '$filter', '$location', '$ui
 
         $scope.getTotal = function () {
             var total = 0;
-            for (var i = 0; i < $scope.paymentstoday.length; i++) {
-                var receipt = $scope.paymentstoday[i];
-                total += receipt.paidAmount;
+            if ($scope.paymentstoday) {
+                for (var i = 0; i < $scope.paymentstoday.length; i++) {
+                    var receipt = $scope.paymentstoday[i];
+                    total += receipt.paidAmount;
+                }
+                return total;
+            } else {
+                return 0;
             }
-            return total;
         };
     }]);
