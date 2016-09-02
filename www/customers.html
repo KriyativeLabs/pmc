@@ -33,17 +33,18 @@
             <li class="list-group-item" ng-repeat="customerCap in customers">
                 <div class="media">
                     <div class="media-body">
-                        <div class="font-bold"><a class="font-bold" ng-href="#/customers/{{customerCap.id}}" style="text-decoration: underline" uib-tooltip="{{customerCap.name}}">{{customerCap.name | limitTo: 100 }}{{customerCap.name.length > 100 ? '...' : ''}}</a>
-                            <div class="pull-right">{{customerCap.balanceAmount}} <i class="fa fa-rupee"></i></div>
+                        <div class="font-bold"><a class="font-bold" ng-href="#/customers/{{customerCap.id}}" style="text-decoration: underline" uib-tooltip="{{customerCap.name}}">{{customerCap.name | limitTo: 100 }}{{customerCap.name.length > 100 ? '...' : ''}}({{customerCap.houseNo}})</a>
+                            <div class="pull-right" ng-show="{{customerCap.balanceAmount >= 0}}">{{customerCap.balanceAmount}} <i class="fa fa-rupee"></i></div><div class="pull-right text-success" ng-show="{{customerCap.balanceAmount < 0}}">AD {{customerCap.balanceAmount * -1}} <i class="fa fa-rupee"></i></div>
                         </div>
-                        <div><small class="text-muted" uib-tooltip="{{stbString(customerCap.connections, true)}} {{stbString(customerCap.connections, false)}}">{{stbString(customerCap.connections, true) | limitTo: 100 }}{{stbString(customerCap.connections, true).length > 100 ? '...' : ''}}</small>
+                        <div><small class="text-muted" uib-tooltip="{{stbString(customerCap.connections, true)}}/{{stbString(customerCap.connections, false)}}">{{customerCap.connections[0].setupBoxId | limitTo: 100 }}{{customerCap.connections[0].setupBoxId.length > 100 ? '...' : ''}}</small>
                             <div class="pull-right">
                                 <div>
                                     <a ng-hide="isInvalidPhoneNo(customerCap.mobileNo)" ng-href="tel:{{customerCap.mobileNo}}" uib-tooltip="{{customerCap.mobileNo}}">
                                         <button class="btn btn-success btn-xs"><i class="fa fa-phone"></i></button>
                                     </a>
                                     <button ng-hide="{{isAgent}}" class="btn btn-danger btn-xs" ng-click="openUpdate(customerCap.id)"><i class="fa fa-pencil"></i></button>
-                                    <button ng-disabled="{{customerCap.balanceAmount < 1}}" class="btn btn-primary btn-xs pull-t font-bold" ng-click="openReceipt(customerCap.id)">Pay</button>
+<!--                                    <button ng-disabled="{{customerCap.balanceAmount < 1}}" class="btn btn-primary btn-xs pull-t font-bold" ng-click="openReceipt(customerCap.id)">Pay</button>-->
+                                    <button class="btn btn-primary btn-xs pull-t font-bold" ng-click="openReceipt(customerCap.id)">Pay</button>
                                 </div>
                             </div>
                         </div>

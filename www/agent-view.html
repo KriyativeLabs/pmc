@@ -27,7 +27,7 @@
                                     <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalidRemark(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}"></i>
                                         <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
                                     </div>
-                                    <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
+                                    <div><small class="text-muted font-bold">On {{receipt.paidOn | date:'dd/MM/yyyy'}} by {{receipt.agentDetails}}</small>
                                         <div class="pull-right">
                                             <div>
                                                 <small class="font-bold text-danger">{{receipt.receiptNo}}</small>
@@ -54,7 +54,7 @@
                                     <div class="font-bold">{{receipt.customerDetails | limitTo: 100 }}{{receipt.customerDetails.length > 100 ? '...' : ''}} <i ng-hide="isInvalidRemark(receipt.remarks)" class="fa fa-exclamation-triangle text-warning" uib-tooltip="{{receipt.remarks}}" style="z-index:999"></i>
                                         <div class="pull-right font-bold text-success">{{receipt.paidAmount}} <i class="fa fa-rupee"></i></div>
                                     </div>
-                                    <div><small class="text-muted font-bold">On {{receipt.paidOn}} by {{receipt.agentDetails}}</small>
+                                    <div><small class="text-muted font-bold">On {{receipt.paidOn | date:'dd/MM/yyyy'}} by {{receipt.agentDetails}}</small>
                                         <div class="pull-right">
                                             <div>
                                                 <small class="font-bold text-danger">{{receipt.receiptNo}}</small>
