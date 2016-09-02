@@ -1,5 +1,4 @@
 pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Notification', function ($http, cookieService, constantsService, Notification) {
-
     var apiURL = constantsService.API_URL;
     var doRequest = function (path, method, data) {
         var authToken = cookieService.get(constantsService.TOKEN);
@@ -29,6 +28,8 @@ pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Not
         }
     };
 
+    
+    
     var download = function (path, method) {
         $http.defaults.headers.common.Accept= 'application/json, text/plain */*';
         $http.defaults.headers.contentType = 'application/json, text/csv */*';
@@ -71,7 +72,12 @@ pmcApp.factory('apiService', ['$http', 'cookieService', 'constantsService', 'Not
         },
         NOTIF_ERROR: function (msg) {
             return errorTime(msg);
-        }
+        },
+        GETWITHCACHE: function (path, api, isOffline) {
+            return doRequest(path, "GET", "");
+        },
+        
+        
     };
 }]);
 

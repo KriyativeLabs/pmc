@@ -1,6 +1,4 @@
 pmcApp.factory('commonService', ['apiService', function (apiService) {
-
-
     var getEntities = function (link) {
         return apiService.GET(link);/*.then(function (response) {
             return response.data.data;

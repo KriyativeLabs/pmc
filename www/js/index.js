@@ -21,12 +21,18 @@ var app = {
         this.bindEvents();
     },
     bindEvents: function() {
+        console.log("Binding Events");
         document.addEventListener('deviceready', this.onDeviceReady, true);
+        document.addEventListener('offline', this.onOffline, true);
+        
     },
 
     onDeviceReady: function() {
         angular.element(document).ready(function() {
             angular.bootstrap(document);
         });
+    },
+    onOffline: function() {
+        console.log("Offline");
     },
 };

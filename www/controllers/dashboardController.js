@@ -101,7 +101,6 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
                     $scope.bardata[0].push(responseData[i - 1].closingBalance);
                     $scope.bardata[1].push(responseData[i - 1].collectedAmount);
                 }
-
                 if(responseData.length == 0){
                     var dateDummy = new Date();
                     $scope.barlabels.push(monthNames[dateDummy.getMonth()-1] + "'" + dateDummy.getFullYear());
@@ -111,6 +110,7 @@ pmcApp.controller('dashboardController', ['$scope', '$filter', 'apiService', 'co
                 $scope.progressbar.complete();
             }, function (errorResponse) {
                 $scope.progressbar.complete();
+                $scope.closeLoader();
                 apiService.NOTIF_ERROR(errorResponse.data.message);
                 if (errorResponse.status != 200) {
                     console.log(errorResponse);

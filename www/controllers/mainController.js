@@ -1,14 +1,28 @@
-pmcApp.controller('mainController', ['$scope', '$location', '$window', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
-    function ($scope, $location, $window, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
-        if(!cookieService.get(constantsService.TOKEN)){
+pmcApp.controller('mainController', ['$scope', '$location', '$window', '$rootScope', '$route', '$uibModal', '$log', 'apiService', 'cookieService', 'constantsService', 'ngProgressFactory',
+    function ($scope, $location, $window, $rootScope, $route, $uibModal, $log, apiService, cookieService, constantsService, ngProgressFactory) {
+        if (!cookieService.get(constantsService.TOKEN)) {
             $window.location.href = "login.html";
         }
         
+        // OFFLINE CODE STARTS
+        $rootScope.online = navigator.onLine;
+        $window.addEventListener("offline", function () {
+            $rootScope.$apply(function () {
+                $rootScope.online = false;
+            });
+        }, false);
+        $window.addEventListener("online", function () {
+            $rootScope.$apply(function () {
+                $rootScope.online = true;
+            });
+        }, false);
+        // OFFLINE CODE ENDS
+
         $scope.isPLoading = false;
         $scope.isError = false;
         $scope.loader = false;
         $scope.progressbar = ngProgressFactory.createInstance();
-        
+
         var modalInstance = $uibModal;
         $scope.openLoader = function () {
             $scope.progressbar.start();
@@ -23,12 +37,12 @@ pmcApp.controller('mainController', ['$scope', '$location', '$window', '$route',
             $scope.progressbar.complete();
             $scope.modalOpenInstance.close();
         };
-        
 
-        
+
+
         $scope.titleClass = "fa fa-pie-chart";
         $scope.title = "Dashboard";
-        
+
         $scope.isActive = function (viewLocation) {
             if ($location.path().match('/dashboard')) {
                 $scope.titleClass = "fa fa-pie-chart";
@@ -95,15 +109,15 @@ pmcApp.controller('mainController', ['$scope', '$location', '$window', '$route',
         });
 
         $scope.isAgent = (cookieService.get(constantsService.ACC_TYPE) == "AGENT");
-        
+
         $scope.bSmsEnable = (!(cookieService.get(constantsService.BULK_SMS) == "true") || $scope.isAgent);
         $scope.balanceReminder = !(cookieService.get(constantsService.BALANCE_REMINDER) == "true") || $scope.isAgent;
-        
+
         $scope.mso = cookieService.get(constantsService.MSO);
-        
+
         $scope.companyName = cookieService.get(constantsService.COMPANY_NAME).replace(/\b\w/g, function (txt) {
             return txt.toUpperCase();
-        });        
+        });
 
         $scope.isInvalidRemark = function (remark) {
             if (remark == "No Problems" | remark == "") {

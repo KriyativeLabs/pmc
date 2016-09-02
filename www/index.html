@@ -368,9 +368,10 @@
                     </section>
                 </section>
             </section>
-        </section>
+        </section>        
     </section>
-
+    <div ng-hide="online" class="footer navbar-fixed-bottom font-bold" style="min-height: 20px !important;color: white;background-color: crimson;width: 100%;text-align: center;"> No Internet Connection(Offline Mode)</div>
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.js"></script>
     <script src="assets/js/app.js"></script>
@@ -416,6 +417,9 @@
     <script type="text/javascript">
         app.initialize();
     </script>
+    
+    
+    
     <script type="text/ng-template" id="receiptModal.html">
 
         <div>
@@ -572,7 +576,7 @@
             </div>
         </div>
     </script>
-    
+
     <script type="text/ng-template" id="loading.html">
         <style>
             .modal-content {
