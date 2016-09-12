@@ -12,32 +12,42 @@ object Testing {
   def main(args: Array[String]) = {
 
     //println(Customers.getAllWithFilters(7, None, None, Some("7829728448"), None,None,None,None).length)
-    val formatter = DateTimeFormat.forPattern("dd-MMM-yy")
+    val formatter = DateTimeFormat.forPattern("dd/MM/yy HH:mm")
 
     val file = new File("/tmp/rejectedfiles")
     val bw = new BufferedWriter(new FileWriter(file))
 
     var i = 0
-    val companyId = 15
+    val companyId = 22
     val areaMap = Map(
-      "BVR" -> 160,
-      "CL" -> 161,
-      "KD" -> 162,
-      "RN" -> 163,
-      "NH" -> 161,
-      "GC"->165,
-      "CY"->166,
-      "OB"->166,
-       "RL"-> 163,
-       "NIL" -> 160)
+      "OFS"->171,
+      "RHR"->172,
+      "SPS"->173,
+      "BAC"->174,
+      "ART"->175,
+      "WDM"->176,
+      "GNU"->170,
+      "RCP"->177,
+      "BVP"->178,
+      "AR"->179,
+      "PPR"->180,
+      "HBC"->181,
+      "HB"->181,
+      "NSG"->182,
+      "WL"->183,
+      "PLK"->184,
+      "MIS"->185,
+      "RST"->186,
+      "IE"->187,
+      "MOR"->188)
 
     val planMap = Map(
-      "Monthly" -> 84
+      "Monthly" -> 98
     )
 
     var flag = true
 
-    val csvData = new CSVUtils("/tmp/Mohan_Data_1.csv", true)
+    val csvData = new CSVUtils("/tmp/data.csv", true)
     for (values <- csvData.all) {
       if (i != 0 && flag) {
         println(values)
@@ -65,9 +75,9 @@ object Testing {
             None,
             values(6).trim,
             values(8).trim,
-            planMap.getOrElse(values(10).trim, 84),
+            planMap.getOrElse(values(10).trim, 98),
             0,
-            DateTime.now(),
+            formatter.parseDateTime(values(13)),
             "ACTIVE",
             "NIL",
             "NIL",
@@ -76,10 +86,10 @@ object Testing {
             Some(false))))
 
         println(cust)
-        Customers.tempInsert(cust, companyId) match {
-          case Right(r) => println(r)
-          case Left(l) => println(l); bw.write(values.mkString(",")); bw.newLine();
-        }
+//        Customers.tempInsert(cust, companyId) match {
+//          case Right(r) => println(r)
+//          case Left(l) => println(l); bw.write(values.mkString(",")); bw.newLine();
+//        }
 
       }
       i = i + 1

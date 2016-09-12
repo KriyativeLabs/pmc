@@ -211,7 +211,6 @@ object Customers {
     processResult(DatabaseSession.run(filterQuery.result).asInstanceOf[Vector[(Customer, Option[Connection])]]).++(processResult_1(DatabaseSession.run(filterQueryForConn.result).asInstanceOf[Vector[(Customer, Connection)]]))
   }*/
 
-
   def findById(id: Int)(implicit loggedInUser: LoggedInUser): Option[CustomerCapsule] = {
     val filterQuery = for {
       (cust, conn) <- customerQuery.filter(x => x.id === id && x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)
@@ -222,7 +221,7 @@ object Customers {
   def getAlll(sortBy: Option[String], sortOrder: Option[String], pageSize: Option[Int], pageNo: Option[Int])(implicit loggedInUser: LoggedInUser): Vector[CustomerCapsule] = {
     val filterQuery = if (pageSize.isDefined && pageNo.isDefined) {
       for {
-        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
+        (cust, conn) <- (customerQuery.filter(x => x.companyId === loggedInUser.companyId).sortBy(_.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get) joinLeft connectionsQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
       } yield (cust, conn)
     } else {
       for {
@@ -292,7 +291,7 @@ object Customers {
     if (active.isDefined) {
       val pageQuery = if (pageSize.isDefined && pageNo.isDefined) {
         for {
-          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) join conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
+          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId).sortBy(_.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get) join conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
         } yield (cust, conn)
       } else {
         for {
@@ -303,7 +302,7 @@ object Customers {
     } else {
       val pageQuery = if (pageSize.isDefined && pageNo.isDefined) {
         for {
-          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get)
+          (cust, conn) <- (filteredQuery.filter(x => x.companyId === companyId).sortBy(_.balanceAmount.desc).drop((pageNo.get - 1) * pageSize.get).take(pageSize.get) joinLeft conQuery on (_.id === _.customerId)).sortBy(_._1.balanceAmount.desc)
         } yield (cust, conn)
       } else {
         for {
