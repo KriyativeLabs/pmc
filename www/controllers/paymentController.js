@@ -31,12 +31,15 @@ pmcApp.controller('paymentController', ['$scope', '$location','$uibModal','$time
             });
         };
         $scope.total = 0;
-
+        $scope.totalCount=0;
+        
         $scope.setTotal = function(){
             $scope.total = 0;
+            $scope.totalCount=0;
             for(var i = 0; i < $scope.receipts.length; i++){
                 var receipt = $scope.receipts[i];
                 $scope.total += receipt.paidAmount;
+                $scope.totalCount += 1;
             }
         };
 
